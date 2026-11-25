@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "inline_citation"
+title = "InlineCitation"
+version = "0.6.0"
+type = "component"
+group = "agent"
+description = "A small chip inside an answer naming its source, with a hover card from the overlay layer."
+
+[requires]
+style = ">=0.6.0, <0.7.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons", "hover_card"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "inline_citation.rs"
+target = "src/ui/inline_citation.rs"
+sha256 = "1e0532767f9f07f11237ff8be04c86eccba5f97b488356c6b791ddaf5c8e8b5e"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/inline_citation.rs"
+role = "story"
+sha256 = "eda75fd9ab019e9f1d08ac13de662e9b65acde912d411bbbee50f854d755b511"

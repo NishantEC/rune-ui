@@ -1,0 +1,1 @@
+pub const CHECKS: &[(&str, &str)] = &[("confirm-demo", "alertdialog"), ("confirm-demo-allow", "button"), ("confirm-demo-always", "button"), ("confirm-demo-deny", "button"), ("confirm-once", "status"), ("confirm-expired", "status")];

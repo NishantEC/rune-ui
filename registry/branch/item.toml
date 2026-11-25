@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "branch"
+title = "Branch"
+version = "0.6.0"
+type = "component"
+group = "agent"
+description = "A 2 / 3 switcher between alternative answers, by press or by the arrow keys."
+
+[requires]
+style = ">=0.6.0, <0.7.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons", "agent"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "branch.rs"
+target = "src/ui/branch.rs"
+sha256 = "5834647104e3919dea924a295081cb436fb65261e29a87db08a690971ed5f31b"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/branch.rs"
+role = "story"
+sha256 = "924f8e7d68cea922f5142df4ec67c9e75d18ca1477dd510c68a1b9ab23089397"

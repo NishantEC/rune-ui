@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "checkpoint"
+title = "Checkpoint"
+version = "0.6.0"
+type = "component"
+group = "agent"
+description = "A divider in the conversation where work was saved, with a Restore button."
+
+[requires]
+style = ">=0.6.0, <0.7.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "checkpoint.rs"
+target = "src/ui/checkpoint.rs"
+sha256 = "f637d72de1906d2d8c26e490cb5493e2a557bb149805029975efe086e3c9f5ee"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/checkpoint.rs"
+role = "story"
+sha256 = "2d1991376f9019bf8c5d4d6ba9a22de8243b0b0aaa6a12350ed4d1cb7fc2f7e5"
