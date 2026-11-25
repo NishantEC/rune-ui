@@ -234,3 +234,131 @@ fn a_navigation_menu_opens_panels_moves_between_them_and_follows_links() {
     key(&mut rt, Key::Right);
     assert_eq!(focused(&rt).as_deref(), Some("nav-demo-2-trigger"), "Right moves along the bar to the link");
 }
+
+// ---- Pagination ----
+
+#[test]
+fn pagination_moves_pages_disables_its_ends_and_keeps_its_width() {
+    let mut rt = item("pagination");
+    let w = drawn(&rt, "pagination-demo")[2];
+    press(&mut rt, "pagination-demo-next");
+    assert_eq!(rt.state.g.index("pagination", 0), 7, "Next");
+    press(&mut rt, "pagination-demo-page-20");
+    assert_eq!(rt.state.g.index("pagination", 0), 20, "a page");
+    assert!((drawn(&rt, "pagination-demo")[2] - w).abs() < 0.5, "the row keeps its width");
+    let next = rt.elements().into_iter().find(|e| e.key.as_deref() == Some("pagination-demo-next")).expect("next");
+    assert!(!next.focusable, "Next is off on the last page");
+    press(&mut rt, "pagination-demo-previous");
+    assert_eq!(rt.state.g.index("pagination", 0), 19, "Previous");
+}
+
+// ---- Resizable ----
+
+fn shares(rt: &Runtime<App>, k: &str) -> Vec<f32> {
+    rt.state.g.choices.get(k).map(|v| v.split(',').filter_map(|x| x.parse().ok()).collect()).unwrap_or_default()
+}
+
+#[test]
+fn a_resizable_handle_drags_steps_with_keys_and_keeps_its_bounds() {
+    let mut rt = item("resizable");
+    let before = layout(&rt);
+    let (h, g) = (drawn(&rt, "resizable-demo-handle-0"), drawn(&rt, "resizable-demo"));
+    let (x, y) = (h[0] + h[2] / 2.0, h[1] + h[3] / 2.0);
+    rt.pointer_down(x, y);
+    rt.pointer_move(x + 20.0, y);
+    rt.pointer_move(x + 60.0, y);
+    rt.pointer_up(x + 60.0, y);
+    settle(&mut rt);
+    let s = shares(&rt, "resizable-demo");
+    let want = 0.35 + 60.0 / (g[2] - 9.0);
+    assert!((s[0] - want).abs() < 0.01 && (s[0] + s[1] - 1.0).abs() < 0.001, "dragged 60 points: {s:?}, wanted {want}");
+    let left = drawn(&rt, "resizable-demo-pane-0");
+    assert!((left[2] - s[0] * (g[2] - 9.0)).abs() < 1.0, "the pane follows: {left:?}");
+    // Past the most share it stops.
+    let h = drawn(&rt, "resizable-demo-handle-0");
+    rt.pointer_down(h[0] + 4.0, y);
+    rt.pointer_move(h[0] + 400.0, y);
+    rt.pointer_up(h[0] + 400.0, y);
+    settle(&mut rt);
+    assert!((shares(&rt, "resizable-demo")[0] - 0.6).abs() < 0.001, "kept at its most");
+    // Keys.
+    focus(&mut rt, "resizable-demo-handle-0");
+    key(&mut rt, Key::Left);
+    assert!((shares(&rt, "resizable-demo")[0] - 0.55).abs() < 0.001, "Left steps 5%");
+    key(&mut rt, Key::Home);
+    assert!((shares(&rt, "resizable-demo")[0] - 0.2).abs() < 0.001, "Home goes to the least");
+    // A press inside a pane does not resize.
+    let p = drawn(&rt, "resizable-demo-pane-1");
+    rt.pointer_down(p[0] + 100.0, p[1] + 50.0);
+    rt.pointer_move(p[0] + 200.0, p[1] + 50.0);
+    rt.pointer_up(p[0] + 200.0, p[1] + 50.0);
+    settle(&mut rt);
+    assert!((shares(&rt, "resizable-demo")[0] - 0.2).abs() < 0.001, "a drag inside a pane resizes nothing");
+    // Vertical, with the keys.
+    focus(&mut rt, "resizable-stack-handle-0");
+    key(&mut rt, Key::Down);
+    assert!((shares(&rt, "resizable-stack")[0] - 0.65).abs() < 0.001, "Down grows the top pane");
+    // Only the resized groups changed size; everything outside them stayed.
+    for (path, a) in layout(&rt) {
+        if path.contains("resizable") {
+            continue;
+        }
+        if let Some(b) = before.get(&path) {
+            assert!(a.iter().zip(b).all(|(x, y)| (x - y).abs() < 0.01), "resizing moved {path}");
+        }
+    }
+}
+
+// ---- HoverCard ----
+
+#[test]
+fn a_hover_card_opens_after_a_rest_stays_over_the_card_and_closes_after_leaving() {
+    let mut rt = item("hover_card");
+    let before = layout(&rt);
+    let t = drawn(&rt, "hover-demo-trigger");
+    rt.pointer_move(t[0] + t[2] / 2.0, t[1] + t[3] / 2.0);
+    rt.frame(0.1);
+    assert!(rt.presented("hover-demo-card").is_none(), "not at once");
+    settle(&mut rt);
+    let c = drawn(&rt, "hover-demo-card");
+    assert!(c[1] >= t[1] + t[3] && c[1] - (t[1] + t[3]) < 16.0, "below its trigger: {c:?} vs {t:?}");
+    unmoved(&before, &rt, "opening the hover card");
+    // Onto the card: it stays.
+    rt.pointer_move(c[0] + c[2] / 2.0, c[1] + c[3] / 2.0);
+    settle(&mut rt);
+    assert!(rt.presented("hover-demo-card").is_some(), "the card stays while the pointer is on it");
+    rt.pointer_move(W - 10.0, H - 10.0);
+    settle(&mut rt);
+    assert!(rt.presented("hover-demo-card").is_none(), "it closes after the pointer leaves both");
+    // Keys: Return pins it, Escape hides it.
+    focus(&mut rt, "hover-demo-trigger");
+    key(&mut rt, Key::Enter);
+    assert!(rt.presented("hover-demo-card").is_some(), "Return shows it: {:?} focus {:?}", rt.state.g.flags, focused(&rt));
+    key(&mut rt, Key::Escape);
+    assert!(rt.presented("hover-demo-card").is_none(), "Escape hides it");
+    assert_eq!(focused(&rt).as_deref(), Some("hover-demo-trigger"), "focus stays on the trigger");
+}
+
+// ---- InputOTP ----
+
+#[test]
+fn an_otp_input_fills_moves_and_backspaces() {
+    let mut rt = item("input_otp");
+    focus(&mut rt, "otp-demo-slot-2");
+    key(&mut rt, Key::Text("x".to_owned()));
+    assert_eq!(rt.state.g.choice("otp", "12"), "12", "a letter is refused");
+    for d in ["3", "4", "5", "6"] {
+        key(&mut rt, Key::Text(d.to_owned()));
+    }
+    assert_eq!(rt.state.g.choice("otp", "12"), "123456");
+    assert_eq!(rt.state.g.presses, 1, "complete is heard once");
+    assert_eq!(focused(&rt).as_deref(), Some("otp-demo-slot-5"), "the last slot keeps focus");
+    key(&mut rt, Key::Backspace);
+    assert_eq!(rt.state.g.choice("otp", "12"), "12345", "Backspace empties a filled slot in place");
+    key(&mut rt, Key::Backspace);
+    assert_eq!((rt.state.g.choice("otp", "12"), focused(&rt)), ("1234".to_owned(), Some("otp-demo-slot-4".to_owned())), "then the one before");
+    key(&mut rt, Key::Left);
+    assert_eq!(focused(&rt).as_deref(), Some("otp-demo-slot-3"), "Left moves");
+    key(&mut rt, Key::Text("9".to_owned()));
+    assert_eq!(rt.state.g.choice("otp", "12"), "1239", "typing replaces a filled slot");
+}

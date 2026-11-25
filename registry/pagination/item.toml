@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "pagination"
+title = "Pagination"
+version = "0.5.1"
+type = "component"
+group = "structure"
+description = "Previous, the pages near the current one with the first, the last and gaps, and Next; a fixed width so nothing shifts."
+
+[requires]
+style = ">=0.5.1, <0.6.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons", "button"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "pagination.rs"
+target = "src/ui/pagination.rs"
+sha256 = "94d2797c42087e57a206061e47317202228236399f8b2cefb63ff9f11a70702f"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/pagination.rs"
+role = "story"
+sha256 = "4f3160974ee8d3a1605a378be2370e262f48767622d6e4846118c2f6afa78541"

@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "input_otp"
+title = "InputOTP"
+version = "0.5.1"
+type = "component"
+group = "form"
+description = "A one-time code in grouped slots: type to fill and move on, Backspace back, arrows between slots, one Tab stop."
+
+[requires]
+style = ">=0.5.1, <0.6.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "input_otp.rs"
+target = "src/ui/input_otp.rs"
+sha256 = "4a25c49b1349501b32c06da330fea53312a85217f605007e2bbb4a4ba6ca5912"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/input_otp.rs"
+role = "story"
+sha256 = "3b0eacdef68bf36b6165f1dbe36aabc9cc6a7caf2e41f97947632c60e2923357"

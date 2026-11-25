@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "hover_card"
+title = "HoverCard"
+version = "0.5.1"
+type = "component"
+group = "overlays"
+description = "A preview card beside a link or a name after the pointer rests on it, through the overlay layer; Return pins it, Escape hides it."
+
+[requires]
+style = ">=0.5.1, <0.6.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "hover_card.rs"
+target = "src/ui/hover_card.rs"
+sha256 = "97e13ed51ed64b7aa92395253e068fa0c336e760eaab130fac96081d016efaa9"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/hover_card.rs"
+role = "story"
+sha256 = "05ca376aaf8c7377b9b3b54f052eee15bead2d222ce3dda992fe8eeb06ec22d4"

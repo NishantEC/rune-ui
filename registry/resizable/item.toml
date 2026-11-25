@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "resizable"
+title = "Resizable"
+version = "0.5.1"
+type = "component"
+group = "structure"
+description = "Panes split by handles you drag or step with the keys; each pane inside its least and most share; horizontal or vertical."
+
+[requires]
+style = ">=0.5.1, <0.6.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "resizable.rs"
+target = "src/ui/resizable.rs"
+sha256 = "c737eea289934b1a4e0c28eb83af7ecbda1957a3803339bd19b108341c37c089"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/resizable.rs"
+role = "story"
+sha256 = "ca5013938e02227d29afa0b219cbdd5923c8827ef813257d9c913b5810e6d373"

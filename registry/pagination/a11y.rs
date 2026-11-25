@@ -1,0 +1,1 @@
+pub const CHECKS: &[(&str, &str)] = &[("pagination-demo", "navigation"), ("pagination-demo-previous", "button"), ("pagination-demo-next", "button"), ("pagination-demo-page-6", "button"), ("pagination-small-previous", "button")];
