@@ -9,7 +9,7 @@ members = ["crates/rune-ui-style", "crates/rune-ui-themes", "crates/rune-ui-cli"
 version = "0.5.0"
 edition = "2024"
 license = "MIT"
-repository = "local"
+repository = "https://github.com/NishantEC/rune-ui"
 
 [workspace.dependencies]
 rune = { git = "https://github.com/anomalyco/rune", rev = "bc05f817ed19488a10a6f1a928cc0521c1c70c75" }
