@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "menubar"
+title = "Menubar"
+version = "0.5.1"
+type = "component"
+group = "overlays"
+description = "A row of menus on the shared popup: Left/Right between titles and between open menus, Down/Return to open, Escape back to the title."
+
+[requires]
+style = ">=0.5.1, <0.6.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons", "popup"]
+cargo = ["rune", "rune-ui-style", "rune-kit"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "menubar.rs"
+target = "src/ui/menubar.rs"
+sha256 = "d5e1700176d57fb6aa9e6909414a3c20a7437a31fcf0d2a8fe0ab9150070ba8b"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/menubar.rs"
+role = "story"
+sha256 = "7ddb47bc6b3dbf8d2d893fb6e43bf2f61255fdaa9d8a2198ee6d1a59f30520d9"

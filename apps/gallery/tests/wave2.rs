@@ -168,3 +168,69 @@ fn a_range_date_picker_stays_open_until_both_ends_are_chosen() {
     assert!(rt.presented("date-range-content").is_none(), "both ends: closed");
     assert_eq!((rt.state.g.choice("date-range-a", ""), rt.state.g.choice("date-range-b", "")), ("2026-11-20".to_owned(), "2026-11-24".to_owned()));
 }
+
+// ---- Menubar ----
+
+#[test]
+fn a_menubar_opens_from_the_keys_moves_across_menus_and_gives_focus_back() {
+    let mut rt = item("menubar");
+    let before = layout(&rt);
+    focus(&mut rt, "menubar-demo-0-trigger");
+    key(&mut rt, Key::Right);
+    assert_eq!(focused(&rt).as_deref(), Some("menubar-demo-1-trigger"), "Right moves along the bar");
+    key(&mut rt, Key::Down);
+    assert!(rt.presented("menubar-demo-1-content").is_some(), "Down opens Edit");
+    unmoved(&before, &rt, "opening a menu");
+    let (t, o) = (drawn(&rt, "menubar-demo-1-trigger"), drawn(&rt, "menubar-demo-1-content"));
+    assert!((o[0] - t[0]).abs() < 0.5 && o[1] > t[1] + t[3], "under its title: {o:?} vs {t:?}");
+    assert_eq!(focused(&rt).as_deref(), Some("menubar-demo-1-item1"), "its first row is focused");
+    key(&mut rt, Key::Down);
+    assert_eq!(focused(&rt).as_deref(), Some("menubar-demo-1-item2"), "Down moves in the menu");
+    key(&mut rt, Key::Right);
+    assert!(rt.presented("menubar-demo-1-content").is_none() && rt.presented("menubar-demo-2-content").is_some(), "Right opens View");
+    assert_eq!(focused(&rt).as_deref(), Some("menubar-demo-2-item2"), "on its first row (after its label)");
+    key(&mut rt, Key::Right);
+    assert!(rt.presented("menubar-demo-0-content").is_some(), "Right skips the disabled menu and wraps to File");
+    key(&mut rt, Key::Left);
+    assert!(rt.presented("menubar-demo-2-content").is_some(), "Left wraps back to View");
+    key(&mut rt, Key::Enter);
+    assert!(rt.state.g.flag("menubar-toolbar") && rt.presented("menubar-demo-2-content").is_none(), "Return chooses and closes");
+    assert_eq!(focused(&rt).as_deref(), Some("menubar-demo-2-trigger"), "focus back on the title");
+    press(&mut rt, "menubar-demo-0-trigger");
+    assert_eq!(focused(&rt).as_deref(), Some("menubar-demo-0-item1"), "a press opens with the first row focused");
+    key(&mut rt, Key::Escape);
+    assert!(rt.presented("menubar-demo-0-content").is_none(), "Escape closes");
+    assert_eq!(focused(&rt).as_deref(), Some("menubar-demo-0-trigger"), "and returns focus");
+    press(&mut rt, "menubar-demo-3-trigger");
+    assert!(rt.state.g.open.is_none(), "a disabled menu does not open");
+}
+
+// ---- NavigationMenu ----
+
+#[test]
+fn a_navigation_menu_opens_panels_moves_between_them_and_follows_links() {
+    let mut rt = item("navigation_menu");
+    let before = layout(&rt);
+    press(&mut rt, "nav-demo-0-trigger");
+    assert!(rt.presented("nav-demo-0-content").is_some(), "a press opens the panel");
+    unmoved(&before, &rt, "opening a panel");
+    assert_eq!(focused(&rt).as_deref(), Some("nav-demo-0-link0"), "its first link is focused");
+    key(&mut rt, Key::Down);
+    assert_eq!(focused(&rt).as_deref(), Some("nav-demo-0-link1"));
+    key(&mut rt, Key::Right);
+    assert!(rt.presented("nav-demo-1-content").is_some(), "Right at the edge opens the next panel");
+    assert_eq!(focused(&rt).as_deref(), Some("nav-demo-1-link0"));
+    key(&mut rt, Key::Right);
+    assert_eq!(focused(&rt).as_deref(), Some("nav-demo-1-link1"), "Right inside two columns moves across");
+    key(&mut rt, Key::Down);
+    assert_eq!(focused(&rt).as_deref(), Some("nav-demo-1-link3"), "Down moves a row");
+    let n = rt.state.g.presses;
+    key(&mut rt, Key::Enter);
+    assert!(rt.state.g.presses == n + 1 && rt.presented("nav-demo-1-content").is_none(), "Return follows the link and closes");
+    focus(&mut rt, "nav-demo-1-trigger");
+    key(&mut rt, Key::Down);
+    key(&mut rt, Key::Escape);
+    assert_eq!(focused(&rt).as_deref(), Some("nav-demo-1-trigger"), "Escape returns focus to the title");
+    key(&mut rt, Key::Right);
+    assert_eq!(focused(&rt).as_deref(), Some("nav-demo-2-trigger"), "Right moves along the bar to the link");
+}

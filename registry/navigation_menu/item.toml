@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "navigation_menu"
+title = "NavigationMenu"
+version = "0.5.1"
+type = "component"
+group = "overlays"
+description = "A site navigation bar: links and titles that open panels of links on the shared popup; arrows across titles and panels, Escape back."
+
+[requires]
+style = ">=0.5.1, <0.6.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons", "popup"]
+cargo = ["rune", "rune-ui-style", "rune-kit"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "navigation_menu.rs"
+target = "src/ui/navigation_menu.rs"
+sha256 = "a2a7fc0891f62d75d9973a2f276b3f71fc342853b895e4aaedc9ec61dc860115"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/navigation_menu.rs"
+role = "story"
+sha256 = "87c31c19cb9a723044ec104b5a8f9b5e4b37a4e0679e9e3018e741e6363d2081"
