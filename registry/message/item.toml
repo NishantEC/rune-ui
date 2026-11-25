@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "message"
+title = "Message"
+version = "0.6.0"
+type = "component"
+group = "agent"
+description = "One turn: a person's quiet bubble at the right, or the agent's words on the page in a reading column; an avatar, attachments and actions."
+
+[requires]
+style = ">=0.6.0, <0.7.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = ["attachment", "avatar", "actions"]
+
+[[files]]
+path = "message.rs"
+target = "src/ui/message.rs"
+sha256 = "bdb41c21d33b9f0ffd8a6ee29797bf3f4da4898ae1aaa67d2231d9dd85db9238"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/message.rs"
+role = "story"
+sha256 = "c90b08b2315a6ce11b9a85ba00704b006e0cabeb815bf579a91084dfe4b33f7f"

@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "prompt_input"
+title = "PromptInput"
+version = "0.6.0"
+type = "component"
+group = "agent"
+description = "The composer: a growing text area, attachments, a toolbar, and Send that becomes Stop; Return, Shift+Return, Escape."
+
+[requires]
+style = ">=0.6.0, <0.7.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons", "agent"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = ["attachment", "model_selector"]
+
+[[files]]
+path = "prompt_input.rs"
+target = "src/ui/prompt_input.rs"
+sha256 = "7094c54ffd8e6311a3aa41194e39c007216989b71bb7190b82c34c17959d902d"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/prompt_input.rs"
+role = "story"
+sha256 = "f7959c897c8b2dc66404594d5af5719fda004998ab523a1d3aba8f9608480a57"
