@@ -130,9 +130,76 @@ Stories register themselves. Each item's `stories.rs` is copied to `src/ui/stori
 | Structure | DataTable, Pagination, Resizable, Carousel, AspectRatio, Item |
 | Display | Chart (line, bar, area, donut), Typography |
 
+The agent set (0.6.0) has its own section below.
+
 Wave 2 added `recipes::series` (chart colours from the theme's roles), Label and Field's optional mark, `sheet::mount` (Sheet and
 Drawer share it) and `GalleryState::slot` (a component's own state type in the gallery). Their behaviour is tested in the live path
 (`apps/gallery/tests/wave2.rs`: real presses, pointer moves, drags and keys).
+
+## Agent set
+
+The components an app needs to show an AI agent at work, built on the base components and the style system. Names follow Vercel's
+AI Elements where one exists. Everything is data in and events out: plain structs and callbacks, no network, no async runtime.
+
+| Item | What it is for |
+| --- | --- |
+| Conversation | The scroll area: pinned to the newest message, lets go when the reader scrolls up, then shows Jump to latest |
+| Message | A person's quiet bubble at the right, or the agent's words on the page in a 720 point column; avatar, attachments, actions |
+| Response | The agent's words as Markdown (rune-kit's `markdown` feature), with a caret while streaming |
+| PromptInput | The composer: growing text, attachment chips, a toolbar, Send that becomes Stop; Return, Shift+Return, Escape |
+| ModelSelector | Models grouped by provider in a searchable panel from the overlay layer, with a tier or price per row |
+| Attachment | A file or image chip with remove |
+| Tool | One tool call as one quiet line that folds open to its input and output |
+| Reasoning | "Thinking…" with a shimmer, then a "Thought for 12s" fold |
+| ChainOfThought | The "Worked for 2m 14s" fold: steps with marks, words and details |
+| CodeBlock | Code with a language label, Copy, line numbers and sideways scroll; colour from Rune's built-in highlighter |
+| Diff | A unified diff per file: a folding header with `+n −n`, added and removed lines on their washes |
+| Terminal | A command, its output, its running state and exit status |
+| Task | A run card: status pill, files changed, checks, cost, time, one primary action |
+| Plan | A checklist: to do, doing, done, skipped |
+| Queue | Messages waiting to be sent, moved with Alt and the arrows, removed with Delete |
+| Sources, InlineCitation | A "Used 4 sources" fold of links; a citation chip with a hover card |
+| Suggestion | A row of suggested prompts |
+| Actions | Copy, Retry, Good, Bad under an answer, with tooltips |
+| Confirmation | A tool asking permission: Allow once, Always allow, Deny; answered, one quiet line |
+| Shimmer, Loader | Words with a sweeping band; three dots. Both still under Reduce Motion |
+| Context | A token and cost meter with a popover breakdown |
+| Branch | "2 / 3" between alternative answers |
+| Checkpoint | A divider with Restore |
+| `chat` (block) | All of it composed into one agent screen with placeholder content |
+
+The shared pieces (a step's `Status`, the quiet `FoldLine`, monospaced type, words for durations and money) live in the `agent` base
+item, which `rune-ui add` brings along. Response and the chat block need rune-kit's `markdown` feature; their `item.toml` says so
+(`features = ["rune-kit/markdown"]`) and `rune-ui add` turns it on in the app's Cargo.toml.
+
+A chat screen, put together:
+
+```rust
+let mut layer = Vec::new();
+let turns = vec![
+    Message::user("m1", "Asha").child(message::words(&t, "Why is the build slow?")).build(&t),
+    Message::assistant("m2", "Assistant")
+        .child(Reasoning::new("r1", false, 12.0, s.is_open("r1")).text(&s.thoughts).on_toggle(|s: &mut App| s.flip("r1")).build(&t))
+        .child(Tool::new("t1", &s.call, s.is_open("t1")).on_toggle(|s: &mut App| s.flip("t1")).build(&t))
+        .child(Response::new("a1", &s.answer).streaming(s.streaming).build(&t))
+        .build(&t),
+];
+let chat = Conversation::new("chat", s.at_bottom).children(turns).on_at_bottom(|s: &mut App, at| s.at_bottom = at).build(&t);
+let composer = PromptInput::new("composer", &s.draft, |s: &mut App| &mut s.draft).phase(s.phase)
+    .on_submit(|s: &mut App| s.send()).on_stop(|s: &mut App| s.stop()).build(&t);
+ui::base::overlay_root(col().w_full().h_full().child(col().grow(1.0).child(chat)).child(composer), layer)
+```
+
+What Rune cannot do here at this rev:
+
+- **A blinking caret inside Markdown:** the streaming caret is a glyph at the end of the text, so it does not blink; rune-kit's
+  word reveal is the motion instead.
+- **Return on a button:** on macOS Rune sends Return to the window's default button and presses a focused button only on Space, so
+  fold lines and the permission answers take Return themselves.
+- **Shimmer on any surface:** the band is the page's colour, so the shimmer reads right on the page and on quiet surfaces, not on a
+  saturated one.
+- **The whole Agent tab in one picture:** headless pictures stop at 8,000 points, so `snap.sh` pictures the last items on their own
+  (`RUNE_UI_ITEMS`).
 
 ## Fonts
 
