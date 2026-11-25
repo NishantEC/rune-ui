@@ -2,13 +2,13 @@
 schema = 1
 name = "input_otp"
 title = "InputOTP"
-version = "0.5.1"
+version = "0.8.0"
 type = "component"
 group = "form"
-description = "A one-time code in grouped slots: type to fill and move on, Backspace back, arrows between slots, one Tab stop."
+description = "A one-time code in grouped slots over one hidden text field: type, paste a code, Backspace, arrows between slots, one Tab stop."
 
 [requires]
-style = ">=0.5.1, <0.8.0"
+style = ">=0.8.0, <0.9.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -20,11 +20,11 @@ stories = []
 [[files]]
 path = "input_otp.rs"
 target = "src/ui/input_otp.rs"
-sha256 = "4a25c49b1349501b32c06da330fea53312a85217f605007e2bbb4a4ba6ca5912"
+sha256 = "d5fdeff9823fe1ddb8a053f077d1b115993de3405d39e8dde77e9b039aa36f1a"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/input_otp.rs"
 role = "story"
-sha256 = "3b0eacdef68bf36b6165f1dbe36aabc9cc6a7caf2e41f97947632c60e2923357"
+sha256 = "cb300d2814ba737a544a9bca6c15d393f5c468f653126bacc001497cdc927c08"

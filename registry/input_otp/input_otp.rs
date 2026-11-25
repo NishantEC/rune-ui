@@ -1,29 +1,34 @@
-//! rune-ui registry: input_otp 0.5.1. Copied into your app by `rune-ui add input_otp`; yours to change.
+//! rune-ui registry: input_otp 0.8.0 Copied into your app by `rune-ui add input_otp`; yours to change.
 //!
-//! A one-time code as a row of slots, each a small **well**, in groups with a dash between them. Typing fills the focused slot and
-//! moves on; Backspace empties it (or the one before) and moves back; Left, Right, Home and End move between slots. Pasting is not
-//! taken: Rune hands a paste only to a text field or the view's root at this rev. Only characters the pattern allows are taken (digits by default). The whole is one Tab stop, landing on the
-//! first empty slot. The app keeps the code; it hears each change and the moment it is complete.
+//! A one-time code as a row of slots, each a small **well**, in groups with a dash between them. Behind the slots is one text field
+//! (Rune's `text_input`, its words and caret not drawn), so everything a text field does works: typing fills the slot at the caret and
+//! moves on (on a filled slot it replaces it), Backspace and Delete empty one, Left, Right, Home and End move between slots, undo
+//! works, and **pasting a code fills the slots** (`on_input_paste`: characters the pattern refuses, such as a dash or a space, are
+//! dropped, and the rest fills from the caret up to the last slot). Only characters the pattern allows are taken (digits by default).
+//! A whole code pasted anywhere replaces the code. The slot at the caret shows the focus ring while the field has focus; a press on a
+//! slot puts the caret there (or on the first empty slot). The whole is one Tab stop. The app keeps the text (a `TextEdit`); it hears each change and the moment the code is complete.
 //!
 //! ```ignore
-//! InputOtp::new("code", "Verification code", &s.code).on_change(|s: &mut App, v: String| s.code = v)
+//! InputOtp::new("code", "Verification code", &s.code, |s: &mut App| &mut s.code).on_change(|s: &mut App, v: String| s.check(v))
 //!     .on_complete(|s: &mut App, v: String| s.verify(v)).build(t)
 //! ```
 
 use std::rc::Rc;
 
-use rune::{El, Key, KeyEvent, Tx, row, text};
+use rune::{ClipboardContent, El, Key, KeyEvent, TextEdit, Tx, el, row, text};
 use rune_ui_style::{Radius, tabular, weight};
 
 use super::base::{Shape, State, States, Theme, glyph, paint_state, recipes};
 use super::icons;
 
 pub type OnCode<S> = Rc<dyn Fn(&mut S, String)>;
+type Access<S> = Rc<dyn for<'b> Fn(&'b mut S) -> &'b mut TextEdit>;
 
-pub struct InputOtp<S: 'static> {
+pub struct InputOtp<'a, S: 'static> {
     key: String,
     name: String,
-    value: String,
+    edit: &'a TextEdit,
+    access: Access<S>,
     groups: Vec<usize>,
     pattern: fn(char) -> bool,
     invalid: bool,
@@ -45,9 +50,36 @@ pub fn typed(code: &str, i: usize, ch: char, n: usize) -> String {
     v.into_iter().collect()
 }
 
-impl<S: 'static> InputOtp<S> {
-    pub fn new(key: impl Into<String>, name: impl Into<String>, value: &str) -> InputOtp<S> {
-        InputOtp { key: key.into(), name: name.into(), value: value.to_owned(), groups: vec![3, 3], pattern: |c| c.is_ascii_digit(), invalid: false, disabled: false, pinned: None, change: None, complete: None }
+/// What pasting `pasted` at slot `at` makes of `code`: the characters `pattern` allows, from `at` on, replacing what was there, and
+/// the slot after the last one filled. A whole code (as many allowed characters as slots, or more) replaces the code from the first
+/// slot, wherever the caret was.
+pub fn pasted(code: &str, at: usize, pasted: &str, n: usize, pattern: fn(char) -> bool) -> (String, usize) {
+    let whole = pasted.chars().filter(|c| pattern(*c)).count() >= n;
+    let mut v: Vec<char> = if whole { Vec::new() } else { code.chars().take(n).collect() };
+    let mut i = if whole { 0 } else { at.min(v.len()) };
+    for ch in pasted.chars().filter(|c| pattern(*c)) {
+        if i >= n {
+            break;
+        }
+        if i < v.len() {
+            v[i] = ch;
+        } else {
+            v.push(ch);
+        }
+        i += 1;
+    }
+    (v.into_iter().collect(), i)
+}
+
+/// The byte offset of character `i` in `s` (its length past the end).
+fn byte_at(s: &str, i: usize) -> usize {
+    s.char_indices().nth(i).map_or(s.len(), |(b, _)| b)
+}
+
+impl<'a, S: 'static> InputOtp<'a, S> {
+    /// `edit` is the code's text, kept by the app; `access` reaches it.
+    pub fn new(key: impl Into<String>, name: impl Into<String>, edit: &'a TextEdit, access: impl for<'b> Fn(&'b mut S) -> &'b mut TextEdit + 'static) -> InputOtp<'a, S> {
+        InputOtp { key: key.into(), name: name.into(), edit, access: Rc::new(access), groups: vec![3, 3], pattern: |c| c.is_ascii_digit(), invalid: false, disabled: false, pinned: None, change: None, complete: None }
     }
 
     /// Slots per group (`[3, 3]` by default: six slots, a dash in the middle).
@@ -72,12 +104,13 @@ impl<S: 'static> InputOtp<S> {
         self
     }
 
-    /// Pins a live state on the slot the keyboard would land on (galleries).
+    /// Pins a live state on the slot at the caret (galleries).
     pub fn state(mut self, s: State) -> Self {
         self.pinned = Some(s);
         self
     }
 
+    /// The code after each change.
     pub fn on_change(mut self, f: impl Fn(&mut S, String) + 'static) -> Self {
         self.change = Some(Rc::new(f));
         self
@@ -94,94 +127,112 @@ impl<S: 'static> InputOtp<S> {
     }
 
     pub fn build(self, t: &Theme) -> El {
-        let n: usize = self.groups.iter().sum();
-        let chars: Vec<char> = self.value.chars().take(n).collect();
-        let next = chars.len().min(n.saturating_sub(1));
+        let n: usize = self.groups.iter().sum::<usize>().max(1);
+        let code = self.edit.text.clone();
+        let chars: Vec<char> = code.chars().take(n).collect();
+        let caret = code[..self.edit.focus.min(code.len())].chars().count();
+        let at = caret.min(n - 1);
         let k = self.key.clone();
         let h = t.control.lg;
         let w = (h * 0.86).round();
         let parts = recipes::field(t);
         let r = Radius::fit(t.radius.md, h);
-        let mut all = row().key(k.clone()).role("group").label(self.name.clone()).a11y_value(format!("{} of {n} entered", chars.len())).focus_group().gap(t.space.at(2.0)).center_y();
+        let ring = self.edit.focused || self.pinned == Some(State::FocusVisible);
+        let mut slots = row().gap(t.space.at(2.0)).center_y().a11y_hidden();
         let mut i = 0;
         for (gi, size) in self.groups.iter().enumerate() {
             if gi > 0 {
-                all = all.child(glyph(&icons::MINUS, t.control.icon, t.ink_faint()));
+                slots = slots.child(glyph(&icons::MINUS, t.control.icon, t.ink_faint()));
             }
             let mut group = row().gap(t.space.at(1.5));
             for _ in 0..*size {
-                let landing = i == next;
-                let st = States { invalid: self.invalid, disabled: self.disabled, focus_visible: landing && self.pinned == Some(State::FocusVisible), ..States::default() };
-                let mut slot = row().key(Self::slot_key(&k, i)).role("textbox").label(format!("Character {} of {n}", i + 1)).focusable(!self.disabled).focus_selected(landing).size(w, h).center().radius(r).round_as(t);
-                if let Some(c) = chars.get(i) {
-                    slot = slot.a11y_value(c.to_string());
-                }
+                let st = States { invalid: self.invalid, disabled: self.disabled, focus_visible: ring && i == at && !self.disabled, hover: self.pinned == Some(State::Hover) && i == at, ..States::default() };
+                let mut slot = row().key(Self::slot_key(&k, i)).size(w, h).center().radius(r).round_as(t);
                 slot = paint_state(slot, &parts.root, st);
                 if let Some(c) = chars.get(i) {
-                    slot = slot.child(text(c.to_string()).font(weight(tabular(t.ty.lg), t.ty.medium)).color(parts.label.resolve(st)).a11y_hidden());
+                    slot = slot.child(text(c.to_string()).key(format!("{}-char", Self::slot_key(&k, i))).font(weight(tabular(t.ty.lg), t.ty.medium)).color(parts.label.resolve(st)));
                 }
-                if self.disabled {
-                    slot = slot.disabled(true);
+                if !self.disabled {
+                    // A press on a slot puts the caret there (the first empty slot at most) and focuses the field.
+                    let (acc, input, slot_at) = (self.access.clone(), format!("{k}-input"), i);
+                    slot = slot.on_press_tx(move |s: &mut S, tx: &mut Tx| {
+                        let e = acc(s);
+                        let to = slot_at.min(e.text.chars().count());
+                        let b = byte_at(&e.text, to);
+                        e.set_caret(b);
+                        tx.focus(input.clone(), true);
+                    });
                 }
                 group = group.child(slot);
                 i += 1;
             }
-            all = all.child(group);
+            slots = slots.child(group);
         }
+        // The one text field, over the slots and not drawn: it takes the keys, the pastes and the presses.
+        let clear = t.ink().alpha(0.0);
+        let mut input = rune::text_input(self.edit, t.ty.lg).key(format!("{k}-input")).single_line().absolute(0.0, 0.0).w_full().h_full().color(clear).caret(clear, clear).label(self.name.clone()).a11y_value(format!("{} of {n} entered", chars.len()));
         if self.disabled {
-            return all;
+            input = input.disabled(true).read_only(true).focusable(false);
+        } else {
+            let (pattern, acc) = (self.pattern, self.access.clone());
+            let keys = acc.clone();
+            input = input.on_edit(rune::edit_access(move |s: &mut S| acc(s))).on_input_key(move |s: &mut S, ev: &KeyEvent, _: &mut Tx| {
+                let Key::Text(c) = &ev.key else { return false };
+                if ev.mods.cmd || ev.mods.ctrl || c.chars().count() != 1 {
+                    return false;
+                }
+                let ch = c.chars().next().unwrap_or(' ');
+                if !pattern(ch) {
+                    return true;
+                }
+                let e = keys(s);
+                let (a, b) = e.range();
+                let len = e.text.chars().count();
+                if a == b {
+                    let i = e.text[..a].chars().count();
+                    if i < len {
+                        // On a filled slot the character replaces it.
+                        e.set_selection(a, byte_at(&e.text, i + 1));
+                    } else if len >= n {
+                        return true;
+                    }
+                }
+                false
+            });
+            let (pattern, paste_acc) = (self.pattern, self.access.clone());
+            input = input.on_input_paste(move |s: &mut S, content: &ClipboardContent, _: &mut Tx| {
+                let e = paste_acc(s);
+                let at = e.text[..e.range().0].chars().count();
+                let (next, to) = pasted(&e.text, at, content.text(), n, pattern);
+                e.replace_text(next);
+                let b = byte_at(&e.text, to);
+                e.set_caret(b);
+                true
+            });
+            let (before, pattern, change_acc) = (code.clone(), self.pattern, self.access.clone());
+            let (change, complete) = (self.change.clone(), self.complete.clone());
+            input = input.on_input_change(move |s: &mut S, _: &mut Tx| {
+                let e = change_acc(s);
+                // Whatever arrived (an IME, an undo), only allowed characters and at most one per slot stay.
+                let clean: String = e.text.chars().filter(|c| pattern(*c)).take(n).collect();
+                if clean != e.text {
+                    let caret = e.text[..e.focus.min(e.text.len())].chars().filter(|c| pattern(*c)).count().min(clean.chars().count());
+                    e.replace_text(clean.clone());
+                    let b = byte_at(&e.text, caret);
+                    e.set_caret(b);
+                }
+                if clean == before {
+                    return;
+                }
+                if let Some(f) = &change {
+                    f(s, clean.clone());
+                }
+                if clean.chars().count() == n && let Some(f) = &complete {
+                    f(s, clean);
+                }
+            });
         }
-        let (code, pattern, prefix) = (self.value.clone(), self.pattern, format!("{k}-slot-"));
-        let (change, complete) = (self.change.clone(), self.complete.clone());
-        let report = move |s: &mut S, v: String| {
-            let full = v.chars().count() == n;
-            if let Some(f) = &change {
-                f(s, v.clone());
-            }
-            if full && let Some(f) = &complete {
-                f(s, v);
-            }
-        };
-        all.on_key(move |s: &mut S, ev: &KeyEvent, tx: &mut Tx| {
-            let Some(at) = tx.focused().and_then(|f| f.strip_prefix(&prefix)).and_then(|i| i.parse::<usize>().ok()) else { return false };
-            let len = code.chars().count();
-            match &ev.key {
-                Key::Text(c) if !ev.mods.cmd && !ev.mods.ctrl && c.chars().count() == 1 => {
-                    let ch = c.chars().next().unwrap_or(' ');
-                    if !pattern(ch) {
-                        return true;
-                    }
-                    let at = at.min(len);
-                    report(s, typed(&code, at, ch, n));
-                    tx.focus(format!("{prefix}{}", (at + 1).min(n - 1)), true);
-                    true
-                }
-                Key::Backspace => {
-                    let mut v: Vec<char> = code.chars().collect();
-                    // A filled slot empties in place; an empty one empties the slot before it and moves there.
-                    let to = if at < v.len() {
-                        v.remove(at);
-                        at
-                    } else if at > 0 && at - 1 < v.len() {
-                        v.remove(at - 1);
-                        at - 1
-                    } else {
-                        return true;
-                    };
-                    report(s, v.into_iter().collect());
-                    tx.focus(format!("{prefix}{to}"), true);
-                    true
-                }
-                Key::Delete => {
-                    let mut v: Vec<char> = code.chars().collect();
-                    if at < v.len() {
-                        v.remove(at);
-                        report(s, v.into_iter().collect());
-                    }
-                    true
-                }
-                _ => false,
-            }
-        })
+        // The field under the slots: they take the presses, it takes the keys and the pastes.
+        el().key(k).role("group").label(self.name).child(input).child(slots)
     }
 }

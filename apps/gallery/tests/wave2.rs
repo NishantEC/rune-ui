@@ -340,28 +340,7 @@ fn a_hover_card_opens_after_a_rest_stays_over_the_card_and_closes_after_leaving(
 }
 
 // ---- InputOTP ----
-
-#[test]
-fn an_otp_input_fills_moves_and_backspaces() {
-    let mut rt = item("input_otp");
-    focus(&mut rt, "otp-demo-slot-2");
-    key(&mut rt, Key::Text("x".to_owned()));
-    assert_eq!(rt.state.g.choice("otp", "12"), "12", "a letter is refused");
-    for d in ["3", "4", "5", "6"] {
-        key(&mut rt, Key::Text(d.to_owned()));
-    }
-    assert_eq!(rt.state.g.choice("otp", "12"), "123456");
-    assert_eq!(rt.state.g.presses, 1, "complete is heard once");
-    assert_eq!(focused(&rt).as_deref(), Some("otp-demo-slot-5"), "the last slot keeps focus");
-    key(&mut rt, Key::Backspace);
-    assert_eq!(rt.state.g.choice("otp", "12"), "12345", "Backspace empties a filled slot in place");
-    key(&mut rt, Key::Backspace);
-    assert_eq!((rt.state.g.choice("otp", "12"), focused(&rt)), ("1234".to_owned(), Some("otp-demo-slot-4".to_owned())), "then the one before");
-    key(&mut rt, Key::Left);
-    assert_eq!(focused(&rt).as_deref(), Some("otp-demo-slot-3"), "Left moves");
-    key(&mut rt, Key::Text("9".to_owned()));
-    assert_eq!(rt.state.g.choice("otp", "12"), "1239", "typing replaces a filled slot");
-}
+// Moved to wave3.rs: since 0.8.0 the code is one hidden text field (typing, moving, Backspace and paste are tested there).
 
 // ---- Drawer ----
 
