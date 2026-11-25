@@ -62,10 +62,17 @@ Rune's own (`El::help`) and need no layer.
 | `rune-ui add <item>... [--dry-run] [--force]` | Copies the items and everything they need into `src/ui/` and regenerates `src/ui/mod.rs`. It never overwrites a file it did not write, or one you changed, unless you pass `--force`. Two items writing the same path is an error. |
 | `rune-ui list` | Lists every item, with its version, type and group, and the status of your copy: ok, changed, or has an update. |
 | `rune-ui diff [<item>...] [--check]` | Shows a unified diff between the registry and your copy. With `--check`, exits 1 on drift. |
-| `rune-ui update [<item>...]` | Merges the registry's changes into your edits in three ways, using the base copy it kept in `.rune-ui/base/`. Conflicts get markers and the command exits 1. |
+| `rune-ui update [<item>...]` | Merges the registry's changes into your edits in three ways, using the base copy it kept in `.rune-ui/base/`. Conflicts get markers and the command exits 1. Binary files (fonts) are never merged: see below. |
 | `rune-ui registry hash` | For maintainers: refreshes the `sha256` values in every `item.toml`. |
 
 The registry is embedded in the binary. `--registry <dir>` reads it from a folder instead.
+
+**Binary files and `update`.** A file that is not valid UTF-8, or that its item marks `binary = true` (every font item marks its
+`.ttf` files), is never merged as text. If your copy is still the registry's old bytes (or what the lock recorded), `update` replaces
+it with the new bytes exactly; if you changed it, `update` names it, leaves it untouched, keeps that item at its old version and exits
+1. The lock only records the registry's own bytes for an untouched file, and a file left with conflict markers keeps its old hash, so
+neither can pass `diff --check`. (Before 0.8.0, `update` merged fonts as text and corrupted them; an app that ran it has its fonts
+put back by the next `update`, because their lock hash then matches the corrupted copy.)
 
 ### Pinning a release
 
@@ -85,7 +92,7 @@ moved it from `bc05f817` to `53f6d36a`):
 2. Replace the app's `[patch.crates-io]` table with rune-ui's (its root `Cargo.toml`), every line at the same rev. At `53f6d36a` it has
    eight crates: `winit`, `sctk-adwaita`, `parley_engine`, `wgpu-hal`, `naga`, `accesskit_windows`, `accesskit_macos` and
    `accesskit_atspi_common`. `rune-ui init` adds missing lines but never rewrites a line that is there, so edit the existing ones.
-3. Move `rune-ui-style` and `rune-ui-themes` to the new tag (`tag = "v0.7.0"`).
+3. Move `rune-ui-style` and `rune-ui-themes` to the new tag (`tag = "v0.8.0"`; 0.8.0 keeps the `53f6d36a` pin).
 4. Run `cargo build`. If Cargo warns that a patch "was not used in the crate graph" (or `Cargo.lock` lists it under
    `[[patch.unused]]`), the lock picked a newer crates.io release than Rune's vendored copy; lock it back:
    `cargo update -p naga@30.0.2 --precise 30.0.1`, and the same for `wgpu`, `wgpu-core`, `wgpu-types`, `wgpu-naga-bridge`,
@@ -102,7 +109,7 @@ differs by a few levels. Everything else in the gallery draws pixel for pixel as
 
 ```sh
 cargo run -p gallery                      # a window: every component in every state, light and dark, two densities
-apps/gallery/scripts/snap.sh              # headless PNGs of every group and open overlay, both modes, into /tmp/rune-ui/
+apps/gallery/scripts/snap.sh              # headless PNGs of every group and open overlay, both modes, into /tmp/rune-ui/ (taken 1 s in)
 RUNE_UI_ITEMS="button switch" apps/gallery/scripts/snap.sh   # single items as well
 ```
 
@@ -155,6 +162,31 @@ Stories register themselves. Each item's `stories.rs` is copied to `src/ui/stori
 
 The agent set (0.6.0) has its own section below.
 
+## Components (wave 3, 0.8.0)
+
+| Group | Items |
+| --- | --- |
+| Actions | ActionBar (bulk actions on a selection), Toolbar (grouped controls, overflow into More) |
+| Form | SegmentedControl (a sliding thumb on an interruptible spring) |
+| Structure | Tree, FileTree |
+| Agent | StackTrace, TestResults, Commit; PromptInput gains `@` mentions and `/` commands |
+
+Keys, as the interaction tests in `apps/gallery/tests/wave3.rs` press them:
+
+| Item | Keys |
+| --- | --- |
+| ActionBar | One Tab stop (a toolbar); Left and Right, Home and End inside; Escape clears the selection and focus goes to `return_focus`. Shown only while the count is above zero, rising from the bottom in the overlay layer; it works with DataTable's `selected`. |
+| Toolbar | One Tab stop; Left and Right rove, Home and End; Space or Return presses. It measures itself (`ToolbarState`, kept by the app) and moves what does not fit into a More menu. |
+| SegmentedControl | One Tab stop on the chosen segment; Left and Right choose (wrapping), Home and End. The thumb retargets mid-slide; a cut under Reduce Motion. |
+| Tree, FileTree | One Tab stop on the tree's own row; Up and Down (stopping at the ends), Right opens or goes to the first child, Left closes or goes to the parent, Home and End, a letter jumps, Return opens a leaf or folds a branch. One choice follows the keys; with `multi_select` Space chooses and Shift with Up or Down extends. Lazy branches call `on_expand` and show a loading row. FileTree builds the nodes from paths: folders first, natural order, an icon per kind. |
+| StackTrace | Frames are buttons (Return or Space): `on_frame` gets path, line and column; runs of library frames fold into one line; Copy puts the trace on the clipboard. |
+| TestResults | Suites are fold lines (Return or Space), failed suites first and open; a failure shows its message and expected/received. |
+| Commit | The line folds (Return or Space) to its files (each hands its path to `on_file`) and the diff; Copy hash. |
+| PromptInput | With `.menu(..)` and `.mentions(..)` or `.commands(..)`, built with `build_in(t, layer)`: `@` after a space or `/` at the start opens a list over the composer; Up and Down, Return or Tab picks, Escape closes the list only. A mention is one token (a Rune pill) Backspace deletes whole; a command runs and inserts nothing; Return with nothing to pick does nothing. Without sources nothing changes. |
+
+InputOTP (0.8.0) is now one hidden text field behind the slots, so it takes a pasted code: `InputOtp::new(key, name, &edit, access)`
+takes the app's `TextEdit` (it used to take a `&str`); `on_change` and `on_complete` are as before.
+
 Wave 2 added `recipes::series` (chart colours from the theme's roles), Label and Field's optional mark, `sheet::mount` (Sheet and
 Drawer share it) and `GalleryState::slot` (a component's own state type in the gallery). Their behaviour is tested in the live path
 (`apps/gallery/tests/wave2.rs`: real presses, pointer moves, drags and keys).
@@ -186,6 +218,7 @@ AI Elements where one exists. Everything is data in and events out: plain struct
 | Actions | Copy, Retry, Good, Bad under an answer, with tooltips |
 | Confirmation | A tool asking permission: Allow once, Always allow, Deny; answered, one quiet line |
 | Shimmer, Loader | Words with a sweeping band; three dots. Both still under Reduce Motion |
+| StackTrace, TestResults, Commit | An error and its frames; a test run; one commit folding to its files and diff (wave 3) |
 | Context | A token and cost meter with a popover breakdown |
 | Branch | "2 / 3" between alternative answers |
 | Checkpoint | A divider with Restore |
@@ -223,6 +256,23 @@ What Rune cannot do here at this rev:
   saturated one.
 - **The whole Agent tab in one picture:** headless pictures stop at 8,000 points, so `snap.sh` pictures the last items on their own
   (`RUNE_UI_ITEMS`).
+
+## Reduce Motion
+
+Builders only receive `&Theme`, so the theme carries the person's choice: `Theme::reduced_motion`, not in the theme file, set by the
+app every frame from Rune:
+
+```rust
+let t = rune_ui_themes::theme(cx.system_dark()).with_reduced_motion(cx.is_reduced_motion());
+// the gallery page: ui::gallery::page(json, ui::gallery::Appearance::of(cx.system_dark(), cx.is_reduced_motion()), …)
+```
+
+With it on, Shimmer draws its words with no band, Loader's dots and Spinner's arc (and every status mark and busy button) hold still,
+streaming words in Response appear without fading in, SegmentedControl's thumb cuts instead of sliding, and overlays (the popup
+lists, HoverCard, Drawer, ActionBar, PromptInput's lists) appear in place with no grow or slide; a short cross-fade is all that is
+left, as macOS keeps one. State stays visible: busy flags, a fixed arc, the words. Skeleton never moved. `page(json, dark, …)` with a
+plain `bool` still works (motion on). The registry test `entry_motion_is_off_under_reduced_motion` fails on any item transition that
+ignores the flag.
 
 ## Fonts
 
@@ -273,13 +323,15 @@ A theme is one JSON file with a `light` mode and a `dark` mode, checked against 
 - **Saturated glass:** backdrop blur has no `saturate()`, and Rune allows only a few blurs per frame.
 - **Animated focus ring:** the focus ring appears at once; it cannot fade or scale in.
 - **Spring timing:** press is a spring, not a fixed 100 ms ease.
-- **Sliding indicators:** the chosen segment or tab lands at once instead of sliding. Widths are not known when the view is built.
+- **Sliding indicators in Tabs and ToggleGroup:** they still land at once. SegmentedControl's thumb does slide (equal-width cells with
+  the thumb in the chosen grid cell, so Rune springs its layout); Tabs keep content-sized tabs, whose widths are not known when the
+  view is built.
+- **Presence motion in tests:** Rune's element list does not report an entering element's presence transform, so the tests check
+  overlays' still entry by their size, place and fade, and the registry test checks the source.
 - **Moving between open menus by pointer:** a Menubar or NavigationMenu menu is a modal (`El::modal`), and Rune blocks all pointer
   input outside a modal, hover included (there is a `modal_wheel_outside` but nothing for pointer moves). Finding the title under the
   pointer is no longer the problem (`El::data` plus `Tx::element_at_in`); the move never arrives. So pointing at another title does
   not switch menus; a press closes the open one first (the keyboard moves between them).
-- **Paste outside a text field:** Rune hands a paste only to a text field or the view's root (`on_paste` is honoured there), so InputOTP
-  does not take a pasted code at this rev.
 - **Wrapping and textures:** no `text-wrap: balance`. Metal textures stop at 16,384 pixels, so headless pictures are at most 8,000 points tall at 2x.
 
 ## Develop

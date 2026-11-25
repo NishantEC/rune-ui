@@ -50,7 +50,8 @@ failure count) are rare.
 
 A press sinks the object (0.96) rather than recolouring it; raised and ink controls do not change colour on hover, ghosts and rows take a
 wash. Popups grow from just under full size with a small drift. A frequent interaction lands at once. Nothing loops except work in
-progress, and Rune turns motion off under Reduce Motion.
+progress, and Rune turns motion off under Reduce Motion; the theme carries the same choice (`Theme::reduced_motion`) so components draw
+their still form: no sweep, no turning arc, no slide, no grow.
 
 ## Light and dark are not inverses
 
