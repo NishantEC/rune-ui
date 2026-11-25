@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "sidebar.rs"
 target = "src/ui/sidebar.rs"
-sha256 = "faa18c8f5e082ade8d7711a16c86c3f6872c0db968501a049d50f8fc3887072b"
+sha256 = "f304dbcebada569d33b7f8d5f2b4f9346f8d9b64658645803f9879530e3680b3"
 
 # Copied only once the gallery block is installed.
 [[files]]

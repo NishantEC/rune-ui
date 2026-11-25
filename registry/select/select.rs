@@ -16,9 +16,8 @@ use std::rc::Rc;
 
 use rune::{Color, El, Tx, row};
 
-use super::base::{Press, Size, SizeExt, State, Theme, paint, press, recipes, resolve, states};
+use super::base::{Pick, Press, Size, SizeExt, State, Theme, paint, press, recipes, resolve, states};
 
-type Choose<S> = Rc<dyn Fn(&mut S, &str)>;
 
 pub struct Select<'a, S: 'static> {
     key: String,
@@ -34,7 +33,7 @@ pub struct Select<'a, S: 'static> {
     open: bool,
     toggle: Option<Press<S>>,
     close: Option<Press<S>>,
-    choose: Option<Choose<S>>,
+    choose: Option<Pick<S>>,
 }
 
 impl<'a, S: 'static> Select<'a, S> {

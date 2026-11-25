@@ -18,4 +18,4 @@ cargo = ["rune", "rune-ui-style"]
 [[files]]
 path = "base.rs"
 target = "src/ui/base.rs"
-sha256 = "411310198133944edd5d7e0307c1074bde94c18acea5fd43268419fda62e20df"
+sha256 = "f279eb886d97315c9c689d6ee16d7c34690df67bd050e7ef3826d7f89d7e0069"

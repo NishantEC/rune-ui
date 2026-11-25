@@ -19,6 +19,12 @@ pub fn press<S: 'static>(f: impl Fn(&mut S) + 'static) -> Press<S> {
 /// What a choice does with the index chosen.
 pub type Choose<S> = Rc<dyn Fn(&mut S, usize)>;
 
+/// What a choice does with the words or key chosen.
+pub type Pick<S> = Rc<dyn Fn(&mut S, &str)>;
+
+/// What a value control does with the new value.
+pub type Slide<S> = Rc<dyn Fn(&mut S, f32)>;
+
 /// Size metrics for controls.
 pub trait SizeExt {
     fn height(self, t: &Theme) -> f32;

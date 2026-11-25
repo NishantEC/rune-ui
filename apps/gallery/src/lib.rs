@@ -69,7 +69,10 @@ macro_rules! scenes {
 }
 
 /// Named states for headless pictures (`--scene`); one item alone with `RUNE_UI_ITEM=<name>`.
-pub const SCENES: &[(&str, fn(&mut App))] = scenes!["actions", "form", "overlays", "structure", "display", "materials", "all", "open-select", "open-combobox", "open-dropdown-menu", "open-popover", "open-dialog", "open-sheet", "open-command"];
+/// A named scene and how it sets up the state.
+pub type Scene = (&'static str, fn(&mut App));
+
+pub const SCENES: &[Scene] = scenes!["actions", "form", "overlays", "structure", "display", "materials", "all", "open-select", "open-combobox", "open-dropdown-menu", "open-popover", "open-dialog", "open-sheet", "open-command"];
 
 static HEADLESS: AtomicBool = AtomicBool::new(false);
 

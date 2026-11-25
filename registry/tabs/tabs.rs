@@ -13,7 +13,7 @@ use std::rc::Rc;
 use rune::{Color, El, Icon, Key, KeyEvent, col, el, row, text};
 use rune_ui_style::{Delta, Radius, tabular};
 
-use super::base::{State, States, Theme, glyph, paint, paint_state};
+use super::base::{Choose, State, States, Theme, glyph, paint, paint_state};
 
 /// The two looks.
 #[non_exhaustive]
@@ -32,7 +32,7 @@ pub struct Tabs<S: 'static> {
     variant: TabsVariant,
     pinned: Option<(usize, State)>,
     content: Option<El>,
-    change: Option<Rc<dyn Fn(&mut S, usize)>>,
+    change: Option<Choose<S>>,
 }
 
 impl<S: 'static> Tabs<S> {

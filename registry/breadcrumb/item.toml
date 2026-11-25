@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "breadcrumb.rs"
 target = "src/ui/breadcrumb.rs"
-sha256 = "24b7400a6c95ded3c72f0503bef6e8d4d6aa8355b2da9e1ff1324e3dbf56424d"
+sha256 = "8b8bc35ace0ab62303d342fa76c1553bf51d3a597072c1ce75af4280495d2132"
 
 # Copied only once the gallery block is installed.
 [[files]]

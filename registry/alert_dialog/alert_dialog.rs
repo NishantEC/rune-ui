@@ -13,11 +13,11 @@ use std::rc::Rc;
 use rune::El;
 use rune_ui_style::ButtonVariant;
 
-use super::base::Theme;
+use super::base::{Press, Theme};
 use super::button::Button;
 use super::dialog::Dialog;
 
-type Answer<S> = Option<(String, Rc<dyn Fn(&mut S)>)>;
+type Answer<S> = Option<(String, Press<S>)>;
 
 pub struct AlertDialog<S: 'static> {
     key: String,

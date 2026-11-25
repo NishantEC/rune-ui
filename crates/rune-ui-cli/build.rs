@@ -6,7 +6,7 @@ use std::path::PathBuf;
 fn main() {
     let root = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap()).join("../../registry").canonicalize().unwrap();
     println!("cargo::rerun-if-changed={}", root.display());
-    let mut out = String::from("/// (item folder, its files: (name, bytes)).\npub static EMBEDDED: &[(&str, &[(&str, &[u8])])] = &[\n");
+    let mut out = String::from("/// A file in an item's folder: its name and bytes.\npub type EmbeddedFile = (&'static str, &'static [u8]);\n/// (item folder, its files).\npub static EMBEDDED: &[(&str, &[EmbeddedFile])] = &[\n");
     let mut dirs: Vec<PathBuf> = std::fs::read_dir(&root).unwrap().map(|e| e.unwrap().path()).filter(|p| p.join("item.toml").exists()).collect();
     dirs.sort();
     for d in dirs {

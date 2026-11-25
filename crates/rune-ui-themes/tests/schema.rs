@@ -61,7 +61,7 @@ fn light_and_dark_have_the_same_keys() {
     assert_ne!(f.light.role("page"), f.dark.role("page"));
 }
 
-fn props<'a>(schema: &'a Value, path: &[&str]) -> Vec<String> {
+fn props(schema: &Value, path: &[&str]) -> Vec<String> {
     let mut node = schema;
     for p in path {
         node = &node[p];

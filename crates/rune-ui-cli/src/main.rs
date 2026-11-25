@@ -334,7 +334,7 @@ fn status(a: &Args, item: &Item, lock: &Lock) -> String {
 
 fn list(a: &Args, reg: &Registry) -> Result<(), String> {
     let lock = read_lock(&a.app).unwrap_or_default();
-    println!("{:<16} {:<16} {:<8} {:<10} {:<10} {}", "item", "title", "version", "type", "group", "this app");
+    println!("{:<16} {:<16} {:<8} {:<10} {:<10} this app", "item", "title", "version", "type", "group");
     for item in reg.items.values() {
         println!("{:<16} {:<16} {:<8} {:<10} {:<10} {}", item.name, item.title, item.version, item.kind, item.group, status(a, item, &lock));
     }

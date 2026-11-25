@@ -13,7 +13,7 @@ use std::rc::Rc;
 use rune::{El, col, row, text};
 use rune_ui_style::{tabular, weight};
 
-use super::base::{States, Theme, glyph, paint, paint_state};
+use super::base::{Choose, States, Theme, glyph, paint, paint_state};
 use super::icons;
 
 /// A column: its title, width and alignment.
@@ -48,8 +48,8 @@ pub struct Table<S: 'static> {
     rows: Vec<Vec<String>>,
     sort: Option<(usize, bool)>,
     selected: Option<usize>,
-    on_sort: Option<Rc<dyn Fn(&mut S, usize)>>,
-    on_select: Option<Rc<dyn Fn(&mut S, usize)>>,
+    on_sort: Option<Choose<S>>,
+    on_select: Option<Choose<S>>,
 }
 
 impl<S: 'static> Table<S> {

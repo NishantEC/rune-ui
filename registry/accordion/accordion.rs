@@ -12,14 +12,14 @@ use std::rc::Rc;
 use rune::{El, col, row, text};
 use rune_ui_style::weight;
 
-use super::base::{State, States, Theme, glyph, paint, paint_state};
+use super::base::{Choose, State, States, Theme, glyph, paint, paint_state};
 use super::icons;
 
 pub struct Accordion<S: 'static> {
     key: String,
     items: Vec<(String, bool, El)>,
     pinned: Option<(usize, State)>,
-    toggle: Option<Rc<dyn Fn(&mut S, usize)>>,
+    toggle: Option<Choose<S>>,
 }
 
 impl<S: 'static> Accordion<S> {

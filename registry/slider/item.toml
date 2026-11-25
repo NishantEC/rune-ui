@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "slider.rs"
 target = "src/ui/slider.rs"
-sha256 = "56e37ebc68ba9b51f439f9bdb2656d5bd8f2b9b94fc07f7081d3d37676e8aace"
+sha256 = "0453fd6ee7cc1387031640bba1d0f66e4b33e57755290664824775f44db9bd16"
 
 # Copied only once the gallery block is installed.
 [[files]]

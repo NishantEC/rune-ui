@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "accordion.rs"
 target = "src/ui/accordion.rs"
-sha256 = "4838826643fe2d774c792fb74b55da500e0c7657d0885bb02607687aa17a334f"
+sha256 = "8520155140f3bae686e50d3a5f4b3a4868348d5222281ec263afd169df89179f"
 
 # Copied only once the gallery block is installed.
 [[files]]

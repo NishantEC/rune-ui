@@ -20,7 +20,7 @@ stories = ["button"]
 [[files]]
 path = "command.rs"
 target = "src/ui/command.rs"
-sha256 = "a212ad898050f40e540aa5c2ec1ed8afd6f5214a9fe42c3162c4d9db68707bab"
+sha256 = "9108687ae20edd3ea70052096cc57e7f4385ee55de7f9db07d472ff606d13650"
 
 # Copied only once the gallery block is installed.
 [[files]]

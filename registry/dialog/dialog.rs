@@ -14,7 +14,7 @@ use std::rc::Rc;
 use rune::{El, col, el, row, text};
 use rune_ui_style::{ButtonVariant, weight};
 
-use super::base::{Theme, paint};
+use super::base::{Press, Theme, paint};
 use super::button::Button;
 use super::icons;
 
@@ -27,7 +27,7 @@ pub struct Dialog<S: 'static> {
     width: f32,
     open: bool,
     outside: bool,
-    close: Option<Rc<dyn Fn(&mut S)>>,
+    close: Option<Press<S>>,
 }
 
 impl<S: 'static> Dialog<S> {

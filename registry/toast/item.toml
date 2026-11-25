@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "toast.rs"
 target = "src/ui/toast.rs"
-sha256 = "e3fd477f813401f8b0ee9b89e3c92fd6c6c5e1a2e448feb44b06c21d011a7ade"
+sha256 = "5f776874cd0785d084c6abc65e1ddade2ad9dbfb5e21f77df5739d6065bce876"
 
 # Copied only once the gallery block is installed.
 [[files]]

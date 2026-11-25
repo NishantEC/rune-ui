@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "select.rs"
 target = "src/ui/select.rs"
-sha256 = "44565fc1a37c88cf35ad0efed54d005c21029535cda88798b58b6a110118cdc2"
+sha256 = "35f0a42db69c2c427c3837903cef7ec06056ff2b52043c9568d04ac7b9ac687c"
 
 # Copied only once the gallery block is installed.
 [[files]]

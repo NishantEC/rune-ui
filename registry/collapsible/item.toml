@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "collapsible.rs"
 target = "src/ui/collapsible.rs"
-sha256 = "bcdba29260c0f9b66f49127f75ac56787ba9ae5069718fb4e111fac752e2b434"
+sha256 = "6ddb158e97d7da0d62bd7cb111c5fe303e45a281c3a287849addbb6f51d7a8a5"
 
 # Copied only once the gallery block is installed.
 [[files]]

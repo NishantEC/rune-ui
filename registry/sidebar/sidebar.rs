@@ -13,7 +13,7 @@ use std::rc::Rc;
 use rune::{El, Icon, col, row, text};
 use rune_ui_style::{tabular, weight};
 
-use super::base::{State, States, Theme, glyph, paint, paint_state};
+use super::base::{Press, State, States, Theme, glyph, paint, paint_state};
 
 /// One row.
 pub struct SidebarItem<S: 'static> {
@@ -23,7 +23,7 @@ pub struct SidebarItem<S: 'static> {
     count: Option<usize>,
     selected: bool,
     pinned: Option<State>,
-    press: Option<Rc<dyn Fn(&mut S)>>,
+    press: Option<Press<S>>,
 }
 
 impl<S: 'static> SidebarItem<S> {

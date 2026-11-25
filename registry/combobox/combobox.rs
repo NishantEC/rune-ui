@@ -14,9 +14,8 @@ use std::rc::Rc;
 use rune::{Color, El, Tx};
 pub use rune_kit::{ComboboxOption, ComboboxState};
 
-use super::base::{Theme, paint, recipes, resolve};
+use super::base::{Pick, Theme, paint, recipes, resolve};
 
-type Choose<S> = Rc<dyn Fn(&mut S, &str)>;
 
 pub struct Combobox<'a, S: 'static> {
     key: String,
@@ -27,7 +26,7 @@ pub struct Combobox<'a, S: 'static> {
     current: Option<String>,
     placeholder: String,
     width: f32,
-    choose: Option<Choose<S>>,
+    choose: Option<Pick<S>>,
 }
 
 impl<'a, S: 'static> Combobox<'a, S> {

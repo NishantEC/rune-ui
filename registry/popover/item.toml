@@ -20,7 +20,7 @@ stories = ["button", "switch"]
 [[files]]
 path = "popover.rs"
 target = "src/ui/popover.rs"
-sha256 = "19d3fce9f386569c98ab4f4be043b29e1dbb54b157f776041911cf6c8d014547"
+sha256 = "35cd1623d07072aa46cb71915171fa4af0ab53d1844dc8413d9ff7ea33347317"
 
 # Copied only once the gallery block is installed.
 [[files]]

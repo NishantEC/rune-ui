@@ -15,7 +15,7 @@ use rune::{El, col, row, text};
 pub use rune_kit::Placement;
 use rune_ui_style::weight;
 
-use super::base::{Theme, paint};
+use super::base::{Press, Theme, paint};
 
 pub struct Popover<S: 'static> {
     key: String,
@@ -25,7 +25,7 @@ pub struct Popover<S: 'static> {
     width: f32,
     open: bool,
     placement: Placement,
-    close: Option<Rc<dyn Fn(&mut S)>>,
+    close: Option<Press<S>>,
 }
 
 impl<S: 'static> Popover<S> {

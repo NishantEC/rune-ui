@@ -14,7 +14,7 @@ use rune::{El, col, el, row, text};
 use rune::Shadow;
 use rune_ui_style::{ButtonVariant, Recipe, weight};
 
-use super::base::{Theme, paint};
+use super::base::{Press, Theme, paint};
 use super::icons;
 
 /// Which edge the sheet sits against.
@@ -34,7 +34,7 @@ pub struct Sheet<S: 'static> {
     side: Side,
     size: f32,
     open: bool,
-    close: Option<Rc<dyn Fn(&mut S)>>,
+    close: Option<Press<S>>,
 }
 
 impl<S: 'static> Sheet<S> {

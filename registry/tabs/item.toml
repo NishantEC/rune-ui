@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "tabs.rs"
 target = "src/ui/tabs.rs"
-sha256 = "6c197ba7d98da240f94ea0245063ee0530c22b7acf61dd4ebda3ea65addbb6c9"
+sha256 = "2fdb4506c27469882b6fcbe53283d6f096ff82420957da5f53e717571cd465d1"
 
 # Copied only once the gallery block is installed.
 [[files]]

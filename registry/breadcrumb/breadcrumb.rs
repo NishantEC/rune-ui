@@ -12,12 +12,12 @@ use std::rc::Rc;
 use rune::{El, row, text};
 use rune_ui_style::weight;
 
-use super::base::{Theme, glyph, paint_state};
+use super::base::{Press, Theme, glyph, paint_state};
 use super::icons;
 
 pub struct Breadcrumb<S: 'static> {
     key: String,
-    parts: Vec<(String, Option<Rc<dyn Fn(&mut S)>>)>,
+    parts: Vec<(String, Option<Press<S>>)>,
     current: String,
 }
 

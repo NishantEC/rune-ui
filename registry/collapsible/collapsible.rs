@@ -12,7 +12,7 @@ use std::rc::Rc;
 use rune::{El, col, row, text};
 use rune_ui_style::weight;
 
-use super::base::{State, Theme, glyph, paint_state, states};
+use super::base::{Press, State, Theme, glyph, paint_state, states};
 use super::icons;
 
 pub struct Collapsible<S: 'static> {
@@ -23,7 +23,7 @@ pub struct Collapsible<S: 'static> {
     body: Vec<El>,
     disabled: bool,
     pinned: Option<State>,
-    toggle: Option<Rc<dyn Fn(&mut S)>>,
+    toggle: Option<Press<S>>,
 }
 
 impl<S: 'static> Collapsible<S> {

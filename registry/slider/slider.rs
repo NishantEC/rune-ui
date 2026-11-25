@@ -12,7 +12,7 @@ use std::rc::Rc;
 
 use rune::{Drag, El, Key, KeyEvent, Phase, Tx, el, row};
 
-use super::base::{State, States, Theme, paint, resolve, states};
+use super::base::{Slide, State, States, Theme, paint, resolve, states};
 
 const H: f32 = 20.0;
 const TRACK: f32 = 6.0;
@@ -28,7 +28,7 @@ pub struct Slider<S: 'static> {
     width: Option<f32>,
     disabled: bool,
     pinned: Option<State>,
-    change: Option<Rc<dyn Fn(&mut S, f32)>>,
+    change: Option<Slide<S>>,
 }
 
 impl<S: 'static> Slider<S> {

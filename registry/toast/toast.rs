@@ -13,7 +13,7 @@ use std::rc::Rc;
 use rune::{El, Shadow, col, row, text};
 use rune_ui_style::{ButtonVariant, Recipe, Size, weight};
 
-use super::base::{Theme, Tone, glyph, paint};
+use super::base::{Press, Theme, Tone, glyph, paint};
 use super::button::Button;
 use super::icons;
 
@@ -22,8 +22,8 @@ pub struct Toast<S: 'static> {
     title: String,
     description: Option<String>,
     tone: Option<Tone>,
-    action: Option<(String, Rc<dyn Fn(&mut S)>)>,
-    close: Option<Rc<dyn Fn(&mut S)>>,
+    action: Option<(String, Press<S>)>,
+    close: Option<Press<S>>,
 }
 
 impl<S: 'static> Toast<S> {

@@ -15,7 +15,7 @@ use std::rc::Rc;
 use rune::{El, Icon, Key, KeyEvent, TextEdit, col, el, row, text};
 use rune_ui_style::weight;
 
-use super::base::{States, Theme, glyph, paint, paint_state};
+use super::base::{Choose, Pick, States, Theme, glyph, paint, paint_state};
 use super::icons;
 use super::kbd::Kbd;
 
@@ -63,8 +63,8 @@ pub struct Command<'a, S: 'static> {
     highlight: usize,
     empty: String,
     width: f32,
-    move_to: Option<Rc<dyn Fn(&mut S, usize)>>,
-    select: Option<Rc<dyn Fn(&mut S, &str)>>,
+    move_to: Option<Choose<S>>,
+    select: Option<Pick<S>>,
 }
 
 impl<'a, S: 'static> Command<'a, S> {

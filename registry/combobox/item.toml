@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "combobox.rs"
 target = "src/ui/combobox.rs"
-sha256 = "d332a1dc5df4052f4e80cd897b90c17960f6c2bb57487db28a08e7ea0c9cd0cf"
+sha256 = "c1e6643e07a0dc12c7647272d23c2a77b9ce0d5b3b10a3e5555755435924cb51"
 
 # Copied only once the gallery block is installed.
 [[files]]
