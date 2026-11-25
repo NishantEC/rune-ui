@@ -83,6 +83,20 @@ fn sources() -> Vec<(String, String)> {
     v
 }
 
+#[test]
+fn no_item_touches_the_filesystem_processes_or_the_network() {
+    for (file, src) in sources() {
+        for (i, line) in src.lines().enumerate() {
+            if line.trim_start().starts_with("//") {
+                continue;
+            }
+            for banned in ["std::fs", "std::process", "std::net", "std::env"] {
+                assert!(!line.contains(banned), "{file}:{}: `{banned}`: a copied component hands such work to the app through a callback", i + 1);
+            }
+        }
+    }
+}
+
 /// The parameters of each `fn` in `src` (top-level commas between its parentheses, `self` included), with its name.
 fn arities(src: &str) -> Vec<(String, usize)> {
     let mut out = Vec::new();

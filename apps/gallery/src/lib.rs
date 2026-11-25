@@ -69,7 +69,7 @@ pub fn apply_scene(s: &mut App, name: &str) {
     // `<scene>-compact`: the same scene at the compact density.
     let name = match name.strip_suffix("-compact") {
         Some(n) => {
-            s.g.compact = true;
+            s.g.compact = Some(true);
             n
         }
         None => name,
@@ -77,7 +77,7 @@ pub fn apply_scene(s: &mut App, name: &str) {
     // `<scene>-round`: the same scene with round corners instead of continuous ones.
     let name = match name.strip_suffix("-round") {
         Some(n) => {
-            s.g.editor.corners = rune_ui_style::Corners::Round;
+            s.g.editor.corners = Some(rune_ui_style::Corners::Round);
             n
         }
         None => name,
@@ -87,14 +87,14 @@ pub fn apply_scene(s: &mut App, name: &str) {
     let font = rune_ui_style::fonts::all().into_iter().filter_map(|f| name.strip_suffix(&format!("-{}", f.name)).map(|n| (n, f.name))).max_by_key(|(_, f)| f.len());
     let name = match font {
         Some((n, font)) => {
-            s.g.editor.font = font;
+            s.g.editor.font = Some(font);
             n
         }
         None => name,
     };
     if name == "tuned" {
         // The editor at work: another neutral, a teal accent, a larger round radius, a flatter material, stronger shadows.
-        s.g.editor = ui::gallery::Editor { neutral: 4, accent: Some(ui::gallery::ACCENTS[2].to_owned()), radius: Some(12.0), corners: rune_ui_style::Corners::Round, texture: 0.4, shadow: 1.6, ..Default::default() };
+        s.g.editor = ui::gallery::Editor { neutral: 4, accent: Some(ui::gallery::ACCENTS[2].to_owned()), radius: Some(12.0), corners: Some(rune_ui_style::Corners::Round), texture: Some(0.4), shadow: 1.6, ..Default::default() };
         s.g.show = "actions".to_owned();
         return;
     }
@@ -131,9 +131,21 @@ pub fn set_headless(on: bool) {
     HEADLESS.store(on, Ordering::Relaxed);
 }
 
+/// Writes an exported theme file to `~/Downloads/rune-ui-theme.json` (the temporary folder without one) and says where.
+pub fn export_theme(json: &str) -> String {
+    let dir = std::env::var_os("HOME").map(|h| std::path::PathBuf::from(h).join("Downloads")).filter(|d| d.is_dir()).unwrap_or_else(std::env::temp_dir);
+    let path = dir.join("rune-ui-theme.json");
+    match std::fs::write(&path, json) {
+        Ok(()) => format!("Wrote {}", path.display()),
+        Err(e) => format!("Could not write {}: {e}", path.display()),
+    }
+}
+
 fn init() -> App {
     let mut s = App::default();
     s.g.scroll = !HEADLESS.load(Ordering::Relaxed);
+    // The window app's Export: the theme file goes to ~/Downloads (the page itself never writes files).
+    s.g.on_export = Some(std::rc::Rc::new(export_theme));
     if let Ok(i) = std::env::var("RUNE_UI_ITEM") {
         apply_scene(&mut s, &format!("item-{i}"));
     }

@@ -37,6 +37,7 @@ editor-accent-4 radio 1112 28 22 22
 editor-accent-5 radio 1140 28 22 22
 editor-hex textbox 1008 65 244 18
 editor-radius slider 1000 134 208 20
+editor-radius-thumb group 1096 136 16 16
 editor-corners radiogroup 1000 198 260 32
 editor-corners-0 button 1000 198 95 32
 editor-corners-1 button 1099 198 63 32
@@ -46,11 +47,13 @@ editor-font-system button 1056 274 69 32
 editor-font-serif button 1129 274 51 32
 editor-font-mono button 1184 274 56 32
 editor-type slider 1000 350 208 20
+editor-type-thumb group 1072 352 16 16
 editor-density radiogroup 1000 414 260 32
 editor-density-0 button 1000 414 101 32
 editor-density-1 button 1105 414 80 32
 editor-shadow slider 1000 490 208 20
+editor-shadow-thumb group 1077 492 16 16
 editor-texture slider 1000 554 208 20
+editor-texture-thumb group 1192 556 16 16
 editor-reset button 1000 594 58 32
 editor-copy button 1064 594 98 32
-editor-export button 1169 594 64 32
