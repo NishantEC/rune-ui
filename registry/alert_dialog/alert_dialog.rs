@@ -1,4 +1,4 @@
-//! rune-ui registry: alert_dialog 0.4.0. Copied into your app by `rune-ui add alert_dialog`; yours to change. Needs: button, dialog.
+//! rune-ui registry: alert_dialog 0.5.0. Copied into your app by `rune-ui add alert_dialog`; yours to change. Needs: button, dialog.
 //!
 //! A dialog that needs an answer: a press outside does not close it (Escape still means "cancel"), it has no close button, and its two
 //! answers are explicit. The destructive form makes the action the danger colour. Built on `Dialog`.

@@ -1,4 +1,4 @@
-//! rune-ui registry: alert 0.4.0. Copied into your app by `rune-ui add alert`; yours to change.
+//! rune-ui registry: alert 0.5.0. Copied into your app by `rune-ui add alert`; yours to change.
 //!
 //! A message that belongs to the page: a meaning's wash at low alpha, its icon, a title and a description in readable inks, and an
 //! optional action at the right. Never a border; the wash and the words carry it. Danger and warning alerts announce themselves.

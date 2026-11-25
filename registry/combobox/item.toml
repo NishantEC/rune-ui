@@ -2,13 +2,13 @@
 schema = 1
 name = "combobox"
 title = "Combobox"
-version = "0.4.0"
+version = "0.5.0"
 type = "component"
 group = "form"
 description = "One choice of many with a search: rune-kit's combobox behaviour in our look."
 
 [requires]
-style = ">=0.4.0, <0.5.0"
+style = ">=0.5.0, <0.6.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "combobox.rs"
 target = "src/ui/combobox.rs"
-sha256 = "b821ec3bb1293415e1f5da5378340e04b3f38a0cb6e529eea53f9bcac7251d6f"
+sha256 = "156ae04316043a97cf20423f44981162d2e6aee3f1c5197d56125cf635c59470"
 
 # Copied only once the gallery block is installed.
 [[files]]

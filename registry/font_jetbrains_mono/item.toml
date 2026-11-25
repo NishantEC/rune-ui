@@ -1,0 +1,42 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "font_jetbrains_mono"
+title = "JetBrains Mono"
+version = "0.5.0"
+type = "font"
+group = "fonts"
+description = "A monospace with a tall x-height and clear shapes, drawn for reading code. Variable weight 100 to 800."
+
+[requires]
+style = ">=0.5.0, <0.6.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+# Rune replaces its built-in Inter with an app's own fonts, so every font brings Inter along.
+registry = ["font_inter"]
+cargo = ["rune-ui-style"]
+
+[font]
+token = "jetbrains-mono"
+family = "JetBrains Mono"
+licence = "OFL-1.1"
+font_version = "Version 2.211"
+source = "https://github.com/google/fonts/tree/83c62e30d87daa70216dab6b984d00d20d96d585/ofl/jetbrainsmono/JetBrainsMono%5Bwght%5D.ttf"
+upstream = "https://github.com/JetBrains/JetBrainsMono"
+bytes = 187208
+size_adjust = 1.0
+
+[[files]]
+path = "font_jetbrains_mono.rs"
+target = "src/ui/font_jetbrains_mono/mod.rs"
+sha256 = "a1f0563638426bb36230a687def3bd5cb131e541ec071634b37ed91e4c75ec94"
+
+[[files]]
+path = "JetBrainsMono-Variable.ttf"
+target = "src/ui/font_jetbrains_mono/JetBrainsMono-Variable.ttf"
+sha256 = "48715a42ec242c21e9f02692891e147d022299a52e48d5e413e1a942193ffeda"
+
+[[files]]
+path = "OFL.txt"
+target = "src/ui/font_jetbrains_mono/OFL.txt"
+sha256 = "b2fe5e8987594e9ffd1d2ca52a2f5d73eb8335243893c5d6254b5ad69269591d"

@@ -1,4 +1,4 @@
-//! rune-ui registry: textarea 0.4.0. Copied into your app by `rune-ui add textarea`; yours to change.
+//! rune-ui registry: textarea 0.5.0. Copied into your app by `rune-ui add textarea`; yours to change.
 //!
 //! Several lines on the **well** material, `rows` tall at first and growing with the text to `max_rows`. Focus rings the well; invalid
 //! rings it in the danger colour. Editing is Rune's `text_input`.

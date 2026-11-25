@@ -1,0 +1,42 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "font_figtree"
+title = "Figtree"
+version = "0.5.0"
+type = "font"
+group = "fonts"
+description = "A friendly geometric sans with round dots and a small x-height. Variable weight 300 to 900."
+
+[requires]
+style = ">=0.5.0, <0.6.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+# Rune replaces its built-in Inter with an app's own fonts, so every font brings Inter along.
+registry = ["font_inter"]
+cargo = ["rune-ui-style"]
+
+[font]
+token = "figtree"
+family = "Figtree"
+licence = "OFL-1.1"
+font_version = "Version 2.002"
+source = "https://github.com/google/fonts/tree/83c62e30d87daa70216dab6b984d00d20d96d585/ofl/figtree/Figtree%5Bwght%5D.ttf"
+upstream = "https://github.com/erikdkennedy/figtree"
+bytes = 62712
+size_adjust = 1.08
+
+[[files]]
+path = "font_figtree.rs"
+target = "src/ui/font_figtree/mod.rs"
+sha256 = "5c4fa501503595e16da203916e5c2eaec325e3688130181ec2dddce87ae52b9d"
+
+[[files]]
+path = "Figtree-Variable.ttf"
+target = "src/ui/font_figtree/Figtree-Variable.ttf"
+sha256 = "26ad3db9b31ff7dde67a91ff515d022d2f495cd506590699cf264f0bfe6fb714"
+
+[[files]]
+path = "OFL.txt"
+target = "src/ui/font_figtree/OFL.txt"
+sha256 = "140d37233e7f3ce7313798befa9600893bcceaf41a55fa0fa5ad52f7f657a268"

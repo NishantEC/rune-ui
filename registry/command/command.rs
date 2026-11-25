@@ -1,4 +1,4 @@
-//! rune-ui registry: command 0.4.0. Copied into your app by `rune-ui add command`; yours to change. Needs: kbd.
+//! rune-ui registry: command 0.5.0. Copied into your app by `rune-ui add command`; yours to change. Needs: kbd.
 //!
 //! A command palette: a search over grouped commands. Typing filters (every word of the query must appear in the label); Up and Down
 //! move the highlight, Return runs it, a press runs any row. The **floating** material; the search is a bare line over a hairline (the

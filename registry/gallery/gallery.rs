@@ -1,4 +1,4 @@
-//! rune-ui registry: gallery 0.4.1 (a block). Copied into your app by `rune-ui add gallery`; yours to change.
+//! rune-ui registry: gallery 0.5.0 (a block). Copied into your app by `rune-ui add gallery`; yours to change.
 //!
 //! A page that shows every component your app has added, in every state: group tabs, each component's stories (its variants × states),
 //! a light/dark switch and a density switch, and a materials sheet that builds each recipe one layer at a time. It is made from the
@@ -20,7 +20,8 @@
 
 use super::base::Shape;
 use rune::{El, TextEdit, col, el, row, text};
-use rune_ui_style::{Corners, Font, Layer, LayerKind, Material, Recipe, State as Look, Theme, paint, weight};
+use rune::TextStyle;
+use rune_ui_style::{Corners, Font, Layer, LayerKind, Material, Recipe, State as Look, Theme, paint, tabular, weight};
 use std::collections::HashMap;
 
 /// How a story reaches the gallery's state inside the app's state.
@@ -173,9 +174,19 @@ pub fn labelled(t: &Theme, label: &str, e: El) -> El {
 
 /// A quiet pill button for the page's own controls (it draws from materials, so it needs no other item).
 fn pill<S: 'static>(t: &Theme, key: String, words: &str, on: bool, f: impl Fn(&mut S) + 'static) -> El {
+    pill_in::<S>(t, key, words, on, t.ty.sm, f)
+}
+
+/// A pill whose words are drawn in `style` (the font control shows each font in its own face).
+fn pill_in<S: 'static>(t: &Theme, key: String, words: &str, on: bool, style: TextStyle, f: impl Fn(&mut S) + 'static) -> El {
     let m = if on { &t.mat.raised } else { &t.mat.row };
     let face = row().key(key).role("button").label(words.to_owned()).checked(on).focusable(true).h(t.control.sm).px(t.space.at(3.0)).center().radius(t.radius.md).round_as(t);
-    rune_ui_style::paint_state(face, m, Default::default()).child(text(words.to_owned()).font(weight(t.ty.sm, if on { t.ty.medium } else { t.ty.regular })).color(if on { t.ink() } else { t.ink_muted() }).a11y_hidden()).on_press(f)
+    rune_ui_style::paint_state(face, m, Default::default()).child(text(words.to_owned()).font(weight(style, if on { t.ty.medium } else { t.ty.regular })).color(if on { t.ink() } else { t.ink_muted() }).a11y_hidden()).on_press(f)
+}
+
+/// `style` in `font`, at its size adjustment (to half points).
+fn in_font(style: TextStyle, font: &Font) -> TextStyle {
+    TextStyle { family: font.family, size: (style.size * font.size_adjust * 2.0).round() / 2.0, ..style }
 }
 
 /// One recipe built up a layer at a time, then each state's result.
@@ -247,6 +258,46 @@ pub fn corner_shapes(t: &Theme) -> El {
     ])
 }
 
+/// Type set in the theme's font, to compare fonts: the headings, reading text, the small sizes, figures proportional and tabular, the
+/// three weights, a button and an input, then one line in every installed font.
+pub fn typography(t: &Theme) -> El {
+    let f = &t.font;
+    let line = |style: TextStyle, words: &str, color| text(words.to_owned()).font(style).color(color);
+    let named = |label: &str, e: El| labelled(t, label, e);
+    let about = format!("{}{}, size-adjust {:.2}, line height {:.2}. Rune draws variable fonts at each weight; font smoothing is the window's (Rune's `font_smoothing`), not the theme's.", f.title, if f.mono { " (monospaced)" } else { "" }, f.size_adjust, f.line_height);
+    let headings = col().gap(t.space.at(2.0)).child(line(t.ty.xxl, "Plan the next quarter", t.ink()).key("typography-heading").role("heading").level(3).label("Plan the next quarter")).child(line(t.ty.xl, "Weekly review", t.ink())).child(line(t.ty.lg, "Waiting for approval", t.ink()));
+    let body = col().gap(t.space.at(2.0)).max_w(560.0)
+        .child(line(t.ty.md, "Plans, tickets and reviews live in one place. Invite the team, set a goal, and see where every piece of work stands before the Monday meeting.", t.ink()).wrap().min_w(0.0))
+        .child(line(t.ty.base, "Assigned to you · Due in 3 days · 12 comments", t.ink_muted()))
+        .child(line(t.ty.sm, "Last edited 2 minutes ago by a placeholder teammate", t.ink_muted()))
+        .child(line(t.ty.xs, "BETA · VERSION 2.4.1", t.ink_faint()));
+    let money = ["$1,204.50", "$987.10", "$11,111.11", "$40.00"];
+    let column = |style: TextStyle, caption: &str| {
+        let mut c = col().w(120.0).items_end().gap(t.space.at(1.0));
+        for m in money {
+            c = c.child(line(style, m, t.ink()));
+        }
+        spec(t, caption, c)
+    };
+    let figures = specs(t, vec![column(t.ty.md, "Proportional"), column(tabular(t.ty.md), "Tabular ('tnum'): columns line up")]);
+    let weights = row().gap(t.space.at(6.0)).flex_wrap().child(line(weight(t.ty.lg, t.ty.regular), "Regular 400", t.ink())).child(line(weight(t.ty.lg, t.ty.medium), "Medium 500", t.ink())).child(line(weight(t.ty.lg, t.ty.semibold), "Semibold 600", t.ink()));
+    let button = |m: &Material, words: &str, color| rune_ui_style::paint_state(row().h(t.control.md).px(t.metrics.pad_md).center().radius(rune_ui_style::Radius::fit(t.radius.md, t.control.md)).round_as(t), m, Default::default()).child(line(weight(t.ty.base, t.ty.medium), words, color));
+    let input = paint(row().w(260.0).h(t.control.md).px(t.metrics.pad_md - 2.0).center_y().radius(rune_ui_style::Radius::fit(t.radius.md, t.control.md)).round_as(t), &t.mat.well.base).child(line(t.ty.base, "Placeholder project", t.ink()));
+    let controls = row().gap(t.space.at(3.0)).center_y().flex_wrap().child(button(&t.mat.ink, "Create project", t.c.primary.fg)).child(button(&t.mat.raised, "Cancel", t.ink())).child(input);
+    let mut every = col().gap(t.space.at(3.0));
+    for other in rune_ui_style::fonts::all() {
+        every = every.child(row().gap(t.space.at(4.0)).items_center().child(line(t.ty.sm, other.title, t.ink_muted()).w(140.0)).child(line(in_font(t.ty.md, &other), "Revenue grew 18% to $4,210,980 in Q3", t.ink())));
+    }
+    col().key("typography").w_full().gap(t.space.at(8.0))
+        .child(named("font", line(t.ty.base, &about, t.ink_muted()).wrap().max_w(560.0).min_w(0.0)))
+        .child(named("headings", headings))
+        .child(named("text", body))
+        .child(named("figures", figures))
+        .child(named("weights", weights))
+        .child(named("controls", controls))
+        .child(named("every font", every))
+}
+
 /// The materials sheet.
 pub fn materials(t: &Theme) -> El {
     let mut c = col().key("materials").w_full().gap(t.space.at(6.0)).child(labelled(t, "corner shape", corner_shapes(t)));
@@ -273,7 +324,8 @@ pub struct Editor {
     /// `base.radius`, in points (`None`: the theme's own).
     pub radius: Option<f32>,
     pub corners: Corners,
-    pub font: Font,
+    /// `base.font`: a font's name (built in or installed, `rune_ui_style::fonts`).
+    pub font: &'static str,
     /// `base.type-scale`.
     pub type_scale: f32,
     /// Multiplies each mode's `elevation`.
@@ -284,7 +336,7 @@ pub struct Editor {
 
 impl Default for Editor {
     fn default() -> Self {
-        Editor { neutral: 0, accent: None, radius: None, corners: Corners::Continuous, font: Font::Inter, type_scale: 1.0, shadow: 1.0, texture: 1.0 }
+        Editor { neutral: 0, accent: None, radius: None, corners: Corners::Continuous, font: "inter", type_scale: 1.0, shadow: 1.0, texture: 1.0 }
     }
 }
 
@@ -330,12 +382,7 @@ pub fn edit_theme(json: &str, g: &GalleryState) -> rune_ui_style::serde_json::Va
         v["base"]["radius"]["$value"] = Value::from(r);
     }
     v["base"]["corners"]["$value"] = Value::from(if e.corners == Corners::Continuous { "continuous" } else { "round" });
-    v["base"]["font"]["$value"] = Value::from(match e.font {
-        Font::Inter => "inter",
-        Font::System => "system",
-        Font::Serif => "serif",
-        Font::Mono => "mono",
-    });
+    v["base"]["font"]["$value"] = Value::from(e.font);
     v["base"]["type-scale"]["$value"] = Value::from(e.type_scale);
     if g.compact {
         v["base"]["density"]["$value"] = Value::from(rune_ui_style::COMPACT);
@@ -371,6 +418,16 @@ fn choices<S: 'static>(t: &Theme, key: &str, words: &[&str], at: usize, access: 
     let mut r = row().key(key.to_owned()).role("radiogroup").label(key.to_owned()).w_full().gap(t.space.at(1.0)).flex_wrap();
     for (i, w) in words.iter().enumerate() {
         r = r.child(pill::<S>(t, format!("{key}-{i}"), w, i == at, move |s: &mut S| set(access(s), i)));
+    }
+    r
+}
+
+/// The installed fonts as pills, each in its own face.
+fn font_choices<S: 'static>(t: &Theme, at: &str, access: Access<S>) -> El {
+    let mut r = row().key("editor-font").role("radiogroup").label("Font").w_full().gap(t.space.at(1.0)).flex_wrap();
+    for f in rune_ui_style::fonts::all() {
+        let name = f.name;
+        r = r.child(pill_in::<S>(t, format!("editor-font-{name}"), f.title, name == at, in_font(t.ty.sm, &f), move |s: &mut S| access(s).editor.font = name));
     }
     r
 }
@@ -438,7 +495,7 @@ pub fn editor_panel<S: 'static>(t: &Theme, json: &str, app_dark: bool, g: &Galle
         .child(field(t, "Accent", col().w_full().gap(t.space.at(2.0)).child(swatches).child(hex_field)))
         .child(field(t, "Radius", slider::<S>(t, "editor-radius", t.base_radius, 0.0, 16.0, format!("{:.0}", t.base_radius), access, |g, v| g.editor.radius = Some(v.round()))))
         .child(field(t, "Corners", choices::<S>(t, "editor-corners", &["Continuous", "Round"], usize::from(e.corners == Corners::Round), access, |g, i| g.editor.corners = if i == 0 { Corners::Continuous } else { Corners::Round })))
-        .child(field(t, "Font", choices::<S>(t, "editor-font", &["Inter", "System", "Serif", "Mono"], e.font as usize, access, |g, i| g.editor.font = [Font::Inter, Font::System, Font::Serif, Font::Mono][i])))
+        .child(field(t, "Font", font_choices::<S>(t, e.font, access)))
         .child(field(t, "Type scale", slider::<S>(t, "editor-type", e.type_scale, 0.85, 1.25, format!("{:.2}", e.type_scale), access, |g, v| g.editor.type_scale = (v * 20.0).round() / 20.0)))
         .child(field(t, "Density", choices::<S>(t, "editor-density", &["Comfortable", "Compact"], usize::from(g.compact), access, |g, i| g.compact = i == 1)))
         .child(field(t, "Shadow strength", slider::<S>(t, "editor-shadow", e.shadow, 0.0, 2.5, format!("{:.1}", e.shadow), access, |g, v| g.editor.shadow = (v * 10.0).round() / 10.0)))
@@ -471,6 +528,7 @@ pub fn page<S: 'static>(json: &str, app_dark: bool, g: &GalleryState, access: Ac
     let t = theme_for(json, app_dark, g);
     let mut tabs = row().key("gallery-groups").role("tablist").label("Groups").gap(t.space.at(1.0)).flex_wrap();
     let mut shown: Vec<(&str, &str)> = GROUPS.iter().filter(|(k, _, _)| items.iter().any(|i| i.group == *k)).map(|(k, n, _)| (*k, *n)).collect();
+    shown.push(("typography", "Typography"));
     shown.push(("materials", "Materials"));
     shown.push(("all", "All"));
     for (k, n) in shown {
@@ -496,6 +554,9 @@ pub fn page<S: 'static>(json: &str, app_dark: bool, g: &GalleryState, access: Ac
             sec = sec.child(item_block(&mut c, item));
         }
         body = body.child(sec);
+    }
+    if g.only.is_none() && (g.show == "typography" || g.show == "all") {
+        body = body.child(col().key("group-typography").w_full().gap(t.space.at(6.0)).child(text("Typography").font(t.ty.xl).color(t.ink()).role("heading").level(2)).child(typography(&t)));
     }
     if g.only.is_none() && (g.show == "materials" || g.show == "all") {
         body = body.child(col().key("group-materials").w_full().gap(t.space.at(6.0)).child(text("Materials").font(t.ty.xl).color(t.ink()).role("heading").level(2)).child(materials(&t)));

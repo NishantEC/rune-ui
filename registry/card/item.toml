@@ -2,13 +2,13 @@
 schema = 1
 name = "card"
 title = "Card"
-version = "0.4.0"
+version = "0.5.0"
 type = "component"
 group = "structure"
 description = "A slab of rows split by inset hairlines, or a raised card; header, content, footer."
 
 [requires]
-style = ">=0.4.0, <0.5.0"
+style = ">=0.5.0, <0.6.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = ["button", "switch"]
 [[files]]
 path = "card.rs"
 target = "src/ui/card.rs"
-sha256 = "4df2774aaafcd7197b1c43499ad57e2b51074a6e6b94fda351548f23dd4c2875"
+sha256 = "ee3f0a5171b1cbd9bb45132dc9847625a80b2383c032f6b06a0f1d66b5904751"
 
 # Copied only once the gallery block is installed.
 [[files]]

@@ -1,4 +1,4 @@
-//! rune-ui registry: sidebar 0.4.0. Copied into your app by `rune-ui add sidebar`; yours to change.
+//! rune-ui registry: sidebar 0.5.0. Copied into your app by `rune-ui add sidebar`; yours to change.
 //!
 //! An app's side column: a header, groups of rows under quiet labels, a footer. A row is an icon, its words and an optional count;
 //! it washes on hover and takes the selected wash and the first ink when it is the current page. The column sits on the slab colour.

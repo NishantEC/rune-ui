@@ -1,0 +1,42 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "font_geist_mono"
+title = "Geist Mono"
+version = "0.5.0"
+type = "font"
+group = "fonts"
+description = "Geist's monospaced companion, for code, keys and tables of figures. Variable weight 100 to 900."
+
+[requires]
+style = ">=0.5.0, <0.6.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+# Rune replaces its built-in Inter with an app's own fonts, so every font brings Inter along.
+registry = ["font_inter"]
+cargo = ["rune-ui-style"]
+
+[font]
+token = "geist-mono"
+family = "Geist Mono"
+licence = "OFL-1.1"
+font_version = "Version 1.701"
+source = "https://github.com/google/fonts/tree/83c62e30d87daa70216dab6b984d00d20d96d585/ofl/geistmono/GeistMono%5Bwght%5D.ttf"
+upstream = "https://github.com/vercel/geist-font"
+bytes = 171948
+size_adjust = 1.03
+
+[[files]]
+path = "font_geist_mono.rs"
+target = "src/ui/font_geist_mono/mod.rs"
+sha256 = "79789470d57683e970562da9f532d580ab18e4f8473a85e35a84a4e61b597566"
+
+[[files]]
+path = "GeistMono-Variable.ttf"
+target = "src/ui/font_geist_mono/GeistMono-Variable.ttf"
+sha256 = "d00e590b8eb3a59acc329b2d044fd143ae935090b7da33199ebee27cc7de8196"
+
+[[files]]
+path = "OFL.txt"
+target = "src/ui/font_geist_mono/OFL.txt"
+sha256 = "1781d2806a07d91c4edf4740b88449fab7d0eadad53f7c351b94cd4d4eb8c00f"

@@ -75,6 +75,16 @@ pub fn apply_scene(s: &mut App, name: &str) {
         }
         None => name,
     };
+    // `<scene>-<font>`: the same scene in an installed font (`typography-geist`, `form-ibm-plex-sans`).
+    // The longest name that fits wins, so `-geist-mono` is Geist Mono, not `mono`.
+    let font = rune_ui_style::fonts::all().into_iter().filter_map(|f| name.strip_suffix(&format!("-{}", f.name)).map(|n| (n, f.name))).max_by_key(|(_, f)| f.len());
+    let name = match font {
+        Some((n, font)) => {
+            s.g.editor.font = font;
+            n
+        }
+        None => name,
+    };
     if name == "tuned" {
         // The editor at work: another neutral, a teal accent, a larger round radius, a flatter material, stronger shadows.
         s.g.editor = ui::gallery::Editor { neutral: 4, accent: Some(ui::gallery::ACCENTS[2].to_owned()), radius: Some(12.0), corners: rune_ui_style::Corners::Round, texture: 0.4, shadow: 1.6, ..Default::default() };
@@ -105,7 +115,7 @@ macro_rules! scenes {
 /// A named scene and how it sets up the state.
 pub type Scene = (&'static str, fn(&mut App));
 
-pub const SCENES: &[Scene] = scenes!["actions", "form", "overlays", "structure", "display", "materials", "materials-round", "all", "actions-compact", "form-compact", "structure-compact", "tuned", "open-select", "open-combobox", "open-context-menu", "open-alert-dialog", "open-toast", "open-dropdown-menu", "open-popover", "open-dialog", "open-sheet", "open-command"];
+pub const SCENES: &[Scene] = scenes!["actions", "form", "overlays", "structure", "display", "materials", "materials-round", "typography", "typography-geist", "typography-ibm-plex-sans", "typography-figtree", "typography-manrope", "typography-dm-sans", "typography-plus-jakarta-sans", "typography-jetbrains-mono", "form-geist", "actions-geist", "all", "actions-compact", "form-compact", "structure-compact", "tuned", "open-select", "open-combobox", "open-context-menu", "open-alert-dialog", "open-toast", "open-dropdown-menu", "open-popover", "open-dialog", "open-sheet", "open-command"];
 
 static HEADLESS: AtomicBool = AtomicBool::new(false);
 
@@ -125,7 +135,9 @@ fn init() -> App {
 
 pub fn run() {
     set_headless(std::env::args().any(|a| a == "--snap" || a == "--tree"));
-    let spec = AppSpec { scenes: SCENES, min_size: Some((720.0, 480.0)), ..AppSpec::new("rune-ui gallery", (1320.0, 900.0), init, view) };
+    // The font items: registered with Rune and made nameable by the theme (the editor's Font control lists them).
+    let fonts = rune_ui_style::fonts::install(ui::FONTS);
+    let spec = AppSpec { scenes: SCENES, fonts, min_size: Some((720.0, 480.0)), ..AppSpec::new("rune-ui gallery", (1320.0, 900.0), init, view) };
     let app = RuneApp::new(spec);
     if HEADLESS.load(Ordering::Relaxed) { app.fit_content_height().run() } else { app.run() }
 }

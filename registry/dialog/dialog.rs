@@ -1,4 +1,4 @@
-//! rune-ui registry: dialog 0.4.0. Copied into your app by `rune-ui add dialog`; yours to change. Needs: button.
+//! rune-ui registry: dialog 0.5.0. Copied into your app by `rune-ui add dialog`; yours to change. Needs: button.
 //!
 //! A modal panel over a scrim: the **floating** material at the dialog's radius, a title, a description, a body, a footer of buttons, a
 //! close button in its corner. Behaviour is Rune's `El::modal`: focus is trapped inside, the page behind is inert, Escape and a press

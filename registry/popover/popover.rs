@@ -1,4 +1,4 @@
-//! rune-ui registry: popover 0.4.0. Copied into your app by `rune-ui add popover`; yours to change.
+//! rune-ui registry: popover 0.5.0. Copied into your app by `rune-ui add popover`; yours to change.
 //!
 //! A floating panel beside its trigger: the **floating** material, a title, anything inside. Behaviour comes from Rune and rune-kit:
 //! `rune_kit::popover::anchored` places it beside the trigger and keeps it in the window, `rune_kit::scrim` closes it on a press outside,

@@ -109,3 +109,20 @@ fn continuous_and_round_corners_draw_different_pixels() {
     assert!(tile > 400, "the large tile looks the same in both corner styles ({tile} pixels differ)");
     assert!(button > 40, "the button looks the same in both corner styles ({button} pixels differ)");
 }
+
+#[test]
+fn an_installed_font_is_registered_from_its_bytes_and_drawn() {
+    // The same heading in Inter and in Geist (embedded by the font_geist item, registered at start-up): the glyphs must differ.
+    let (inter, geist) = (picture("typography"), picture("typography-geist"));
+    let r = rect(&inter.1, "typography-heading");
+    let mut n = 0;
+    for y in (r[1] * 2.0) as usize..((r[1] + r[3]) * 2.0) as usize {
+        for x in (r[0] * 2.0) as usize..((r[0] + r[2].min(rect(&geist.1, "typography-heading")[2])) * 2.0) as usize {
+            if (inter.0.luma(x as f32, y as f32) - geist.0.luma(x as f32, y as f32)).abs() > 24.0 {
+                n += 1;
+            }
+        }
+    }
+    eprintln!("heading pixels that differ, Inter vs Geist: {n}");
+    assert!(n > 2000, "Geist drew like Inter ({n} pixels differ): the font did not register");
+}

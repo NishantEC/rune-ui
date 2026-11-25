@@ -2,13 +2,13 @@
 schema = 1
 name = "progress"
 title = "Progress"
-version = "0.4.1"
+version = "0.5.0"
 type = "component"
 group = "display"
 description = "How far along: a well track with an ink fill, figures tabular."
 
 [requires]
-style = ">=0.4.0, <0.5.0"
+style = ">=0.5.0, <0.6.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "progress.rs"
 target = "src/ui/progress.rs"
-sha256 = "11ab508bc9c36440df22ca23707567093c61c88492a1925337a6314368238b67"
+sha256 = "8c0427bbdf35dd82a66ef0e03111202f42f4aec1f6c5d62279991f0e4bf7d4ae"
 
 # Copied only once the gallery block is installed.
 [[files]]

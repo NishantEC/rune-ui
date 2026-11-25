@@ -1,4 +1,4 @@
-//! rune-ui registry: toast 0.4.0. Copied into your app by `rune-ui add toast`; yours to change.
+//! rune-ui registry: toast 0.5.0. Copied into your app by `rune-ui add toast`; yours to change.
 //!
 //! A short message that comes and goes: the **floating** material, an optional meaning icon, a title and a line under it, an action and
 //! a close button. It is a polite live region. [`Toaster`] is where they stack (bottom right, newest last), mounted into the overlay

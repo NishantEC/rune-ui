@@ -4,6 +4,7 @@
 //!
 //! * [`tokens`]: theme files. Three tiers (ramps, roles with a matching text colour, rare component tokens), state alphas, three base
 //!   knobs (`spacing`, `radius`, `density`), a light and a dark mode, parsed strictly (unknown keys are errors).
+//! * [`fonts`]: the typefaces `base.font` can name: four built in, and those an app installs from `font` items ([`fonts::install`]).
 //! * [`scale`]: space, type, radius, elevation (smooth shadow stacks), motion and control sizes.
 //! * [`theme`]: a [`Theme`] (one mode resolved: [`Palette`], scales, [`Materials`]) and [`Theme::to_kit`], the rune-kit adapter.
 //! * [`recipe`]: [`Recipe`] (layers), [`Delta`], [`Material`] (a delta per [`State`]), [`Parts`], and the one resolver [`resolve`]
@@ -25,6 +26,7 @@
 //! ```
 
 pub mod color;
+pub mod fonts;
 pub mod materials;
 pub mod paint;
 pub mod recipe;

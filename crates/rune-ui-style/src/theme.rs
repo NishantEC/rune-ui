@@ -116,13 +116,7 @@ impl Theme {
         // Continuous corners are drawn on a larger ladder, or they would look the same as round ones (`CONTINUOUS_GAIN`).
         let radius = Radius::from_base(f.base.radius * f.base.corners.gain());
         let space = Space { unit: f.base.spacing };
-        let family = match f.base.font {
-            Font::Inter => rune::Family::Sans,
-            Font::System => rune::Family::Named("System Font"),
-            Font::Serif => rune::Family::Named("New York, Georgia"),
-            Font::Mono => rune::Family::SystemMono,
-        };
-        let ty = TypeScale::for_density(f.base.density).scaled(f.base.type_scale, family);
+        let ty = TypeScale::for_density(f.base.density).scaled(f.base.type_scale, f.base.font.family).fitted(&f.base.font);
         let metrics = Metrics::from_density(f.base.density);
         let colors = MaterialColors {
             raised_top: m.component("raised-top"),

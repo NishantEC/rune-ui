@@ -30,6 +30,13 @@ fn main() {
     for (name, dir) in &items {
         writeln!(out, "    #[path = {:?}]\n    pub mod {name};", dir.join(format!("{name}.rs")).display().to_string()).unwrap();
     }
+    // Font items, as `rune-ui add` lists them in an app's `ui::FONTS`.
+    let fonts: Vec<&String> = items.iter().filter(|(_, d)| field(&std::fs::read_to_string(d.join("item.toml")).unwrap(), "type") == Some("font")).map(|(n, _)| n).collect();
+    out.push_str("    /// Every installed font item (`rune_ui_style::fonts::install`).\n    pub const FONTS: &[rune_ui_style::Font] = &[");
+    for name in &fonts {
+        write!(out, "{name}::FONT, ").unwrap();
+    }
+    out.push_str("];\n");
     let with_stories: Vec<&(String, PathBuf)> = items.iter().filter(|(_, d)| d.join("stories.rs").exists()).collect();
     out.push_str("    pub mod stories {\n");
     for (name, dir) in &with_stories {

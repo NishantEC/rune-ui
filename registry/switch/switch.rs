@@ -1,4 +1,4 @@
-//! rune-ui registry: switch 0.4.1. Copied into your app by `rune-ui add switch`; yours to change.
+//! rune-ui registry: switch 0.5.0. Copied into your app by `rune-ui add switch`; yours to change.
 //!
 //! On or off, at once. The track is a **well** while off and fills with **ink** when on; the thumb is a small floating disc (the
 //! **thumb** material off, the ink's words colour on). Radii are concentric. With words the whole line is the control; alone, the switch

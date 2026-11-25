@@ -1,4 +1,4 @@
-//! rune-ui registry: button 0.4.0. Copied into your app by `rune-ui add button`; yours to change.
+//! rune-ui registry: button 0.5.0. Copied into your app by `rune-ui add button`; yours to change.
 //!
 //! shadcn's six variants on the materials: **Default** (ink, a view's one primary action), **Secondary** (raised), **Outline**,
 //! **Ghost**, **Destructive** and **Link**. Three sizes. Words, an icon and words, a trailing icon, or an icon alone (the label is then

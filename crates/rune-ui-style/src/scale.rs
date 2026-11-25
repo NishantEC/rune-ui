@@ -76,6 +76,18 @@ impl TypeScale {
     }
 }
 
+impl TypeScale {
+    /// The ramp fitted to a font: sizes times its `size_adjust` (to half points), line heights times its `line_height` (to whole points).
+    /// Inter, the face the ramp was tuned in, is 1 and 1, so it comes back unchanged.
+    pub fn fitted(self, font: &crate::fonts::Font) -> TypeScale {
+        if font.size_adjust == 1.0 && font.line_height == 1.0 {
+            return self;
+        }
+        let f = |s: TextStyle| TextStyle { size: half(s.size * font.size_adjust), line_height: (s.line_height * font.line_height).round(), ..s };
+        TypeScale { xs: f(self.xs), sm: f(self.sm), base: f(self.base), md: f(self.md), lg: f(self.lg), xl: f(self.xl), xxl: f(self.xxl), ..self }
+    }
+}
+
 /// Where a density sits between compact (0.8: 0) and comfortable (1.0: 1).
 pub fn comfort(density: f32) -> f32 {
     ((density - COMPACT) / (COMFORTABLE - COMPACT)).clamp(0.0, 1.0)

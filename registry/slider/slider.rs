@@ -1,4 +1,4 @@
-//! rune-ui registry: slider 0.4.1. Copied into your app by `rune-ui add slider`; yours to change.
+//! rune-ui registry: slider 0.5.0. Copied into your app by `rune-ui add slider`; yours to change.
 //!
 //! A value in a range. The track is a **well**, the part up to the value is **ink**, the thumb a raised disc. Drag anywhere on it (a
 //! press without moving jumps there), or use the arrow keys (Shift for ten steps) and Home/End. It reports its value, minimum and

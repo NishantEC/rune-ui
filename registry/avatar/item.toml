@@ -2,13 +2,13 @@
 schema = 1
 name = "avatar"
 title = "Avatar"
-version = "0.4.1"
+version = "0.5.0"
 type = "component"
 group = "display"
 description = "A person as initials (or an image) in a circle; a stacked group."
 
 [requires]
-style = ">=0.4.0, <0.5.0"
+style = ">=0.5.0, <0.6.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "avatar.rs"
 target = "src/ui/avatar.rs"
-sha256 = "cc49d49802f0314150622f819512e0f68acf85db0a4facd0f580ec9689cd7d1e"
+sha256 = "0c4e10215f2c932f2b5006b62c30b45d3e96051a7bd7912108ee0e5a1ac0fb52"
 
 # Copied only once the gallery block is installed.
 [[files]]

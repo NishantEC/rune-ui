@@ -1,0 +1,42 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "font_dm_sans"
+title = "DM Sans"
+version = "0.5.0"
+type = "font"
+group = "fonts"
+description = "A low-contrast geometric sans, soft and even at small sizes. Variable weight 100 to 1000 and optical size 9 to 40 (Rune sets it to the point size)."
+
+[requires]
+style = ">=0.5.0, <0.6.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+# Rune replaces its built-in Inter with an app's own fonts, so every font brings Inter along.
+registry = ["font_inter"]
+cargo = ["rune-ui-style"]
+
+[font]
+token = "dm-sans"
+family = "DM Sans"
+licence = "OFL-1.1"
+font_version = "Version 4.004"
+source = "https://github.com/google/fonts/tree/83c62e30d87daa70216dab6b984d00d20d96d585/ofl/dmsans/DMSans%5Bopsz,wght%5D.ttf"
+upstream = "https://github.com/googlefonts/dm-fonts"
+bytes = 240164
+size_adjust = 1.04
+
+[[files]]
+path = "font_dm_sans.rs"
+target = "src/ui/font_dm_sans/mod.rs"
+sha256 = "ebc4ba089daa0f795a972bd1dd47e6ddabae369700d1f875f11fa4fb982d8b1f"
+
+[[files]]
+path = "DMSans-Variable.ttf"
+target = "src/ui/font_dm_sans/DMSans-Variable.ttf"
+sha256 = "8cd08d97e89c24d0aa92edd2f0f4c8ee6195eee9b7c9f154865a58b02f0c1c0d"
+
+[[files]]
+path = "OFL.txt"
+target = "src/ui/font_dm_sans/OFL.txt"
+sha256 = "9af36190332437f5ecd09974de43c1f7c77a310a996cdd8ceb25628b458840e1"

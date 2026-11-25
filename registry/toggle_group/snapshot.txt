@@ -41,10 +41,10 @@ editor-corners radiogroup 1000 198 260 32
 editor-corners-0 button 1000 198 95 32
 editor-corners-1 button 1099 198 63 32
 editor-font radiogroup 1000 274 260 32
-editor-font-0 button 1000 274 52 32
-editor-font-1 button 1056 274 70 32
-editor-font-2 button 1130 274 53 32
-editor-font-3 button 1187 274 59 32
+editor-font-inter button 1000 274 52 32
+editor-font-system button 1056 274 69 32
+editor-font-serif button 1129 274 51 32
+editor-font-mono button 1184 274 56 32
 editor-type slider 1000 350 208 20
 editor-density radiogroup 1000 414 260 32
 editor-density-0 button 1000 414 101 32

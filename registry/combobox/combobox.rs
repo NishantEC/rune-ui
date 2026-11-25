@@ -1,4 +1,4 @@
-//! rune-ui registry: combobox 0.4.0. Copied into your app by `rune-ui add combobox`; yours to change. Needs: popup.
+//! rune-ui registry: combobox 0.5.0. Copied into your app by `rune-ui add combobox`; yours to change. Needs: popup.
 //!
 //! One choice of many, with a search (shadcn's combobox: a popover holding a command list). The trigger is one **well**, like a select's.
 //! Open, it shows rune-ui's popup under the trigger, at least its width: a search line over the matching rows, "No results" when

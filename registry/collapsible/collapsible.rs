@@ -1,4 +1,4 @@
-//! rune-ui registry: collapsible 0.4.0. Copied into your app by `rune-ui add collapsible`; yours to change.
+//! rune-ui registry: collapsible 0.5.0. Copied into your app by `rune-ui add collapsible`; yours to change.
 //!
 //! One section that folds behind its trigger: a row with a chevron that turns, saying `expanded` to assistive technology, and the
 //! content under it while open. The fold lands at once.

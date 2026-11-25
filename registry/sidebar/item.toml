@@ -2,13 +2,13 @@
 schema = 1
 name = "sidebar"
 title = "Sidebar"
-version = "0.4.0"
+version = "0.5.0"
 type = "component"
 group = "structure"
 description = "An app's side column: header, labelled groups of rows with icons and counts, footer."
 
 [requires]
-style = ">=0.4.0, <0.5.0"
+style = ">=0.5.0, <0.6.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "sidebar.rs"
 target = "src/ui/sidebar.rs"
-sha256 = "3d3070d554bb92a3f71d874723a2386ad5936c67403f4b0a314e1bfd21b75882"
+sha256 = "93fe7a682009da309cb1a27e214f9b500ee7f2ff57c67a25e40f2ed0abf0c8b4"
 
 # Copied only once the gallery block is installed.
 [[files]]

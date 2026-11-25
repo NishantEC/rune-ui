@@ -2,13 +2,13 @@
 schema = 1
 name = "toggle_group"
 title = "ToggleGroup"
-version = "0.4.0"
+version = "0.5.0"
 type = "component"
 group = "actions"
 description = "One or several of a few toggles: a well track holding raised choices."
 
 [requires]
-style = ">=0.4.0, <0.5.0"
+style = ">=0.5.0, <0.6.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "toggle_group.rs"
 target = "src/ui/toggle_group.rs"
-sha256 = "88a586fc061da48aaa750af0f882dde1daf22cc96e63a166ba8f7dab31a38a8a"
+sha256 = "2bc9b00d31dc6d94615267c2276c0712308f6979a3c0612edbb4cf4b14d4eb21"
 
 # Copied only once the gallery block is installed.
 [[files]]

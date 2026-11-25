@@ -1,4 +1,4 @@
-//! rune-ui registry: button_group 0.4.0. Copied into your app by `rune-ui add button_group`; yours to change. Needs: button's recipes.
+//! rune-ui registry: button_group 0.5.0. Copied into your app by `rune-ui add button_group`; yours to change. Needs: button's recipes.
 //!
 //! Related actions joined into one object: a single raised (or outline) surface divided by hairlines, each segment washing on hover and
 //! answering a press. One object, not a row of separate buttons, so the group reads as one choice of action.

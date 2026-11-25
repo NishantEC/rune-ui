@@ -1,4 +1,4 @@
-//! rune-ui registry: toggle 0.4.0. Copied into your app by `rune-ui add toggle`; yours to change.
+//! rune-ui registry: toggle 0.5.0. Copied into your app by `rune-ui add toggle`; yours to change.
 //!
 //! A two-state button (bold on or off). Quiet until hovered; on, it takes the selected wash and the first ink. It says `pressed` to
 //! assistive technology through `checked`. Icon-only toggles take their label as name and tooltip.

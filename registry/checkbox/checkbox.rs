@@ -1,4 +1,4 @@
-//! rune-ui registry: checkbox 0.4.0. Copied into your app by `rune-ui add checkbox`; yours to change.
+//! rune-ui registry: checkbox 0.5.0. Copied into your app by `rune-ui add checkbox`; yours to change.
 //!
 //! On, off or mixed. Off is a small **well**; on or mixed it fills with **ink** and shows a check or a dash in the ink's words colour.
 //! With words, the whole line is the control (it washes like a row and its hit area is the line); alone, it tops up to the hit size.

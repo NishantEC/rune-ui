@@ -2,13 +2,13 @@
 schema = 1
 name = "label"
 title = "Label"
-version = "0.4.0"
+version = "0.5.0"
 type = "component"
 group = "form"
 description = "A control's visible name, with an optional required mark."
 
 [requires]
-style = ">=0.4.0, <0.5.0"
+style = ">=0.5.0, <0.6.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "label.rs"
 target = "src/ui/label.rs"
-sha256 = "fda9f04d2eb76a3d9795376682534df9bd5c6cd0864842e78f8620f6ef1d67ae"
+sha256 = "20e339fcb6774448767d4f9b9632b580f5911a835ac8a861ea326ca7392aa0ce"
 
 # Copied only once the gallery block is installed.
 [[files]]

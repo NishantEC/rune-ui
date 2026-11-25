@@ -14,6 +14,8 @@
 use std::collections::BTreeMap;
 
 use rune::Color;
+
+pub use crate::fonts::Font;
 use serde_json::{Map, Value};
 
 
@@ -29,7 +31,9 @@ pub const NUMBER_KEYS: [&str; 4] = ["elevation", "well-blur", "grain", "texture"
 /// The numeric base knobs.
 pub const BASE_KEYS: [&str; 4] = ["spacing", "radius", "density", "type-scale"];
 /// The base knobs that are words, and the words each allows.
-pub const BASE_WORDS: [(&str, &[&str]); 2] = [("corners", &["continuous", "round"]), ("font", &["inter", "system", "serif", "mono"])];
+pub const BASE_WORDS: [(&str, &[&str]); 1] = [("corners", &["continuous", "round"])];
+/// The base knobs that name something registered at run time: `font` (a built-in or an installed font item, [`crate::fonts`]).
+pub const BASE_NAMES: [&str; 1] = ["font"];
 
 /// A surface and the text that reads on it.
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -105,20 +109,6 @@ impl Corners {
             Corners::Round => 1.0,
         }
     }
-}
-
-/// The type family.
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
-pub enum Font {
-    /// The built-in Inter.
-    #[default]
-    Inter,
-    /// The platform's UI font (SF on macOS), Inter where it is missing.
-    System,
-    /// A serif (New York, then Georgia), Inter where neither is installed.
-    Serif,
-    /// The platform's monospaced font.
-    Mono,
 }
 
 /// The base knobs.
@@ -267,9 +257,9 @@ impl Problems {
 
     /// The base knobs: numbers, and words from a fixed list.
     fn base(&mut self, v: &Value) -> Base {
-        let mut b = Base { spacing: 4.0, radius: 8.0, density: 1.0, type_scale: 1.0, corners: Corners::Continuous, font: Font::Inter };
+        let mut b = Base { spacing: 4.0, radius: 8.0, density: 1.0, type_scale: 1.0, corners: Corners::Continuous, font: Font::INTER };
         let Some(o) = self.object(v, "base") else { return b };
-        let all: Vec<&str> = BASE_KEYS.iter().copied().chain(BASE_WORDS.iter().map(|(k, _)| *k)).collect();
+        let all: Vec<&str> = BASE_KEYS.iter().copied().chain(BASE_WORDS.iter().map(|(k, _)| *k)).chain(BASE_NAMES).collect();
         self.keys(o, "base", &all, &[]);
         for k in BASE_KEYS {
             let at = join("base", k);
@@ -291,14 +281,20 @@ impl Problems {
                 match val.as_str().filter(|w| allowed.contains(w)) {
                     Some(w) => match w {
                         "continuous" => b.corners = Corners::Continuous,
-                        "round" => b.corners = Corners::Round,
-                        "inter" => b.font = Font::Inter,
-                        "system" => b.font = Font::System,
-                        "serif" => b.font = Font::Serif,
-                        _ => b.font = Font::Mono,
+                        _ => b.corners = Corners::Round,
                     },
                     None => self.push(&at, &format!("must be one of {}", allowed.join(", "))),
                 }
+            }
+        }
+        let at = join("base", "font");
+        if let Some(val) = o.get("font").and_then(|x| self.leaf(x, &at)) {
+            match val.as_str() {
+                Some(name) => match crate::fonts::find(name) {
+                    Some(f) => b.font = f,
+                    None => self.push(&at, &format!("no font called \"{name}\"; this app has {} (a font item adds one: `rune-ui add font_<name>`, then `rune_ui_style::fonts::install(ui::FONTS)` at start-up)", crate::fonts::names().join(", "))),
+                },
+                None => self.push(&at, "must be a font's name, like \"inter\""),
             }
         }
         b

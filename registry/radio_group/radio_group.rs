@@ -1,4 +1,4 @@
-//! rune-ui registry: radio_group 0.4.1. Copied into your app by `rune-ui add radio_group`; yours to change.
+//! rune-ui registry: radio_group 0.5.0. Copied into your app by `rune-ui add radio_group`; yours to change.
 //!
 //! One of a few, all shown. Each option is a ring (a small **well**) that fills with an **ink** dot when chosen, its words beside it,
 //! the whole line pressable. Lines sit far enough apart to keep a 40 point pitch.

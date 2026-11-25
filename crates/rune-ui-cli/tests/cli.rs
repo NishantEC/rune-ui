@@ -121,3 +121,17 @@ fn list_shows_every_item_and_what_the_app_has() {
     assert!(out.lines().any(|l| l.starts_with("base") && l.ends_with("ok")));
     assert!(out.lines().any(|l| l.starts_with("gallery") && l.contains("block")));
 }
+
+#[test]
+fn a_font_item_brings_inter_its_licence_and_a_fonts_list() {
+    let d = app("font");
+    ok(&d, &["init"]);
+    let m = std::fs::read_to_string(d.join("src/ui/mod.rs")).unwrap();
+    assert!(m.contains("pub const FONTS: &[rune_ui_style::Font] = &[];"), "an empty list before any font:\n{m}");
+    ok(&d, &["add", "font_geist"]);
+    for f in ["font_geist/mod.rs", "font_geist/Geist-Variable.ttf", "font_geist/OFL.txt", "font_inter/mod.rs", "font_inter/Inter-Regular.ttf", "font_inter/OFL.txt"] {
+        assert!(d.join("src/ui").join(f).exists(), "{f}");
+    }
+    let m = std::fs::read_to_string(d.join("src/ui/mod.rs")).unwrap();
+    assert!(m.contains("pub mod font_geist;") && m.contains("&[font_geist::FONT, font_inter::FONT]"), "{m}");
+}

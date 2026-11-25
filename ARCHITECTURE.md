@@ -87,6 +87,10 @@ registry/button/
   snapshot.txt   the layout snapshot (keys, roles, rects) the snapshot test compares
 ```
 
+A `font` item is a folder too: the font file (variable where the family has one), its `OFL.txt`, and `<item>.rs` holding one
+`rune_ui_style::Font` constant, all copied to `src/ui/<item>/`; `item.toml`'s `[font]` table records the source URL and version.
+`rune-ui add` lists installed fonts in `ui::FONTS`, which the app passes to `rune_ui_style::fonts::install` for `AppSpec::fonts`.
+
 Stories are copied too (to `src/ui/stories/<name>.rs`), but only once the `gallery` block is installed and everything a story shows is
 installed; `rune-ui add` keeps `src/ui/stories/mod.rs` listing them, so the gallery page shows exactly the components an app has. The
 gallery block (`registry/gallery/`) is the page; `apps/gallery` is a window around it, generated from the registry by its `build.rs`.

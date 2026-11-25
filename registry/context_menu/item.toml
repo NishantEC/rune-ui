@@ -2,13 +2,13 @@
 schema = 1
 name = "context_menu"
 title = "ContextMenu"
-version = "0.4.0"
+version = "0.5.0"
 type = "component"
 group = "overlays"
 description = "A menu at the pointer on a right-click: rune-kit's context menu in our look."
 
 [requires]
-style = ">=0.4.0, <0.5.0"
+style = ">=0.5.0, <0.6.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "context_menu.rs"
 target = "src/ui/context_menu.rs"
-sha256 = "8ebca4113d9df7207b3dfb724f8018233e26d1a39795e528a301356eb807e00d"
+sha256 = "d287b67c0377c1392035df75f72f677f0d777d61b62667eb6914d1ed4e47c69d"
 
 # Copied only once the gallery block is installed.
 [[files]]

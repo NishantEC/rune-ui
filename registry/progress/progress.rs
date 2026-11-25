@@ -1,4 +1,4 @@
-//! rune-ui registry: progress 0.4.1. Copied into your app by `rune-ui add progress`; yours to change.
+//! rune-ui registry: progress 0.5.0. Copied into your app by `rune-ui add progress`; yours to change.
 //!
 //! How far along: a thin **well** track and an **ink** fill (or a meaning's solid colour), an optional label and figure above it in
 //! tabular figures. It reports its value to assistive technology.

@@ -2,13 +2,13 @@
 schema = 1
 name = "alert"
 title = "Alert"
-version = "0.4.0"
+version = "0.5.0"
 type = "component"
 group = "display"
 description = "A message in a meaning's wash: icon, title, description, an action."
 
 [requires]
-style = ">=0.4.0, <0.5.0"
+style = ">=0.5.0, <0.6.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = ["button"]
 [[files]]
 path = "alert.rs"
 target = "src/ui/alert.rs"
-sha256 = "f714b1396e09cebcd0bfd4416a990381abd90b5bf8f433f198f013c1f119790a"
+sha256 = "72e54c48f34e4e6938c093ff60400e5f8f074f48092a3aece1f3a4cecb68cc96"
 
 # Copied only once the gallery block is installed.
 [[files]]

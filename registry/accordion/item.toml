@@ -2,13 +2,13 @@
 schema = 1
 name = "accordion"
 title = "Accordion"
-version = "0.4.0"
+version = "0.5.0"
 type = "component"
 group = "structure"
 description = "Sections that fold, one or several open."
 
 [requires]
-style = ">=0.4.0, <0.5.0"
+style = ">=0.5.0, <0.6.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "accordion.rs"
 target = "src/ui/accordion.rs"
-sha256 = "be11003c48d839fb37b47a622f9f4adb70fba5d35caf8c279bb95132805e6266"
+sha256 = "e7ac626a2da806279aa5c924607e77b9555766715e745d71d524ed93b323ced1"
 
 # Copied only once the gallery block is installed.
 [[files]]

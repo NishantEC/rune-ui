@@ -2,13 +2,13 @@
 schema = 1
 name = "field"
 title = "Field"
-version = "0.4.0"
+version = "0.5.0"
 type = "component"
 group = "form"
 description = "A label, a control, and its description or error, laid out together."
 
 [requires]
-style = ">=0.4.0, <0.5.0"
+style = ">=0.5.0, <0.6.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = ["input"]
 [[files]]
 path = "field.rs"
 target = "src/ui/field.rs"
-sha256 = "70705bd0ee75c52dd376051e103291aa3fd7c53779fd4537f013c7cedb73fa60"
+sha256 = "1af742643309441bcf17725e301d1598d658f265bc0c82d064d37263d4c9d0c6"
 
 # Copied only once the gallery block is installed.
 [[files]]

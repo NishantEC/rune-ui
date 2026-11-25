@@ -91,7 +91,8 @@ ui::base::overlay_root(page, layer) // the page fills its region and scrolls its
 ```
 
 The page has a **theme editor** on its right (about 300 points): light or dark, base neutral (theme, grey, stone, zinc, slate), accent
-(swatches or a hex), radius, corner style (continuous or round), font (Inter, system, serif, mono), type scale, density, shadow
+(swatches or a hex), radius, corner style (continuous or round), font (Inter, system, serif, mono and every installed font item, each
+shown in its own face), type scale, density, shadow
 strength, and material texture (flat to tactile), with Reset, Copy theme and Export. Every control writes a key of the theme file the
 page is read from (`gallery::edit_theme`), so what you see is the tokens at work, and Export writes a theme file valid against the schema.
 
@@ -107,8 +108,40 @@ Stories register themselves. Each item's `stories.rs` is copied to `src/ui/stori
 | Structure | Tabs, Accordion, Collapsible, Card, Separator, ScrollArea, Table, Sidebar, Breadcrumb |
 | Display | Badge, Avatar, Skeleton, Spinner, Progress, Kbd, Alert, Empty, Toast |
 | Blocks | Gallery |
+| Fonts | Inter, Geist, Manrope, DM Sans, Figtree, Plus Jakarta Sans, IBM Plex Sans, Geist Mono, JetBrains Mono |
 
 Wave 2 will add Calendar, DatePicker, Carousel, Chart, Menubar, NavigationMenu, Pagination, Resizable, HoverCard, InputOTP, DataTable, Drawer and Form.
+
+## Fonts
+
+A theme's `base.font` is a name: `inter`, `system` (SF), `serif` (New York, then Georgia) and `mono` (SF Mono) are built in, and a `font`
+registry item adds one. Each item copies the font file, its SIL Open Font License and a `Font` constant into `src/ui/<item>/`, and
+`rune-ui add` lists it in `ui::FONTS`. Hand them to Rune when the app starts:
+
+```rust
+let spec = AppSpec { fonts: rune_ui_style::fonts::install(ui::FONTS), ..AppSpec::new("My app", (1200.0, 800.0), init, view) };
+```
+
+Rune registers fonts only from bytes given at start-up (`AppSpec::fonts`), and a non-empty list replaces its built-in Inter, so every font
+item brings `font_inter` (the same Inter 4.1 files Rune embeds). A theme naming a font the app has not installed fails to load and lists the
+names it could use. Variable fonts work: Rune sets `wght` to the weight asked for and `opsz` to the point size.
+
+| Item | Name | Licence | Size | Size adjust |
+| --- | --- | --- | --- | --- |
+| `font_inter` | `inter` | OFL 1.1 | 1.2 MB (400, 500, 600) | 1.00 |
+| `font_geist` | `geist` | OFL 1.1 | 165 KB, variable | 1.03 |
+| `font_manrope` | `manrope` | OFL 1.1 | 161 KB, variable | 1.00 |
+| `font_dm_sans` | `dm-sans` | OFL 1.1 | 235 KB, variable | 1.04 |
+| `font_figtree` | `figtree` | OFL 1.1 | 61 KB, variable | 1.08 |
+| `font_plus_jakarta_sans` | `plus-jakarta-sans` | OFL 1.1 | 172 KB, variable | 1.02 |
+| `font_ibm_plex_sans` | `ibm-plex-sans` | OFL 1.1 | 525 KB, variable | 1.05 |
+| `font_geist_mono` | `geist-mono` | OFL 1.1 | 168 KB, variable | 1.03 |
+| `font_jetbrains_mono` | `jetbrains-mono` | OFL 1.1 | 183 KB, variable | 1.00 |
+
+Each item's `item.toml` records the source URL and font version. Size adjust matches each face's x-height to Inter's, which the type ramp
+was tuned in (sizes land on half points). Font smoothing is Rune's window setting (`App::font_smoothing`, `On` on macOS by default; `Off`
+draws like `-webkit-font-smoothing: antialiased`), not a theme token. The gallery's Typography tab sets headings, reading text, small
+sizes, proportional and tabular figures, the three weights, a button and an input in the theme's font, then one line in every font.
 
 ## Density
 

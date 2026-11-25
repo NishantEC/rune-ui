@@ -57,12 +57,9 @@
               "const": "string"
             },
             "$value": {
-              "enum": [
-                "inter",
-                "system",
-                "serif",
-                "mono"
-              ]
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*$",
+              "description": "A font's name: inter, system, serif or mono, or one an app installs from a font item (geist, ibm-plex-sans, ...). A name the app has not installed is an error when the theme loads."
             },
             "$description": {
               "type": "string"

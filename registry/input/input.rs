@@ -1,4 +1,4 @@
-//! rune-ui registry: input 0.4.1. Copied into your app by `rune-ui add input`; yours to change.
+//! rune-ui registry: input 0.5.0. Copied into your app by `rune-ui add input`; yours to change.
 //!
 //! One line of text on the **well** material: a tint pressed into the page with a soft shadow inside its top edge, no outline at rest.
 //! Focus rings the well (the editor inside has focus, so it is the well's `focus_within` ring); invalid rings it in the danger colour.

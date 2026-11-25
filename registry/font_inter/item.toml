@@ -1,0 +1,52 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "font_inter"
+title = "Inter"
+version = "0.5.0"
+type = "font"
+group = "fonts"
+description = "The neo-grotesque the type ramp is tuned in; static 400, 500 and 600 (the same files Rune embeds). Every other font item needs it: Rune drops its own Inter once an app registers fonts."
+
+[requires]
+style = ">=0.5.0, <0.6.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+# Rune replaces its built-in Inter with an app's own fonts, so every font brings Inter along.
+registry = []
+cargo = ["rune-ui-style"]
+
+[font]
+token = "inter"
+family = "Inter"
+licence = "OFL-1.1"
+font_version = "4.1 (Version 4.001)"
+source = "https://github.com/rsms/inter/releases/download/v4.1/Inter-4.1.zip (extras/ttf/)"
+upstream = "https://github.com/rsms/inter"
+bytes = 1248684
+size_adjust = 1.0
+
+[[files]]
+path = "font_inter.rs"
+target = "src/ui/font_inter/mod.rs"
+sha256 = "f6a49881166f06b6dacad5cf5888b81d9fd790f34a448fef650e11fa1a3f2598"
+
+[[files]]
+path = "Inter-Regular.ttf"
+target = "src/ui/font_inter/Inter-Regular.ttf"
+sha256 = "40d692fce188e4471e2b3cba937be967878f631ad3ebbbdcd587687c7ebe0c82"
+
+[[files]]
+path = "Inter-Medium.ttf"
+target = "src/ui/font_inter/Inter-Medium.ttf"
+sha256 = "97ad806f526e41546d46365bb3a393145f75b7b1568913db74549ad8b8dba872"
+
+[[files]]
+path = "Inter-SemiBold.ttf"
+target = "src/ui/font_inter/Inter-SemiBold.ttf"
+sha256 = "78a843fade9d4612a5567302fb595b56976eb5fcebf4fea5a5912d638bafcde3"
+
+[[files]]
+path = "OFL.txt"
+target = "src/ui/font_inter/OFL.txt"
+sha256 = "262481e844521b326f5ecd053e59b98c8b2da78c8ee1bdbb6e8174305e54935a"

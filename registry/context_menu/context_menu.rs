@@ -1,4 +1,4 @@
-//! rune-ui registry: context_menu 0.4.0. Copied into your app by `rune-ui add context_menu`; yours to change. Needs: popup.
+//! rune-ui registry: context_menu 0.5.0. Copied into your app by `rune-ui add context_menu`; yours to change. Needs: popup.
 //!
 //! A menu where the pointer pressed with the secondary button: rune-ui's popup with role `menu`, opening at that point, flipping to stay
 //! in the window, closing on Escape, Tab, a press outside or a choice, focus going back to the area. Store the point from

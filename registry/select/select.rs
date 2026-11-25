@@ -1,4 +1,4 @@
-//! rune-ui registry: select 0.4.0. Copied into your app by `rune-ui add select`; yours to change. Needs: popup.
+//! rune-ui registry: select 0.5.0. Copied into your app by `rune-ui add select`; yours to change. Needs: popup.
 //!
 //! One choice of a few. The trigger is a **well** (it holds a value) with the choice and a chevron that turns while open; the list is
 //! rune-ui's popup (the **floating** material) under the trigger, sharing its left edge and at least its width, flipping above near the

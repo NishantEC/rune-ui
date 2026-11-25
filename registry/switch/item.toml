@@ -2,13 +2,13 @@
 schema = 1
 name = "switch"
 title = "Switch"
-version = "0.4.1"
+version = "0.5.0"
 type = "component"
 group = "form"
 description = "A well track that fills with ink when on, holding a floating thumb."
 
 [requires]
-style = ">=0.4.0, <0.5.0"
+style = ">=0.5.0, <0.6.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "switch.rs"
 target = "src/ui/switch.rs"
-sha256 = "c4f8a95544c6b3f8eb27b2c57e03ef1f29684f8198a1764e5d6412ae186f5f8c"
+sha256 = "ec8172f0860274040da559330deae6c1880ceca115dde1b0593af2342bceb518"
 
 # Copied only once the gallery block is installed.
 [[files]]

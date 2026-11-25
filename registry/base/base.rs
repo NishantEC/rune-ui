@@ -1,4 +1,4 @@
-//! rune-ui registry: base 0.4.1. What every component shares: the press type, size metrics, the 40 point hit area, a glyph, the
+//! rune-ui registry: base 0.5.0. What every component shares: the press type, size metrics, the 40 point hit area, a glyph, the
 //! spinner, the words beside a control, and `paint` re-exported from the style layer. `rune-ui init` copies it; yours to change.
 
 use std::rc::Rc;

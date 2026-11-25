@@ -1,4 +1,4 @@
-//! rune-ui registry: toggle_group 0.4.0. Copied into your app by `rune-ui add toggle_group`; yours to change.
+//! rune-ui registry: toggle_group 0.5.0. Copied into your app by `rune-ui add toggle_group`; yours to change.
 //!
 //! Two to five toggles side by side: one choice ([`ToggleGroup::single`], a radio group to assistive technology) or several
 //! ([`ToggleGroup::multiple`]). A **well** track holds the items; chosen ones are **raised**, so the two materials explain the control.

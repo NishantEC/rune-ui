@@ -1,4 +1,4 @@
-//! rune-ui registry: icons 0.4.0. A small set of 16 point glyphs on one 1.5 stroke, drawn in `currentColor` so a control recolours
+//! rune-ui registry: icons 0.5.0. A small set of 16 point glyphs on one 1.5 stroke, drawn in `currentColor` so a control recolours
 //! them per state. Replace or extend with your app's own set. `rune-ui init` copies it.
 
 use rune::Icon;

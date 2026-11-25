@@ -1,4 +1,4 @@
-//! rune-ui registry: tabs 0.4.1. Copied into your app by `rune-ui add tabs`; yours to change.
+//! rune-ui registry: tabs 0.5.0. Copied into your app by `rune-ui add tabs`; yours to change.
 //!
 //! Views of one place. **Line**: words over a hairline, the chosen tab in the first ink with a 2 point ink line under it. **Contained**:
 //! a well track holding the chosen tab raised (like a toggle group). A tab may lead with an icon and end with a count. Left and Right

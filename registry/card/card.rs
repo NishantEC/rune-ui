@@ -1,4 +1,4 @@
-//! rune-ui registry: card 0.4.0. Copied into your app by `rune-ui add card`; yours to change. Needs: separator.
+//! rune-ui registry: card 0.5.0. Copied into your app by `rune-ui add card`; yours to change. Needs: separator.
 //!
 //! One surface divided into rows, not a stack of cards. A **slab** card is the group's fill a step off the page, no edge and no shadow,
 //! its rows split by hairlines inset from its sides. A **raised** card (a result, a question) is the floating colour with a small lift

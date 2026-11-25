@@ -1,4 +1,4 @@
-//! rune-ui registry: accordion 0.4.0. Copied into your app by `rune-ui add accordion`; yours to change.
+//! rune-ui registry: accordion 0.5.0. Copied into your app by `rune-ui add accordion`; yours to change.
 //!
 //! Sections that fold, in one slab split by hairlines: each trigger a row with its title and a chevron that turns, saying `expanded`;
 //! the content under it while open. The app decides which are open (one at a time, or several).

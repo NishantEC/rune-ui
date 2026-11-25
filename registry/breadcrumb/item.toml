@@ -2,13 +2,13 @@
 schema = 1
 name = "breadcrumb"
 title = "Breadcrumb"
-version = "0.4.0"
+version = "0.5.0"
 type = "component"
 group = "structure"
 description = "Where you are: links to the places above, the current page last."
 
 [requires]
-style = ">=0.4.0, <0.5.0"
+style = ">=0.5.0, <0.6.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "breadcrumb.rs"
 target = "src/ui/breadcrumb.rs"
-sha256 = "ab43562e655f8cabac7936cf44c46810b54841ffc2333cb64cb66d610fefb3ab"
+sha256 = "40a6389655bee5c8fa10785bb3637f81a83feddebe9fa4c64711844d36a5717d"
 
 # Copied only once the gallery block is installed.
 [[files]]

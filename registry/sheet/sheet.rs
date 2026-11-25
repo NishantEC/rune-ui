@@ -1,4 +1,4 @@
-//! rune-ui registry: sheet 0.4.0. Copied into your app by `rune-ui add sheet`; yours to change.
+//! rune-ui registry: sheet 0.5.0. Copied into your app by `rune-ui add sheet`; yours to change.
 //!
 //! A panel against one edge of the window over a scrim (settings, details, a form that needs room). The **floating** material, rounded
 //! only on its free edges, a title and a close button, then its body. Behaviour is Rune's `El::modal` (focus trapped, Escape and a press

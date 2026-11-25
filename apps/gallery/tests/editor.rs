@@ -73,3 +73,23 @@ fn continuous_corners_draw_the_whole_ladder_larger_and_keep_it_concentric() {
     assert!(rune_ui_style::Radius::inner(cont.radius.lg, 4.0) < cont.radius.lg);
     assert!(rune_ui_style::Radius::fit(cont.radius.lg, cont.control.sm) <= cont.control.sm * rune_ui_style::MAX_CORNER_SHARE);
 }
+
+#[test]
+fn the_font_control_lists_installed_fonts_and_writes_their_name() {
+    rune_ui_style::fonts::install(gallery::ui::FONTS);
+    let names = rune_ui_style::fonts::names();
+    for n in ["inter", "system", "serif", "mono", "geist", "manrope", "dm-sans", "figtree", "plus-jakarta-sans", "ibm-plex-sans", "geist-mono", "jetbrains-mono"] {
+        assert!(names.contains(&n), "{n} in {names:?}");
+    }
+    let geist = with(|e| e.font = "geist");
+    assert_eq!(geist.font.name, "geist");
+    assert_eq!(geist.ty.base.family, rune::Family::Named("Geist"));
+    let figtree = with(|e| e.font = "figtree");
+    assert!(figtree.ty.md.size > with(|_| {}).ty.md.size, "a small x-height is sized up");
+    let mut g = GalleryState::default();
+    g.editor.font = "ibm-plex-sans";
+    assert_eq!(ThemeFile::parse(&edit_theme(JSON, &g).to_string()).unwrap().base.font.name, "ibm-plex-sans");
+    // Every font a font item ships registers with Rune at start-up, Inter among them (Rune drops its own once an app brings fonts).
+    let files = rune_ui_style::fonts::install(gallery::ui::FONTS);
+    assert!(files.len() >= 11 && rune_ui_style::fonts::find("inter").is_some_and(|f| f.files.len() == 3));
+}

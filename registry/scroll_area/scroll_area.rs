@@ -1,4 +1,4 @@
-//! rune-ui registry: scroll_area 0.4.0. Copied into your app by `rune-ui add scroll_area`; yours to change.
+//! rune-ui registry: scroll_area 0.5.0. Copied into your app by `rune-ui add scroll_area`; yours to change.
 //!
 //! A region that scrolls inside a fixed height, clipped to its corners, its top and bottom edges fading so a cut-off row reads as one
 //! that scrolls. Scrolling (wheel, trackpad momentum, keys, scroll bars as the system shows them) is Rune's.

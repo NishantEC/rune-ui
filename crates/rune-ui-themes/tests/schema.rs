@@ -2,7 +2,7 @@
 //! dark modes have the same keys, and the JSON Schema names exactly the keys the parser accepts.
 
 use rune_ui_style::ThemeFile;
-use rune_ui_style::tokens::{BASE_KEYS, BASE_WORDS, COMPONENT_KEYS, HUE_STEPS, LINE_ROLES, NEUTRAL_STEPS, NUMBER_KEYS, RAMPS, STATE_KEYS, SURFACE_ROLES, TONE_ROLES};
+use rune_ui_style::tokens::{BASE_KEYS, BASE_NAMES, BASE_WORDS, COMPONENT_KEYS, HUE_STEPS, LINE_ROLES, NEUTRAL_STEPS, NUMBER_KEYS, RAMPS, STATE_KEYS, SURFACE_ROLES, TONE_ROLES};
 use rune_ui_themes::{ALL, DEFAULT, SCHEMA};
 use serde_json::Value;
 
@@ -29,6 +29,26 @@ fn an_unknown_key_is_an_error_with_its_path() {
     let errs = ThemeFile::parse(&json).unwrap_err();
     assert!(errs.iter().any(|e| e == "modes.light.role.pgae: unknown key"), "{errs:?}");
     assert!(errs.iter().any(|e| e == "base.gutter: unknown key"), "{errs:?}");
+}
+
+#[test]
+fn a_font_is_a_name_resolved_through_the_installed_fonts() {
+    for name in ["inter", "system", "serif", "mono"] {
+        let f = ThemeFile::parse(&edit(|v| v["base"]["font"]["$value"] = Value::from(name))).unwrap_or_else(|e| panic!("{name}: {e:?}"));
+        assert_eq!(f.base.font.name, name);
+    }
+    let errs = ThemeFile::parse(&edit(|v| v["base"]["font"]["$value"] = Value::from("comic-sans"))).unwrap_err();
+    assert_eq!(errs.len(), 1, "{errs:?}");
+    assert!(errs[0].starts_with("base.font: no font called \"comic-sans\"; this app has inter, system, serif, mono"), "{errs:?}");
+    assert!(errs[0].contains("rune-ui add font_"), "says how to add one: {errs:?}");
+    // Installing a font item makes its name valid.
+    const FACE: rune_ui_style::Font = rune_ui_style::Font::embedded("comic-sans", "Comic", "Comic", &[]).size_adjust(1.1);
+    rune_ui_style::fonts::install(&[FACE]);
+    let f = ThemeFile::parse(&edit(|v| v["base"]["font"]["$value"] = Value::from("comic-sans"))).unwrap();
+    assert_eq!(f.base.font.size_adjust, 1.1);
+    let t = rune_ui_style::Theme::from_file(&f, false);
+    assert_eq!(t.ty.base.family, rune::Family::Named("Comic"));
+    assert_eq!((rune_ui_style::Theme::from_json(DEFAULT, false).unwrap().ty.md.size, t.ty.md.size), (15.0, 16.5), "size-adjust scales the ramp, to half points");
 }
 
 #[test]
@@ -84,7 +104,7 @@ fn sorted(keys: &[&str]) -> Vec<String> {
 fn the_schema_names_exactly_what_the_parser_accepts() {
     let s: Value = serde_json::from_str(SCHEMA).unwrap();
     assert_eq!(s["additionalProperties"], Value::Bool(false));
-    let base: Vec<&str> = BASE_KEYS.iter().copied().chain(BASE_WORDS.iter().map(|(k, _)| *k)).collect();
+    let base: Vec<&str> = BASE_KEYS.iter().copied().chain(BASE_WORDS.iter().map(|(k, _)| *k)).chain(BASE_NAMES).collect();
     assert_eq!(props(&s, &["properties", "base"]), sorted(&base));
     assert_eq!(props(&s, &["properties", "color"]), sorted(&RAMPS));
     assert_eq!(props(&s, &["properties", "color", "properties", "neutral"]), sorted(&NEUTRAL_STEPS));

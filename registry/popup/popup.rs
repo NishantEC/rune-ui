@@ -1,4 +1,4 @@
-//! rune-ui registry: popup 0.4.0. The floating list that Select, DropdownMenu and ContextMenu open (and Combobox's rows): drawn by
+//! rune-ui registry: popup 0.5.0. The floating list that Select, DropdownMenu and ContextMenu open (and Combobox's rows): drawn by
 //! rune-ui on Rune's core behaviour, not rune-kit's list. `rune-ui add` brings it with them.
 //!
 //! * **Placement**: anchored under its trigger with a 4 point gap, sharing the trigger's left edge and at least its width; it flips

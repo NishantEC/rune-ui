@@ -1,4 +1,4 @@
-//! rune-ui registry: tooltip 0.4.0. Copied into your app by `rune-ui add tooltip`; yours to change.
+//! rune-ui registry: tooltip 0.5.0. Copied into your app by `rune-ui add tooltip`; yours to change.
 //!
 //! A short label in ink on hover or keyboard focus. Behaviour is Rune's own help tooltip (`El::help`: the delay, the skip-delay between
 //! neighbours, placement, the fade, accessibility); the look is ours, installed once per frame with `cx.help_look(tooltip::look(t))`.
