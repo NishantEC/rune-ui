@@ -2,7 +2,7 @@
 schema = 1
 name = "font_figtree"
 title = "Figtree"
-version = "0.5.0"
+version = "0.8.0"
 type = "font"
 group = "fonts"
 description = "A friendly geometric sans with round dots and a small x-height. Variable weight 300 to 900."
@@ -34,6 +34,7 @@ sha256 = "5c4fa501503595e16da203916e5c2eaec325e3688130181ec2dddce87ae52b9d"
 [[files]]
 path = "Figtree-Variable.ttf"
 target = "src/ui/font_figtree/Figtree-Variable.ttf"
+binary = true
 sha256 = "26ad3db9b31ff7dde67a91ff515d022d2f495cd506590699cf264f0bfe6fb714"
 
 [[files]]

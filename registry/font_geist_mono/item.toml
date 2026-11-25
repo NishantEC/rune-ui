@@ -2,7 +2,7 @@
 schema = 1
 name = "font_geist_mono"
 title = "Geist Mono"
-version = "0.5.0"
+version = "0.8.0"
 type = "font"
 group = "fonts"
 description = "Geist's monospaced companion, for code, keys and tables of figures. Variable weight 100 to 900."
@@ -34,6 +34,7 @@ sha256 = "79789470d57683e970562da9f532d580ab18e4f8473a85e35a84a4e61b597566"
 [[files]]
 path = "GeistMono-Variable.ttf"
 target = "src/ui/font_geist_mono/GeistMono-Variable.ttf"
+binary = true
 sha256 = "d00e590b8eb3a59acc329b2d044fd143ae935090b7da33199ebee27cc7de8196"
 
 [[files]]

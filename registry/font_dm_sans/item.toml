@@ -2,7 +2,7 @@
 schema = 1
 name = "font_dm_sans"
 title = "DM Sans"
-version = "0.5.0"
+version = "0.8.0"
 type = "font"
 group = "fonts"
 description = "A low-contrast geometric sans, soft and even at small sizes. Variable weight 100 to 1000 and optical size 9 to 40 (Rune sets it to the point size)."
@@ -34,6 +34,7 @@ sha256 = "ebc4ba089daa0f795a972bd1dd47e6ddabae369700d1f875f11fa4fb982d8b1f"
 [[files]]
 path = "DMSans-Variable.ttf"
 target = "src/ui/font_dm_sans/DMSans-Variable.ttf"
+binary = true
 sha256 = "8cd08d97e89c24d0aa92edd2f0f4c8ee6195eee9b7c9f154865a58b02f0c1c0d"
 
 [[files]]

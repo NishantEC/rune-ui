@@ -2,7 +2,7 @@
 schema = 1
 name = "font_plus_jakarta_sans"
 title = "Plus Jakarta Sans"
-version = "0.5.0"
+version = "0.8.0"
 type = "font"
 group = "fonts"
 description = "A wide, modern sans with tall capitals and a confident, product-site feel. Variable weight 200 to 800."
@@ -34,6 +34,7 @@ sha256 = "e5e574fd0c58d66e8bd59ae531cf67f3f1fab0c79814c5f65431100c675516e8"
 [[files]]
 path = "PlusJakartaSans-Variable.ttf"
 target = "src/ui/font_plus_jakarta_sans/PlusJakartaSans-Variable.ttf"
+binary = true
 sha256 = "89b3fb38aa0d275d7a731d0d817a4f1622b316b4d7fbdedcf02ee9099ff68bc8"
 
 [[files]]

@@ -78,7 +78,8 @@ const HELP: &str = "rune-ui: Tailwind + shadcn for Rune.
   rune-ui diff [<item>...] [--check]
       Shows how your copies differ from the registry. --check exits 1 if any copy drifted from rune-ui.lock.
   rune-ui update [<item>...] [--dry-run]
-      Brings items to the registry's version, merging the registry's changes into your edits (three-way).
+      Brings items to the registry's version, merging the registry's changes into your edits (three-way). Binary files
+      (fonts) are never merged: an unchanged copy is replaced byte for byte, a changed one is named and left alone.
   rune-ui registry hash [--registry <dir>]
       For registry maintainers: rewrites the sha256 of every file in item.toml.
 
@@ -422,8 +423,14 @@ fn diff(a: &Args, reg: &Registry, names: &[String]) -> Result<ExitCode, String> 
             if sha256(&local) != f.sha256 {
                 drifted += 1;
                 println!("{name}: {} differs from what rune-ui wrote", f.target);
+                let src = item.and_then(|i| i.files.iter().find(|x| x.target == f.target)).and_then(|x| item?.contents.get(&x.path));
                 if !a.check
-                    && let Some(src) = item.and_then(|i| i.files.iter().find(|x| x.target == f.target)).and_then(|x| item?.contents.get(&x.path))
+                    && let Some(src) = src
+                    && (std::str::from_utf8(src).is_err() || std::str::from_utf8(&local).is_err())
+                {
+                    println!("  (a binary file: {} bytes in the registry, {} in yours)", src.len(), local.len());
+                } else if !a.check
+                    && let Some(src) = src
                 {
                     print!("{}", merge::unified(&String::from_utf8_lossy(src), &String::from_utf8_lossy(&local), &format!("registry {}", f.target), &format!("yours {}", f.target), 2));
                 }
@@ -452,32 +459,74 @@ fn update(a: &Args, reg: &Registry, names: &[String]) -> Result<ExitCode, String
     let mut conflicts = 0;
     for name in chosen(&lock, names)?.into_iter().cloned().collect::<Vec<_>>() {
         let Ok(item) = reg.get(&name) else { continue };
+        let old = lock.items[&name].clone();
         let mut files = Vec::new();
-        for f in item.files.iter().filter(|f| lock.items[&name].files.iter().any(|lf| lf.target == f.target)) {
-            let theirs = String::from_utf8_lossy(&item.contents[&f.path]).into_owned();
+        let mut stuck = false;
+        for f in item.files.iter().filter(|f| old.files.iter().any(|lf| lf.target == f.target)) {
+            let theirs: &[u8] = &item.contents[&f.path];
             let path = a.app.join(&f.target);
-            let ours = std::fs::read_to_string(&path).unwrap_or_default();
+            let ours = std::fs::read(&path).ok();
             let base_path = a.app.join(BASE).join(&f.target);
-            let base = std::fs::read_to_string(&base_path).unwrap_or_else(|_| ours.clone());
-            let (merged, conflict) = merge::three_way(&base, &ours, &theirs);
+            let base = std::fs::read(&base_path).ok();
+            let locked = old.files.iter().find(|lf| lf.target == f.target).map(|lf| lf.sha256.clone());
+            // What the lock says when the copy is not the registry's: unchanged, so `diff --check` keeps failing until it is resolved.
+            let kept = LockedFile { target: f.target.clone(), sha256: locked.clone().unwrap_or_else(|| sha256(base.as_deref().unwrap_or(theirs))) };
+            let not_text = |b: &Option<Vec<u8>>| b.as_deref().is_some_and(|b| std::str::from_utf8(b).is_err());
+            if f.binary || std::str::from_utf8(theirs).is_err() || not_text(&ours) || not_text(&base) {
+                // Bytes are never merged: an untouched copy (the old registry bytes, or what the lock recorded) is replaced whole.
+                let untouched = match &ours {
+                    None => true,
+                    Some(o) => o == theirs || base.as_deref() == Some(o.as_slice()) || locked.as_deref() == Some(sha256(o).as_str()),
+                };
+                if !untouched {
+                    conflicts += 1;
+                    stuck = true;
+                    println!("{name}: {} is a binary file you changed; left as it is (put the registry's copy back, or keep yours with `rune-ui add {name} --force`)", f.target);
+                    files.push(kept);
+                    continue;
+                }
+                if ours.as_deref() != Some(theirs) {
+                    write(&path, theirs, a.dry_run, "replace")?;
+                }
+                if !a.dry_run {
+                    write_base(&base_path, theirs)?;
+                }
+                files.push(LockedFile { target: f.target.clone(), sha256: sha256(theirs) });
+                continue;
+            }
+            let theirs = std::str::from_utf8(theirs).unwrap_or_default();
+            let ours = ours.map(|b| String::from_utf8(b).unwrap_or_default());
+            let ours_text = ours.clone().unwrap_or_default();
+            let base = base.map(|b| String::from_utf8(b).unwrap_or_default()).unwrap_or_else(|| ours_text.clone());
+            let (merged, conflict) = merge::three_way(&base, &ours_text, theirs);
             if conflict {
                 conflicts += 1;
                 println!("{name}: {} has conflicts (marked <<<<<<< yours / >>>>>>> rune-ui)", f.target);
             }
-            if merged != ours {
+            if merged != ours_text || ours.is_none() {
                 write(&path, merged.as_bytes(), a.dry_run, "merge into")?;
             }
             if !a.dry_run {
-                std::fs::write(&base_path, &theirs).map_err(|e| e.to_string())?;
+                write_base(&base_path, theirs.as_bytes())?;
             }
-            files.push(LockedFile { target: f.target.clone(), sha256: sha256(merged.as_bytes()) });
+            // A clean merge records what was written (the registry's bytes, or them with your edits); conflict markers are never locked.
+            files.push(if conflict { kept } else { LockedFile { target: f.target.clone(), sha256: sha256(merged.as_bytes()) } });
         }
-        lock.items.insert(name.clone(), LockedItem { version: item.version.clone(), files });
+        // An item with a binary file left alone stays at its old version, so `list` and `diff` keep saying an update is waiting.
+        let version = if stuck { old.version.clone() } else { item.version.clone() };
+        lock.items.insert(name.clone(), LockedItem { version, files });
     }
     if !a.dry_run {
         std::fs::write(a.app.join(LOCK), lock.render()).map_err(|e| e.to_string())?;
     }
     Ok(if conflicts > 0 { ExitCode::from(1) } else { ExitCode::SUCCESS })
+}
+
+fn write_base(path: &Path, bytes: &[u8]) -> Result<(), String> {
+    if let Some(p) = path.parent() {
+        std::fs::create_dir_all(p).map_err(|e| format!("{}: {e}", p.display()))?;
+    }
+    std::fs::write(path, bytes).map_err(|e| format!("{}: {e}", path.display()))
 }
 
 // ---- registry hash ----

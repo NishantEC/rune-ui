@@ -2,7 +2,7 @@
 schema = 1
 name = "font_jetbrains_mono"
 title = "JetBrains Mono"
-version = "0.5.0"
+version = "0.8.0"
 type = "font"
 group = "fonts"
 description = "A monospace with a tall x-height and clear shapes, drawn for reading code. Variable weight 100 to 800."
@@ -34,6 +34,7 @@ sha256 = "a1f0563638426bb36230a687def3bd5cb131e541ec071634b37ed91e4c75ec94"
 [[files]]
 path = "JetBrainsMono-Variable.ttf"
 target = "src/ui/font_jetbrains_mono/JetBrainsMono-Variable.ttf"
+binary = true
 sha256 = "48715a42ec242c21e9f02692891e147d022299a52e48d5e413e1a942193ffeda"
 
 [[files]]

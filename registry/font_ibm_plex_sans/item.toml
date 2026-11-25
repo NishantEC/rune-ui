@@ -2,7 +2,7 @@
 schema = 1
 name = "font_ibm_plex_sans"
 title = "IBM Plex Sans"
-version = "0.5.0"
+version = "0.8.0"
 type = "font"
 group = "fonts"
 description = "A grotesque with engineered, slightly quirky details, at home in enterprise tools. Variable weight 100 to 700 and width 75 to 100 (drawn at 100). 'Plex' is a Reserved Font Name: ship the file unmodified."
@@ -34,6 +34,7 @@ sha256 = "0dfed8ce1a7a523e9f16d69a87baf256c23c4856caf57e5be14f0354cc902c3f"
 [[files]]
 path = "IBMPlexSans-Variable.ttf"
 target = "src/ui/font_ibm_plex_sans/IBMPlexSans-Variable.ttf"
+binary = true
 sha256 = "3b031aa4216174205bd8471f88a49b91f093169e9e87bd5262242bc5967fe2e3"
 
 [[files]]

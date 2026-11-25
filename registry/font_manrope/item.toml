@@ -2,7 +2,7 @@
 schema = 1
 name = "font_manrope"
 title = "Manrope"
-version = "0.5.0"
+version = "0.8.0"
 type = "font"
 group = "fonts"
 description = "A semi-condensed geometric sans with open, modern shapes. Variable weight 200 to 800."
@@ -34,6 +34,7 @@ sha256 = "144ca7995c1801416f0ef41d7e2c781f2b1ced1a6ba7899ddaa8d708cb607346"
 [[files]]
 path = "Manrope-Variable.ttf"
 target = "src/ui/font_manrope/Manrope-Variable.ttf"
+binary = true
 sha256 = "3ae11c49db0455a3cc33e37d380f20fdb8c7f8b41dc07625c177e3d87a9d6ae6"
 
 [[files]]

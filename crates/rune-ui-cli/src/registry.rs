@@ -13,6 +13,8 @@ pub struct ItemFile {
     pub sha256: String,
     /// A story file, copied only once the gallery block is installed.
     pub story: bool,
+    /// Bytes, not text (`binary = true`, or not valid UTF-8): `update` replaces it whole, never merges it.
+    pub binary: bool,
 }
 
 #[derive(Clone, Debug)]
@@ -53,7 +55,7 @@ pub fn parse_item(toml_src: &str, contents: BTreeMap<String, Vec<u8>>) -> Result
     let mut files = Vec::new();
     for f in t.get("files").and_then(|v| v.as_array()).ok_or("item.toml: [[files]] is missing")? {
         let g = |k: &str| f.get(k).and_then(|v| v.as_str()).map(str::to_owned).ok_or_else(|| format!("item.toml: a file lacks `{k}`"));
-        files.push(ItemFile { path: g("path")?, target: g("target")?, sha256: g("sha256")?, story: f.get("role").and_then(|v| v.as_str()) == Some("story") });
+        files.push(ItemFile { path: g("path")?, target: g("target")?, sha256: g("sha256")?, story: f.get("role").and_then(|v| v.as_str()) == Some("story"), binary: f.get("binary").and_then(|v| v.as_bool()) == Some(true) });
     }
     for f in &files {
         match contents.get(&f.path) {

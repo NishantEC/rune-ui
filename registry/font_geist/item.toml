@@ -2,7 +2,7 @@
 schema = 1
 name = "font_geist"
 title = "Geist"
-version = "0.5.0"
+version = "0.8.0"
 type = "font"
 group = "fonts"
 description = "A crisp, technical grotesque from Vercel, made for developer tools and dashboards. Variable weight 100 to 900."
@@ -34,6 +34,7 @@ sha256 = "0972ea6c7261d4a66079981a906aaa58b49b7cdcb2b292d4e334baeaf962592c"
 [[files]]
 path = "Geist-Variable.ttf"
 target = "src/ui/font_geist/Geist-Variable.ttf"
+binary = true
 sha256 = "73894e0448cae90a92b6c2f8732b7bb9acb7b94c418bff559dad4a18e1de9659"
 
 [[files]]

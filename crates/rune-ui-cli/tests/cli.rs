@@ -171,3 +171,99 @@ fn an_item_that_needs_a_cargo_feature_turns_it_on_once() {
     ok(&d, &["add", "response", "--force"]);
     assert_eq!(std::fs::read_to_string(d.join("Cargo.toml")).unwrap(), manifest, "adding again changes nothing");
 }
+
+/// A font: bytes that are not text (a zero, a lone continuation byte, a CR LF pair that a text merge would rewrite).
+fn font_bytes(version: u8) -> Vec<u8> {
+    let mut b = vec![0x00, 0x01, 0x00, 0x00, 0x80, 0xff, 0xfe, b'\r', b'\n', version];
+    b.extend((0..=255u8).cycle().take(4096).map(|x| x.wrapping_mul(version.wrapping_add(7))));
+    b
+}
+
+/// A registry folder holding one font item at `version`: a text file and a binary one.
+fn fixture_registry(name: &str, version: u8) -> PathBuf {
+    let d = std::env::temp_dir().join(format!("rune-ui-cli-reg-{name}-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&d);
+    let item = d.join("face");
+    std::fs::create_dir_all(&item).unwrap();
+    std::fs::write(item.join("face.rs"), format!("//! a font item\npub const VERSION: u8 = {version};\n")).unwrap();
+    std::fs::write(item.join("Face.ttf"), font_bytes(version)).unwrap();
+    std::fs::write(item.join("item.toml"), format!("schema = 1\nname = \"face\"\ntitle = \"Face\"\nversion = \"0.{version}.0\"\ntype = \"font\"\ngroup = \"fonts\"\n\n[requires]\nstyle = \">=0.8.0, <0.9.0\"\nrune = \"\"\n\n[dependencies]\nregistry = []\ncargo = []\n\n[[files]]\npath = \"face.rs\"\ntarget = \"src/ui/face/mod.rs\"\nsha256 = \"\"\n\n[[files]]\npath = \"Face.ttf\"\ntarget = \"src/ui/face/Face.ttf\"\nsha256 = \"\"\n")).unwrap();
+    let o = Command::new(BIN).args(["registry", "hash", "--registry"]).arg(&d).output().unwrap();
+    assert!(o.status.success(), "{}", String::from_utf8_lossy(&o.stderr));
+    d
+}
+
+/// An app with the fixture font installed from `v1`.
+fn font_app(name: &str, v1: &Path) -> PathBuf {
+    let d = app(name);
+    std::fs::write(d.join("rune-ui.lock"), "version = 1\nrune = \"\"\n").unwrap();
+    let o = Command::new(BIN).args(["add", "face", "--registry"]).arg(v1).arg("--app").arg(&d).output().unwrap();
+    assert!(o.status.success(), "{}{}", String::from_utf8_lossy(&o.stdout), String::from_utf8_lossy(&o.stderr));
+    d
+}
+
+fn with_registry(dir: &Path, reg: &Path, args: &[&str]) -> Output {
+    Command::new(BIN).args(args).arg("--registry").arg(reg).arg("--app").arg(dir).output().unwrap()
+}
+
+#[test]
+fn update_replaces_an_unchanged_binary_file_byte_for_byte() {
+    let (v1, v2) = (fixture_registry("bin-v1", 1), fixture_registry("bin-v2", 2));
+    let d = font_app("bin-same", &v1);
+    let font = d.join("src/ui/face/Face.ttf");
+    assert!(std::fs::read(&font).unwrap() == font_bytes(1));
+    let o = with_registry(&d, &v2, &["update"]);
+    assert!(o.status.success(), "{}{}", String::from_utf8_lossy(&o.stdout), String::from_utf8_lossy(&o.stderr));
+    assert!(std::fs::read(&font).unwrap() == font_bytes(2), "the new font, exactly: never merged as text");
+    assert!(std::fs::read(d.join(".rune-ui/base/src/ui/face/Face.ttf")).unwrap() == font_bytes(2), "the base is the registry's bytes");
+    let lock = std::fs::read_to_string(d.join("rune-ui.lock")).unwrap();
+    use sha2::Digest;
+    assert!(lock.contains(&format!("{:x}", sha2::Sha256::digest(font_bytes(2)))), "the lock records the registry's own bytes:\n{lock}");
+    assert!(with_registry(&d, &v2, &["diff", "--check"]).status.success());
+    assert!(std::fs::read_to_string(d.join("src/ui/face/mod.rs")).unwrap().contains("VERSION: u8 = 2"), "the text file still updates");
+}
+
+#[test]
+fn update_leaves_a_changed_binary_file_alone_and_names_it() {
+    let (v1, v2) = (fixture_registry("binc-v1", 1), fixture_registry("binc-v2", 2));
+    let d = font_app("bin-changed", &v1);
+    let font = d.join("src/ui/face/Face.ttf");
+    let mine = font_bytes(9);
+    std::fs::write(&font, &mine).unwrap();
+    let o = with_registry(&d, &v2, &["update"]);
+    assert_eq!(o.status.code(), Some(1), "a conflict: {}", String::from_utf8_lossy(&o.stdout));
+    assert!(String::from_utf8_lossy(&o.stdout).contains("src/ui/face/Face.ttf"), "named: {}", String::from_utf8_lossy(&o.stdout));
+    assert!(std::fs::read(&font).unwrap() == mine, "untouched");
+    assert_eq!(with_registry(&d, &v2, &["diff", "--check"]).status.code(), Some(1), "still drifted until the owner chooses");
+}
+
+#[test]
+fn diff_check_fails_on_a_binary_file_rewritten_as_text() {
+    let (v1, v2) = (fixture_registry("bint-v1", 1), fixture_registry("bint-v2", 2));
+    let d = font_app("bin-text", &v1);
+    let font = d.join("src/ui/face/Face.ttf");
+    // What a text merge does to a font: invalid bytes become U+FFFD, three bytes each.
+    let corrupted = String::from_utf8_lossy(&std::fs::read(&font).unwrap()).into_owned();
+    std::fs::write(&font, corrupted.as_bytes()).unwrap();
+    assert_eq!(with_registry(&d, &v1, &["diff", "--check"]).status.code(), Some(1), "a corrupted copy never passes");
+    let o = with_registry(&d, &v2, &["update"]);
+    assert_eq!(o.status.code(), Some(1), "{}", String::from_utf8_lossy(&o.stdout));
+    assert!(std::fs::read(&font).unwrap() == corrupted.as_bytes(), "update does not write over it either");
+    assert_eq!(with_registry(&d, &v2, &["diff", "--check"]).status.code(), Some(1), "and the lock does not take the corrupted bytes' hash");
+}
+
+#[test]
+fn a_text_conflict_is_never_recorded_as_clean() {
+    let d = app("conflict");
+    ok(&d, &["init"]);
+    ok(&d, &["add", "kbd"]);
+    let target = d.join("src/ui/kbd.rs");
+    let upstream = std::fs::read_to_string(&target).unwrap();
+    let first = upstream.lines().next().unwrap().to_owned();
+    // The base had another first line; upstream changed it, and so did the app: the same line, two ways.
+    std::fs::write(d.join(".rune-ui/base/src/ui/kbd.rs"), upstream.replacen(&first, "//! an older first line", 1)).unwrap();
+    std::fs::write(&target, upstream.replacen(&first, "//! my first line", 1)).unwrap();
+    assert_eq!(run(&d, &["update", "kbd"]).status.code(), Some(1));
+    assert!(std::fs::read_to_string(&target).unwrap().contains("<<<<<<< yours"));
+    assert_eq!(run(&d, &["diff", "--check"]).status.code(), Some(1), "a file with conflict markers stays drifted");
+}
