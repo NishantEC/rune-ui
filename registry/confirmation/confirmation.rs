@@ -1,4 +1,4 @@
-//! rune-ui registry: confirmation 0.6.0. Copied into your app by `rune-ui add confirmation`; yours to change.
+//! rune-ui registry: confirmation 0.8.0 Copied into your app by `rune-ui add confirmation`; yours to change.
 //!
 //! A tool call asking permission. While it waits it is the one thing that needs you: a slab with the warning mark and "Needs you", what
 //! the tool wants to do, the exact command or input in a monospaced face, and three answers: **Allow once** (the ink), **Always allow**

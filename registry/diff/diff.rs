@@ -1,4 +1,4 @@
-//! rune-ui registry: diff 0.6.0. Copied into your app by `rune-ui add diff`; yours to change.
+//! rune-ui registry: diff 0.8.0 Copied into your app by `rune-ui add diff`; yours to change.
 //!
 //! A unified diff, one file at a time, on the slab: a header line (a chevron, the path cut at its start so the file name stays, and
 //! `+n −n` in the success and danger inks) that folds the file open or shut, then its lines in a monospaced face: added lines on the

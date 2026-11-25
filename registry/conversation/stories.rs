@@ -1,7 +1,7 @@
 use rune::{El, col};
 
 use super::super::conversation::Conversation;
-use super::super::gallery::{Ctx, StoryItem, spec, specs};
+use super::super::gallery::{Ctx, StoryItem, spec, spec_wide, specs};
 use super::super::message::{Message, words};
 
 pub fn item<S: 'static>() -> StoryItem<S> {
@@ -25,7 +25,7 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> El {
     }).build(t);
     let empty = Conversation::<S>::new("conversation-empty", true).height(240.0).empty("Ask anything", "Answers, tool calls and files appear here.").build(t);
     specs(t, vec![
-        spec(t, "Messages: stays at the bottom as they arrive", col().w(520.0).items_start().gap(t.space.at(3.0)).child(col().w_full().fill(t.c.page.bg).child(live)).child(add)),
+        spec_wide(t, "Messages: stays at the bottom as they arrive", 520.0, col().w_full().items_start().gap(t.space.at(3.0)).child(col().w_full().fill(t.c.page.bg).child(live)).child(add)),
         spec(t, "Empty", col().w(360.0).child(empty)),
     ])
 }

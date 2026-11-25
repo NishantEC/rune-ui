@@ -1,4 +1,4 @@
-//! rune-ui registry: checkpoint 0.6.0. Copied into your app by `rune-ui add checkpoint`; yours to change.
+//! rune-ui registry: checkpoint 0.8.0 Copied into your app by `rune-ui add checkpoint`; yours to change.
 //!
 //! A divider in the conversation where the work was saved: a hairline, a flag with quiet words ("Checkpoint · 14:02"), a Restore button
 //! that puts the files back as they were there, and the hairline again.

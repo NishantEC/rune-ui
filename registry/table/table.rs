@@ -1,4 +1,4 @@
-//! rune-ui registry: table 0.5.0. Copied into your app by `rune-ui add table`; yours to change.
+//! rune-ui registry: table 0.8.0 Copied into your app by `rune-ui add table`; yours to change.
 //!
 //! Rows of data under a quiet header, split by hairlines, in a slab. Columns take a width or share what is left, and align left or
 //! right (figures right, in tabular figures). A header can show the sort and answer a press; rows wash on hover and may be selected.

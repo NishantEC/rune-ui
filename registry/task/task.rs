@@ -1,4 +1,4 @@
-//! rune-ui registry: task 0.6.0. Copied into your app by `rune-ui add task`; yours to change.
+//! rune-ui registry: task 0.8.0 Copied into your app by `rune-ui add task`; yours to change.
 //!
 //! A run card: the one thing on an agent screen that should stand out once work is finished. A slab with the run's title and a status
 //! pill (its meaning as a wash, a dot and words), then quiet facts in tabular figures (files changed with `+n −n`, checks passed and

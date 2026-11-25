@@ -1,4 +1,4 @@
-//! rune-ui registry: message 0.6.0. Copied into your app by `rune-ui add message`; yours to change.
+//! rune-ui registry: message 0.8.0 Copied into your app by `rune-ui add message`; yours to change.
 //!
 //! One turn of a conversation. A **user** message is a quiet bubble at the right: the muted fill, no shadow, no outline, at most four
 //! fifths of the column. An **assistant** message is the page itself: its words sit on the page in a reading column (720 points at

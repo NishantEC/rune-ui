@@ -1,4 +1,4 @@
-//! rune-ui registry: data_table 0.6.0. Copied into your app by `rune-ui add data_table`; yours to change.
+//! rune-ui registry: data_table 0.8.0 Copied into your app by `rune-ui add data_table`; yours to change.
 //! Needs: table, checkbox, pagination, popup, button.
 //!
 //! Table's look (a slab of rows split by hairlines under a quiet header, figures right in tabular figures) with what a data table

@@ -1,4 +1,4 @@
-//! rune-ui registry: chain_of_thought 0.6.0. Copied into your app by `rune-ui add chain_of_thought`; yours to change.
+//! rune-ui registry: chain_of_thought 0.8.0 Copied into your app by `rune-ui add chain_of_thought`; yours to change.
 //!
 //! The steps an agent took, behind one line: "Working…" with a shimmer and the time so far while it works, "Worked for 2m 14s" once it
 //! is done. Open, it lists each step with its mark, its words and an optional detail under them. Only the step in progress is in the

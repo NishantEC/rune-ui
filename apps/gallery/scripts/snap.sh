@@ -5,6 +5,7 @@
 #   apps/gallery/scripts/snap.sh [out-dir] [scene ...]     (default /tmp/rune-ui; every group, materials and the open overlays)
 #   RUNE_UI_ITEMS="button switch" apps/gallery/scripts/snap.sh   also pictures single items (item-<name>-light.png ...)
 #
+# Each picture is taken one second in (`--at 1`), so what measures itself first (a toolbar's overflow) has settled.
 # The canvas is 8000 points tall (Metal textures stop at 16384 pixels) and cropped to the page element, so each picture is as tall as its content. RUNE_UI_SCALE (2) sets the density.
 set -euo pipefail
 here="$(cd "$(dirname "$0")/.." && pwd)"
@@ -20,7 +21,7 @@ if [ ${#scenes[@]} -eq 0 ]; then
   scenes=($("$bin" --list-scenes | grep -v '^all$'))
 fi
 snap() { # name theme [env]
-  "$bin" --snap "$out/$1-$2.png" --scene "${3:-$1}" --theme "$2" --size 1320x8000 --scale "${RUNE_UI_SCALE:-2}" --crop canvas >/dev/null 2>&1
+  "$bin" --snap "$out/$1-$2.png" --scene "${3:-$1}" --theme "$2" --size 1320x8000 --scale "${RUNE_UI_SCALE:-2}" --crop canvas --at 1 >/dev/null 2>&1
 }
 for scene in "${scenes[@]}"; do
   for theme in light dark; do snap "$scene" "$theme"; done
@@ -28,7 +29,7 @@ for scene in "${scenes[@]}"; do
 done
 for item in ${RUNE_UI_ITEMS:-}; do
   for theme in light dark; do
-    RUNE_UI_ITEM="$item" "$bin" --snap "$out/item-$item-$theme.png" --scene actions --theme "$theme" --size 1320x8000 --scale "${RUNE_UI_SCALE:-2}" --crop canvas >/dev/null 2>&1
+    RUNE_UI_ITEM="$item" "$bin" --snap "$out/item-$item-$theme.png" --scene actions --theme "$theme" --size 1320x8000 --scale "${RUNE_UI_SCALE:-2}" --crop canvas --at 1 >/dev/null 2>&1
   done
   echo "item-$item"
 done

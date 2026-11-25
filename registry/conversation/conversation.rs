@@ -1,4 +1,4 @@
-//! rune-ui registry: conversation 0.6.0. Copied into your app by `rune-ui add conversation`; yours to change.
+//! rune-ui registry: conversation 0.8.0 Copied into your app by `rune-ui add conversation`; yours to change.
 //!
 //! The scroll area a chat lives in. It stays pinned to the newest content while the reader is at the bottom (Rune's
 //! `ScrollSpec::stick_bottom`), lets go as soon as they scroll up, and then shows a raised "Jump to latest" pill over its bottom edge that

@@ -2,13 +2,13 @@
 schema = 1
 name = "suggestion"
 title = "Suggestion"
-version = "0.6.0"
+version = "0.8.0"
 type = "component"
 group = "agent"
 description = "A row of suggested prompts as raised chips that wrap; a press hands the words to the app."
 
 [requires]
-style = ">=0.6.0, <0.8.0"
+style = ">=0.6.0, <0.9.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -20,11 +20,11 @@ stories = []
 [[files]]
 path = "suggestion.rs"
 target = "src/ui/suggestion.rs"
-sha256 = "b56a180f5a6e60145c6c2a280e90fc8b6566501f1c524eaeb3f4d7dbedc2c8bc"
+sha256 = "0ab5221e6353a8b9bc9ae3e99a6d55e8e5a5a0e2d4a428b9d128873acfe04ae8"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/suggestion.rs"
 role = "story"
-sha256 = "298ed4bdec7ce40667fa2e42c9a9e89033aa7638316558654dec128b8f47dec6"
+sha256 = "297457076efd9bc3de9a9bdde04c92d5e8b5f2717b930683fa1c7d5654f1d53c"

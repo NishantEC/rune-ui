@@ -1,4 +1,4 @@
-//! rune-ui registry: tool 0.6.0. Copied into your app by `rune-ui add tool`; yours to change.
+//! rune-ui registry: tool 0.8.0 Copied into your app by `rune-ui add tool`; yours to change.
 //!
 //! One tool call as one quiet line: its status mark, its name, a short summary of what it did, how long it took. It folds open to the
 //! input it was given and the output it returned (or its error, in the danger ink), monospaced on the slab. The line is never louder

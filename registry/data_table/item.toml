@@ -2,13 +2,13 @@
 schema = 1
 name = "data_table"
 title = "DataTable"
-version = "0.6.0"
+version = "0.8.0"
 type = "component"
 group = "structure"
 description = "Table with sortable headers, row checkboxes, a Columns menu, pages, a sticky header over a scrolling body, loading and empty states."
 
 [requires]
-style = ">=0.5.1, <0.8.0"
+style = ">=0.5.1, <0.9.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -20,11 +20,11 @@ stories = []
 [[files]]
 path = "data_table.rs"
 target = "src/ui/data_table.rs"
-sha256 = "61f35c99a0e18ca119f51913720a1aaf19c0a555d39077b479063e5d7975c483"
+sha256 = "51a03e4d306c6b4dc08c840df803be2da958a0a3ba102356d16e72a572170ea5"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/data_table.rs"
 role = "story"
-sha256 = "9476c8bdd52da0d45b2030d060814e2a31c38f727b095d374b8198a5bdd3bd80"
+sha256 = "b6ef401ce3521b5b6ef980d2b785edc011dd58621f2fd09fe7ed21308cc69125"

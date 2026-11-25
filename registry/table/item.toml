@@ -2,13 +2,13 @@
 schema = 1
 name = "table"
 title = "Table"
-version = "0.5.0"
+version = "0.8.0"
 type = "component"
 group = "structure"
 description = "Rows of data under a quiet header, split by hairlines; alignment, selection, sort marks."
 
 [requires]
-style = ">=0.5.0, <0.8.0"
+style = ">=0.5.0, <0.9.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -20,11 +20,11 @@ stories = []
 [[files]]
 path = "table.rs"
 target = "src/ui/table.rs"
-sha256 = "5f279d3497029fde816168c6681d5928a8d9b7aae82f0f006d3d90f336df722c"
+sha256 = "39221b0196d615b9e2e3a2f3936da021ad91477d2d7e7b73c19eef0ee0b7e40a"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/table.rs"
 role = "story"
-sha256 = "0dacee2778e3dbec6ef00f822d5a1345079e225ac21ac196623c7a142908f0f1"
+sha256 = "df690ad7c9c6e1dfd87982358712ace9762c8e77de4e661c7daec020bfacd305"

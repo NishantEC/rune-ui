@@ -2,13 +2,13 @@
 schema = 1
 name = "task"
 title = "Task"
-version = "0.6.0"
+version = "0.8.0"
 type = "component"
 group = "agent"
 description = "A run card: title, status pill, files changed, checks, cost, time and one primary action."
 
 [requires]
-style = ">=0.6.0, <0.8.0"
+style = ">=0.6.0, <0.9.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -20,11 +20,11 @@ stories = []
 [[files]]
 path = "task.rs"
 target = "src/ui/task.rs"
-sha256 = "6e9b1f7a87f26aac3465691a495c414f4696d84aa4ae5050b000536f03f56c69"
+sha256 = "8847a00f8861659c4046ddf5557114f18af506e2f12bdfbffa3b2b9660627668"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/task.rs"
 role = "story"
-sha256 = "4087ca8842853ce2d2f1fff66c5d0433bab3663f1a16fc4394df324c8ab02922"
+sha256 = "2c16be31c6454a9f702e3f4e5e486c200c31acbbbd2c568900484a3dced93074"

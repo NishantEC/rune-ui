@@ -1,9 +1,9 @@
 use std::collections::BTreeSet;
 
-use rune::{El, col};
+use rune::El;
 
 use super::super::data_table::{DataTable, DataTableState};
-use super::super::gallery::{Ctx, StoryItem, spec, specs};
+use super::super::gallery::{Ctx, StoryItem, spec_wide, specs};
 use super::super::table::Column;
 
 pub fn item<S: 'static>() -> StoryItem<S> {
@@ -53,8 +53,8 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> El {
     let loading = columns(DataTable::<S>::new("data-loading", "Loading runs", &none, move |s: &mut S| acc(s).slot_mut::<DataTableState>("data-loading"))).rows(rows()).page_size(3).loading(true).build(t, c.layer);
     let empty = columns(DataTable::<S>::new("data-empty", "No runs", &none, move |s: &mut S| acc(s).slot_mut::<DataTableState>("data-empty"))).rows(Vec::new()).build(t, c.layer);
     specs(t, vec![
-        spec(t, "Sorted by cost, two rows selected, the body scrolling under its header; press a header, a box, Columns or a page", col().w(720.0).child(live)),
-        spec(t, "Loading", col().w(720.0).child(loading)),
-        spec(t, "Empty", col().w(720.0).child(empty)),
+        spec_wide(t, "Sorted by cost, two rows selected, the body scrolling under its header; press a header, a box, Columns or a page", 720.0, live),
+        spec_wide(t, "Loading", 720.0, loading),
+        spec_wide(t, "Empty", 720.0, empty),
     ])
 }

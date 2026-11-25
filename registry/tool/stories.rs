@@ -2,7 +2,7 @@ use rune::El;
 
 use super::super::agent::Status;
 use super::super::base::State;
-use super::super::gallery::{Ctx, StoryItem, spec, specs};
+use super::super::gallery::{Ctx, StoryItem, spec_wide, specs};
 use super::super::tool::{Tool, ToolCall};
 
 pub fn item<S: 'static>() -> StoryItem<S> {
@@ -22,12 +22,12 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> El {
     failed.error = Some("error[E0425]: cannot find value `backoff` in this scope\n --> src/retry.rs:14:19".to_owned());
     failed.input = "cargo test --quiet".to_owned();
     let line = |key: &'static str, call: &ToolCall| Tool::<S>::new(key, call, g.flag(key)).on_toggle(move |s: &mut S| acc(s).toggle(key)).build(t);
-    let col = rune::col().w(560.0).gap(t.space.at(1.0))
+    let col = rune::col().w_full().gap(t.space.at(1.0))
         .child(line("tool-done", &done))
         .child(line("tool-running", &running))
         .child(line("tool-pending", &pending))
         .child(line("tool-error", &failed))
         .child(Tool::<S>::new("tool-hover", &done, false).state(State::Hover).build(t));
     let open = Tool::<S>::new("tool-open", &failed, true).on_toggle(|_: &mut S| {}).build(t);
-    specs(t, vec![spec(t, "Done, running, pending, failed, hovered", col), spec(t, "Open: input and error", rune::col().w(560.0).child(open))])
+    specs(t, vec![spec_wide(t, "Done, running, pending, failed, hovered", 560.0, col), spec_wide(t, "Open: input and error", 560.0, open)])
 }

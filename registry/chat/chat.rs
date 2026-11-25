@@ -1,4 +1,4 @@
-//! rune-ui registry: chat 0.6.0 (a block). Copied into your app by `rune-ui add chat`; yours to change.
+//! rune-ui registry: chat 0.8.0 (a block). Copied into your app by `rune-ui add chat`; yours to change.
 //!
 //! A whole agent screen made of the agent set, with placeholder content, so it can be seen put together and taken apart: a
 //! Conversation holding a person's message, the agent's reasoning, tool calls, a run of steps, its answer with an action bar, a

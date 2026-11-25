@@ -161,3 +161,35 @@ fn no_item_needs_a_workspace_lint_allowance() {
         }
     }
 }
+
+#[test]
+fn entry_motion_is_off_under_reduced_motion() {
+    // Every presence transition in an item is skipped when the theme says Reduce Motion: `if t.reduced_motion { e } else { e.transition(..) }`.
+    for (file, src) in sources() {
+        for (i, line) in src.lines().enumerate() {
+            if line.trim_start().starts_with("//") || !line.contains(".transition(") {
+                continue;
+            }
+            assert!(line.contains("reduced_motion"), "{file}:{}: a transition that ignores `Theme::reduced_motion`", i + 1);
+        }
+    }
+}
+
+/// Fixed widths over 480 points in stories, outside a `max_w` or `shrink`: a narrow gallery region would cut them.
+#[test]
+fn no_story_sets_a_fixed_width_a_narrow_page_would_cut() {
+    for (file, src) in sources().into_iter().filter(|(f, _)| f.ends_with("/stories.rs")) {
+        for (i, line) in src.lines().enumerate() {
+            if line.trim_start().starts_with("//") {
+                continue;
+            }
+            for (at, _) in line.match_indices(".w(") {
+                let n: String = line[at + 3..].chars().take_while(|c| c.is_ascii_digit() || *c == '.').collect();
+                let Ok(w) = n.parse::<f32>() else { continue };
+                if w > 480.0 {
+                    assert!(line.contains(".max_w(") || line.contains(".shrink()"), "{file}:{}: `.w({n})` is wider than 480 points with no max_w or shrink: use `gallery::spec_wide` or `w_full().max_w(..)`", i + 1);
+                }
+            }
+        }
+    }
+}

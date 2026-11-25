@@ -1,4 +1,4 @@
-//! rune-ui registry: code_block 0.6.0. Copied into your app by `rune-ui add code_block`; yours to change.
+//! rune-ui registry: code_block 0.8.0 Copied into your app by `rune-ui add code_block`; yours to change.
 //!
 //! Code on the slab: a header with the language in quiet words and a Copy button (it puts the code on the clipboard, runs your handler
 //! and shows a check while `copied`), then the code in a monospaced face, one line per line, scrolling sideways instead of wrapping.

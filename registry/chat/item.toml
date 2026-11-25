@@ -2,13 +2,13 @@
 schema = 1
 name = "chat"
 title = "Chat"
-version = "0.6.0"
+version = "0.8.0"
 type = "block"
 group = "agent"
 description = "A full agent screen made of the agent set: a conversation with messages, reasoning, tools, a permission request and the composer."
 
 [requires]
-style = ">=0.6.0, <0.8.0"
+style = ">=0.6.0, <0.9.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -22,11 +22,11 @@ stories = []
 [[files]]
 path = "chat.rs"
 target = "src/ui/chat.rs"
-sha256 = "95bb648c6aa6b4348756420ecd30cdf3855550f974e1f67e87da429186815c2b"
+sha256 = "36614a251d91c5f71327f298c2ad0d0ae7802b6e3b188a639583e50ebfd9dbf7"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/chat.rs"
 role = "story"
-sha256 = "9268c15fa87902d78d0a096c56a8e7058a5ac23d23d61df664f6c8328c14011c"
+sha256 = "6ac93c69003081148c37e3728df08a08d9e778d30f38bae583d39bf787519784"

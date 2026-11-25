@@ -17,7 +17,7 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> rune::El {
         (Tone::Warning, "Almost out of credits", "Work pauses at the limit."),
         (Tone::Danger, "The last run failed", "Two tests did not pass."),
     ];
-    let mut col = rune::col().w(520.0).gap(t.space.at(3.0));
+    let mut col = rune::col().w_full().max_w(520.0).gap(t.space.at(3.0));
     for (tone, title, desc) in words {
         let mut a = Alert::new(format!("alert-{}", tone.word().to_lowercase()), tone, title).description(desc);
         if tone == Tone::Danger {

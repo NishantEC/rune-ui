@@ -1,4 +1,4 @@
-//! rune-ui registry: gallery 0.6.0 (a block). Copied into your app by `rune-ui add gallery`; yours to change.
+//! rune-ui registry: gallery 0.8.0 (a block). Copied into your app by `rune-ui add gallery`; yours to change.
 //!
 //! A page that shows every component your app has added, in every state: group tabs, each component's stories (its variants × states),
 //! a light/dark switch and a density switch, and a materials sheet that builds each recipe one layer at a time. It is made from the
@@ -123,7 +123,7 @@ pub struct GalleryState {
 impl Default for GalleryState {
     fn default() -> Self {
         let mut s = GalleryState { show: "actions".to_owned(), only: None, dark: None, compact: None, editor: Editor::default(), scroll: true, on_export: None, exported: None, open: None, point: None, toasts: Vec::new(), presses: 0, flags: HashMap::new(), values: HashMap::new(), choices: HashMap::new(), edits: HashMap::new(), slots: HashMap::new(), empty: TextEdit::new("") };
-        for (k, v) in [("name", "Placeholder project"), ("budget", "12.50"), ("query", "theme"), ("secret", "sample-pass"), ("command-miss", "zzz"), ("notes", "A few words about the placeholder project, long enough to wrap onto a second line.")] {
+        for (k, v) in [("name", "Placeholder project"), ("budget", "12.50"), ("query", "theme"), ("secret", "sample-pass"), ("command-miss", "zzz"), ("notes", "A few words about the placeholder project, long enough to wrap onto a second line."), ("otp", "12"), ("otp-words", "AB")] {
             s.edits.insert(k.to_owned(), TextEdit::new(v));
         }
         for k in ["switch-on", "check-on", "toggle-bold", "accordion-0", "collapsible-open", "sidebar-projects"] {
@@ -191,6 +191,12 @@ impl GalleryState {
 /// A specimen with its caption under it.
 pub fn spec(t: &Theme, caption: &str, e: El) -> El {
     col().gap(t.space.at(2.0)).items_start().min_w(0.0).shrink().child(e).child(text(caption.to_owned()).font(t.ty.xs).color(t.ink_faint()).wrap().min_w(0.0).a11y_hidden())
+}
+
+/// A wide specimen: as wide as the page allows up to `max` points, and narrower when the page is. Use it instead of a fixed width
+/// over 480 points, which a narrow window would cut (the registry test enforces it).
+pub fn spec_wide(t: &Theme, caption: &str, max: f32, e: El) -> El {
+    col().w_full().max_w(max).min_w(0.0).gap(t.space.at(2.0)).child(col().w_full().min_w(0.0).child(e)).child(text(caption.to_owned()).font(t.ty.xs).color(t.ink_faint()).wrap().min_w(0.0).a11y_hidden())
 }
 
 /// Specimens side by side, wrapping.
@@ -444,10 +450,35 @@ pub fn edit_theme(json: &str, g: &GalleryState) -> rune_ui_style::serde_json::Va
     v
 }
 
+/// How the app is shown: light or dark, and whether the person asked for less motion. A `bool` is the old form (dark, motion on), so
+/// `page(json, cx.system_dark(), …)` still works; pass `Appearance::of(cx.system_dark(), cx.is_reduced_motion())` to honour Reduce
+/// Motion on the page.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct Appearance {
+    pub dark: bool,
+    /// Rune's `Cx::is_reduced_motion`: written into the theme (`Theme::reduced_motion`), so every component draws its still form.
+    pub reduced_motion: bool,
+}
+
+impl Appearance {
+    pub fn of(dark: bool, reduced_motion: bool) -> Appearance {
+        Appearance { dark, reduced_motion }
+    }
+}
+
+impl From<bool> for Appearance {
+    fn from(dark: bool) -> Appearance {
+        Appearance { dark, reduced_motion: false }
+    }
+}
+
 /// The theme the page draws in: the app's theme file with the editor's values, in the page's appearance.
-pub fn theme_for(json: &str, app_dark: bool, g: &GalleryState) -> Theme {
+pub fn theme_for(json: &str, app: impl Into<Appearance>, g: &GalleryState) -> Theme {
+    let app = app.into();
+    let dark = g.dark.unwrap_or(app.dark);
     let edited = edit_theme(json, g).to_string();
-    Theme::from_json(&edited, g.dark.unwrap_or(app_dark)).or_else(|_| Theme::from_json(json, g.dark.unwrap_or(app_dark))).expect("the app's theme file parses")
+    let t = Theme::from_json(&edited, dark).or_else(|_| Theme::from_json(json, dark)).expect("the app's theme file parses");
+    t.with_reduced_motion(app.reduced_motion)
 }
 
 
@@ -591,8 +622,10 @@ pub fn item_block<S: 'static>(c: &mut Ctx<S>, item: &StoryItem<S>) -> El {
 /// Overlays (menus, select lists, popovers, dialogs, sheets, toasts) are pushed into `layer`, never laid out inside the page: the app
 /// mounts them at its root, after its content, with `base::overlay_root(content, layer)` (that is, `rune_kit::root`). Only there do they
 /// float over everything, stay anchored to their triggers through scrolling, and leave the page's layout alone.
-pub fn page<S: 'static>(json: &str, app_dark: bool, g: &GalleryState, access: Access<S>, items: &[StoryItem<S>], layer: &mut Vec<El>) -> El {
-    let t = theme_for(json, app_dark, g);
+pub fn page<S: 'static>(json: &str, app: impl Into<Appearance>, g: &GalleryState, access: Access<S>, items: &[StoryItem<S>], layer: &mut Vec<El>) -> El {
+    let app = app.into();
+    let app_dark = app.dark;
+    let t = theme_for(json, app, g);
     let mut tabs = row().key("gallery-groups").role("tablist").label("Groups").gap(t.space.at(1.0)).flex_wrap();
     let mut shown: Vec<(&str, &str)> = GROUPS.iter().filter(|(k, _, _)| items.iter().any(|i| i.group == *k)).map(|(k, n, _)| (*k, *n)).collect();
     shown.push(("typography", "Typography"));
@@ -608,8 +641,10 @@ pub fn page<S: 'static>(json: &str, app_dark: bool, g: &GalleryState, access: Ac
         }));
     }
     let dark = g.dark.unwrap_or(app_dark);
-    let summary = text(format!("{} theme · {} · {} components", t.name, if dark { "dark" } else { "light" }, items.len())).key("gallery-summary").font(t.ty.base).color(t.ink_muted()).wrap().min_w(0.0);
-    let head = col().w_full().gap(t.space.at(3.0)).child(row().w_full().items_end().gap(t.space.at(3.0)).flex_wrap().child(text("Components").font(t.ty.xxl).color(t.ink()).role("heading").level(1).truncate().min_w(0.0)).child(summary)).child(tabs);
+    // The summary is its own full-width line that wraps: inside a wrapping row it took its one-line width and was cut by a narrow page.
+    let summary = text(format!("{} theme · {} · {} components", t.name, if dark { "dark" } else { "light" }, items.len())).key("gallery-summary").font(t.ty.base).color(t.ink_muted()).wrap().w_full().min_w(0.0);
+    let title = col().w_full().min_w(0.0).gap(t.space.at(1.0)).child(text("Components").font(t.ty.xxl).color(t.ink()).role("heading").level(1).truncate().w_full().min_w(0.0)).child(summary);
+    let head = col().w_full().gap(t.space.at(3.0)).child(title).child(tabs);
     let mut body = col().key("gallery").w_full().padding(t.metrics.section - 16.0).gap(t.metrics.section - 16.0).child(head);
     let mut c = Ctx { g, t: &t, layer, access };
     for (key, title, what) in GROUPS {

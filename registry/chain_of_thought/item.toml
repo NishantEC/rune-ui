@@ -2,13 +2,13 @@
 schema = 1
 name = "chain_of_thought"
 title = "ChainOfThought"
-version = "0.6.0"
+version = "0.8.0"
 type = "component"
 group = "agent"
 description = "The steps an agent took behind one Worked for 2m 14s line: each with its mark, words and detail."
 
 [requires]
-style = ">=0.6.0, <0.8.0"
+style = ">=0.6.0, <0.9.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -20,11 +20,11 @@ stories = []
 [[files]]
 path = "chain_of_thought.rs"
 target = "src/ui/chain_of_thought.rs"
-sha256 = "f952e761831d9f186b2e1f68e5785faf046f861601c513db6206ad1a58c67e78"
+sha256 = "3412271449fd038bad112090af1b1a60c8bce744bff264cae48ab504c2947c73"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/chain_of_thought.rs"
 role = "story"
-sha256 = "d51e24fc4af0b21f47263ec081e4a7404309067ac917e0dc3c8c816dccf25f79"
+sha256 = "4b49bf19607fa7523ba6b65018bea7354489bc37e65c04d79f9198900b544b59"

@@ -1,4 +1,4 @@
-//! rune-ui registry: suggestion 0.6.0. Copied into your app by `rune-ui add suggestion`; yours to change.
+//! rune-ui registry: suggestion 0.8.0 Copied into your app by `rune-ui add suggestion`; yours to change.
 //!
 //! A row of suggested prompts: raised chips (they are pressed), wrapping onto more lines when the row is narrow. Pressing one hands its
 //! words to the app.

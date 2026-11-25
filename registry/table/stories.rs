@@ -1,4 +1,4 @@
-use super::super::gallery::{Ctx, StoryItem, spec, specs};
+use super::super::gallery::{Ctx, StoryItem, spec_wide, specs};
 use super::super::table::{Column, Table};
 
 pub fn item<S: 'static>() -> StoryItem<S> {
@@ -12,5 +12,5 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> rune::El {
     rows.sort_by(|a, b| if asc { a[2].cmp(&b[2]) } else { b[2].cmp(&a[2]) });
     let selected = g.choices.get("table-row").and_then(|v| v.parse().ok());
     let table = Table::<S>::new("table", "Placeholder runs").column(Column::new("Task")).column(Column::new("State").width(110.0)).column(Column::new("Cost").right().width(90.0)).rows(rows).sort(Some((2, asc))).on_sort(move |s: &mut S, _| acc(s).toggle("table-asc")).selected(selected.or(Some(1))).on_select(move |s: &mut S, r| acc(s).choose("table-row", &r.to_string())).build(t);
-    specs(t, vec![spec(t, "Four rows, sorted by cost, one selected", rune::col().w(560.0).child(table))])
+    specs(t, vec![spec_wide(t, "Four rows, sorted by cost, one selected", 560.0, table)])
 }

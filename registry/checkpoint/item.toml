@@ -2,13 +2,13 @@
 schema = 1
 name = "checkpoint"
 title = "Checkpoint"
-version = "0.6.0"
+version = "0.8.0"
 type = "component"
 group = "agent"
 description = "A divider in the conversation where work was saved, with a Restore button."
 
 [requires]
-style = ">=0.6.0, <0.8.0"
+style = ">=0.6.0, <0.9.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -20,11 +20,11 @@ stories = []
 [[files]]
 path = "checkpoint.rs"
 target = "src/ui/checkpoint.rs"
-sha256 = "f637d72de1906d2d8c26e490cb5493e2a557bb149805029975efe086e3c9f5ee"
+sha256 = "722437479a71c42c11f300b0aac956c2f90f2ebcb94e335c41612eff82e41681"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/checkpoint.rs"
 role = "story"
-sha256 = "2d1991376f9019bf8c5d4d6ba9a22de8243b0b0aaa6a12350ed4d1cb7fc2f7e5"
+sha256 = "fdd32c40c502795d6ce3fc34ffb16752af16750975fc0f809f036df1eea5af63"
