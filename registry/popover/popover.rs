@@ -1,4 +1,4 @@
-//! rune-ui registry: popover 0.3.0. Copied into your app by `rune-ui add popover`; yours to change.
+//! rune-ui registry: popover 0.4.0. Copied into your app by `rune-ui add popover`; yours to change.
 //!
 //! A floating panel beside its trigger: the **floating** material, a title, anything inside. Behaviour comes from Rune and rune-kit:
 //! `rune_kit::popover::anchored` places it beside the trigger and keeps it in the window, `rune_kit::scrim` closes it on a press outside,
@@ -15,7 +15,7 @@ use rune::{El, col, row, text};
 pub use rune_kit::Placement;
 use rune_ui_style::weight;
 
-use super::base::{Press, Theme, paint};
+use super::base::{Press, Shape, Theme, paint};
 
 pub struct Popover<S: 'static> {
     key: String,
@@ -71,7 +71,7 @@ impl<S: 'static> Popover<S> {
 
     /// The panel alone, drawn in place.
     pub fn panel(&mut self, t: &Theme) -> El {
-        let mut p = col().key(format!("{}-panel", self.key)).role("dialog").w(self.width).padding(t.metrics.pad_md - 2.0).gap(t.metrics.gap).radius(t.radius.lg).continuous_corners();
+        let mut p = col().key(format!("{}-panel", self.key)).role("dialog").w(self.width).padding(t.metrics.pad_md - 2.0).gap(t.metrics.gap).radius(t.radius.lg).round_as(t);
         p = paint(p, &t.mat.floating.base);
         if let Some(title) = &self.title {
             p = p.label(title.clone()).child(text(title.clone()).font(weight(t.ty.base, t.ty.semibold)).color(t.c.floating.fg));

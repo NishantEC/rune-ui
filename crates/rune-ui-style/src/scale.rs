@@ -68,6 +68,14 @@ impl TypeScale {
     }
 }
 
+impl TypeScale {
+    /// Every size and line height multiplied by `k` (sizes to half points, lines to whole ones), in `family`.
+    pub fn scaled(self, k: f32, family: rune::Family) -> TypeScale {
+        let f = |s: TextStyle| TextStyle { size: half(s.size * k), line_height: (s.line_height * k).round(), family, ..s };
+        TypeScale { xs: f(self.xs), sm: f(self.sm), base: f(self.base), md: f(self.md), lg: f(self.lg), xl: f(self.xl), xxl: f(self.xxl), ..self }
+    }
+}
+
 /// Where a density sits between compact (0.8: 0) and comfortable (1.0: 1).
 pub fn comfort(density: f32) -> f32 {
     ((density - COMPACT) / (COMFORTABLE - COMPACT)).clamp(0.0, 1.0)

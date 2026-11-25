@@ -1,4 +1,4 @@
-//! rune-ui registry: table 0.3.0. Copied into your app by `rune-ui add table`; yours to change.
+//! rune-ui registry: table 0.4.0. Copied into your app by `rune-ui add table`; yours to change.
 //!
 //! Rows of data under a quiet header, split by hairlines, in a slab. Columns take a width or share what is left, and align left or
 //! right (figures right, in tabular figures). A header can show the sort and answer a press; rows wash on hover and may be selected.
@@ -13,7 +13,7 @@ use std::rc::Rc;
 use rune::{El, col, row, text};
 use rune_ui_style::{tabular, weight};
 
-use super::base::{Choose, States, Theme, glyph, paint, paint_state};
+use super::base::{Choose, Shape, States, Theme, glyph, paint, paint_state};
 use super::icons;
 
 /// A column: its title, width and alignment.
@@ -101,7 +101,7 @@ impl<S: 'static> Table<S> {
 
     pub fn build(self, t: &Theme) -> El {
         let r = t.radius.xl;
-        let mut table = paint(col().key(self.key.clone()).role("table").label(self.name.clone()).w_full().radius(r).continuous_corners().clip_rounded(r), &t.mat.slab.base);
+        let mut table = paint(col().key(self.key.clone()).role("table").label(self.name.clone()).w_full().radius(r).round_as(t).clip_rounded(r), &t.mat.slab.base);
         let mut head = row().key(format!("{}-head", self.key)).role("row").w_full().h(t.metrics.table_head).border_sides([0.0, 0.0, 1.0, 0.0], t.c.line);
         for (i, c) in self.columns.iter().enumerate() {
             let sorted = self.sort.filter(|(at, _)| *at == i);

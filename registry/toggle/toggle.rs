@@ -1,4 +1,4 @@
-//! rune-ui registry: toggle 0.3.0. Copied into your app by `rune-ui add toggle`; yours to change.
+//! rune-ui registry: toggle 0.4.0. Copied into your app by `rune-ui add toggle`; yours to change.
 //!
 //! A two-state button (bold on or off). Quiet until hovered; on, it takes the selected wash and the first ink. It says `pressed` to
 //! assistive technology through `checked`. Icon-only toggles take their label as name and tooltip.
@@ -9,7 +9,7 @@
 
 use rune::{El, Icon, row, text};
 
-use super::base::{Press, Size, SizeExt, State, Theme, glyph, hit_area, paint_state, press, recipes, states};
+use super::base::{Press, Shape, Size, SizeExt, State, Theme, glyph, hit_area, paint_state, press, recipes, states};
 
 pub struct Toggle<S: 'static> {
     key: String,
@@ -71,7 +71,7 @@ impl<S: 'static> Toggle<S> {
         let st = states(self.pinned, self.disabled, self.on);
         let h = self.size.height(t);
         let ink = parts.label.resolve(st);
-        let mut face = row().key(self.key.clone()).role("button").label(self.label.clone()).checked(self.on).focusable(!self.disabled).h(h).gap(t.metrics.gap).center().radius(self.size.radius(t)).continuous_corners();
+        let mut face = row().key(self.key.clone()).role("button").label(self.label.clone()).checked(self.on).focusable(!self.disabled).h(h).gap(t.metrics.gap).center().radius(self.size.radius(t)).round_as(t);
         face = if self.icon_only { face.w(h).help(self.label.clone()) } else { face.px(self.size.pad(t) - if self.icon.is_some() { 1.0 } else { 0.0 }) };
         face = paint_state(face, &parts.root, st);
         if let Some(i) = self.icon {

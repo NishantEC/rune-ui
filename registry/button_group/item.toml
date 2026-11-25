@@ -2,13 +2,13 @@
 schema = 1
 name = "button_group"
 title = "ButtonGroup"
-version = "0.3.0"
+version = "0.4.0"
 type = "component"
 group = "actions"
 description = "Related actions joined into one raised object divided by hairlines."
 
 [requires]
-style = ">=0.3.0, <0.4.0"
+style = ">=0.4.0, <0.5.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "button_group.rs"
 target = "src/ui/button_group.rs"
-sha256 = "831adaa375ab93a6294fd1b82cb149a7561b0a6ab215f502018cb87f2071198d"
+sha256 = "eecd37f8931ab6b4c3653e9c6b0da7746bfb3eac338357eb3d4afaa11e912b21"
 
 # Copied only once the gallery block is installed.
 [[files]]

@@ -1,4 +1,4 @@
-//! rune-ui registry: radio_group 0.3.0. Copied into your app by `rune-ui add radio_group`; yours to change.
+//! rune-ui registry: radio_group 0.4.0. Copied into your app by `rune-ui add radio_group`; yours to change.
 //!
 //! One of a few, all shown. Each option is a ring (a small **well**) that fills with an **ink** dot when chosen, its words beside it,
 //! the whole line pressable. Lines sit far enough apart to keep a 40 point pitch.
@@ -9,7 +9,7 @@
 
 use rune::{El, col, el, row};
 
-use super::base::{Choose, State, States, Theme, paint, paint_state, recipes, resolve, words};
+use super::base::{Choose, Shape, State, States, Theme, paint, paint_state, recipes, resolve, words};
 
 const RING: f32 = 16.0;
 
@@ -59,12 +59,12 @@ impl<'a, S: 'static> RadioGroup<'a, S> {
             {
                 st.set(s, true);
             }
-            let mut ring = row().size(RING, RING).center().radius(RING / 2.0).a11y_hidden();
+            let mut ring = row().size(RING, RING).center().radius(RING / 2.0).round_as(t).a11y_hidden();
             ring = paint(ring, &resolve(&recipes::check(t, on), States::default()).without(rune_ui_style::LayerKind::Scale));
             if on {
-                ring = ring.child(el().size(6.0, 6.0).radius(3.0).fill(t.c.primary.fg));
+                ring = ring.child(el().size(6.0, 6.0).radius(3.0).round_as(t).fill(t.c.primary.fg));
             }
-            let mut line = row().key(format!("{}-{i}", self.key)).role("radio").label((*label).to_owned()).checked(on).focusable(!self.disabled).min_h(t.control.md).px(t.space.at(1.0)).ml(-t.space.at(1.0)).gap(t.space.at(2.0)).center_y().radius(t.radius.md).child(ring).child(words(t, label, *help));
+            let mut line = row().key(format!("{}-{i}", self.key)).role("radio").label((*label).to_owned()).checked(on).focusable(!self.disabled).min_h(t.control.md).px(t.space.at(1.0)).ml(-t.space.at(1.0)).gap(t.space.at(2.0)).center_y().radius(t.radius.md).round_as(t).child(ring).child(words(t, label, *help));
             if let Some(h) = help {
                 line = line.description((*h).to_owned());
             }

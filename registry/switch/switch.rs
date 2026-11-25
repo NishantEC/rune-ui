@@ -1,4 +1,4 @@
-//! rune-ui registry: switch 0.3.0. Copied into your app by `rune-ui add switch`; yours to change.
+//! rune-ui registry: switch 0.4.0. Copied into your app by `rune-ui add switch`; yours to change.
 //!
 //! On or off, at once. The track is a **well** while off and fills with **ink** when on; the thumb is a small floating disc (the
 //! **thumb** material off, the ink's words colour on). Radii are concentric. With words the whole line is the control; alone, the switch
@@ -10,7 +10,7 @@
 
 use rune::{El, el, row};
 
-use super::base::{Delta, Material, Press, Recipe, State, Theme, hit_area, paint, paint_state, press, resolve, states, words};
+use super::base::{Delta, Material, Press, Recipe, Shape, State, Theme, hit_area, paint, paint_state, press, resolve, states, words};
 
 const TRACK: (f32, f32) = (36.0, 22.0);
 const PAD: f32 = 3.0;
@@ -61,17 +61,17 @@ impl<S: 'static> Switch<S> {
 
     fn track(&self, t: &Theme) -> El {
         let d = TRACK.1 - 2.0 * PAD;
-        let disc = el().size(d, d).radius(d / 2.0);
+        let disc = el().size(d, d).radius(d / 2.0).round_as(t);
         let thumb = if self.on { paint(disc, &Recipe::new().fill(t.c.primary.fg).shadows(&t.elevation.xs)) } else { paint(disc, &t.mat.thumb.base) }.a11y_hidden();
         let m = if self.on { &t.mat.ink } else { &t.mat.well };
-        let track = paint(row().size(TRACK.0, TRACK.1).padding(PAD).center_y().radius(TRACK.1 / 2.0), &resolve(m, Default::default()).shadow_none()).child(thumb).a11y_hidden();
+        let track = paint(row().size(TRACK.0, TRACK.1).padding(PAD).center_y().radius(TRACK.1 / 2.0).round_as(t), &resolve(m, Default::default()).shadow_none()).child(thumb).a11y_hidden();
         if self.on { track.justify_end() } else { track.justify_start() }
     }
 
     pub fn build(self, t: &Theme) -> El {
         let live = !self.disabled;
         let st = states(self.pinned, self.disabled, false);
-        let mut e = row().key(self.key.clone()).role("switch").label(self.label.clone()).checked(self.on).focusable(live).center_y().radius(t.radius.md);
+        let mut e = row().key(self.key.clone()).role("switch").label(self.label.clone()).checked(self.on).focusable(live).center_y().radius(t.radius.md).round_as(t);
         if let Some(h) = &self.help {
             e = e.description(h.clone());
         }

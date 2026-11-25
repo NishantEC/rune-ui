@@ -1,0 +1,21 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "popup"
+title = "Popup"
+version = "0.4.0"
+type = "base"
+group = "base"
+description = "The floating list Select, DropdownMenu, ContextMenu and Combobox open: anchored at the trigger's left edge and width, rows with a highlight that follows pointer and keys, typeahead, Escape and Tab to close."
+
+[requires]
+style = ">=0.4.0, <0.5.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style", "rune-kit"]
+
+[[files]]
+path = "popup.rs"
+target = "src/ui/popup.rs"
+sha256 = "ffca5cfe2cd32cee59236318fbc170d0c872adde1084a32a164d45c0e4397bd1"

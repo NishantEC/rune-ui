@@ -1,4 +1,4 @@
-//! rune-ui registry: avatar 0.3.0. Copied into your app by `rune-ui add avatar`; yours to change.
+//! rune-ui registry: avatar 0.4.0. Copied into your app by `rune-ui add avatar`; yours to change.
 //!
 //! A person as their initials in a circle (or an image, clipped to it, with the 1 point outline every image gets so it never bleeds into
 //! the page). Three sizes. [`group`] stacks a few, overlapping, each ringed in the page colour, with a "+N" for the rest.
@@ -11,7 +11,7 @@
 use rune::{El, Shadow, row, text};
 use rune_ui_style::{Recipe, Size, tabular, weight};
 
-use super::base::{Theme, paint};
+use super::base::{Shape, Theme, paint};
 
 pub struct Avatar<'a> {
     key: String,
@@ -50,7 +50,7 @@ impl<'a> Avatar<'a> {
 
     pub fn build(self, t: &Theme) -> El {
         let d = self.diameter();
-        let base = row().key(self.key).role("img").label(self.name.clone()).size(d, d).center().radius(d / 2.0);
+        let base = row().key(self.key).role("img").label(self.name.clone()).size(d, d).center().radius(d / 2.0).round_as(t);
         match self.image {
             // An image's outline is pure black or white at 10%, never a tinted grey (it would read as dirt).
             Some(p) => base.pixels(p).box_shadow(Shadow { spread: 1.0, inset: true, color: if t.dark { rune::Color::WHITE.alpha(0.1) } else { rune::Color::BLACK.alpha(0.1) }, ..Shadow::default() }), // guard: allow
@@ -70,7 +70,7 @@ pub fn group(t: &Theme, key: &str, names: &[&str], show: usize) -> El {
         r = r.child(if i > 0 { a.ml(-6.0) } else { a });
     }
     if names.len() > show {
-        let more = paint(row().size(24.0, 24.0).center().radius(12.0).ml(-6.0), &Recipe::new().fill(t.c.surface.bg).shadow(Shadow { spread: 2.0, color: t.c.page.bg, ..Shadow::default() }));
+        let more = paint(row().size(24.0, 24.0).center().radius(12.0).round_as(t).ml(-6.0), &Recipe::new().fill(t.c.surface.bg).shadow(Shadow { spread: 2.0, color: t.c.page.bg, ..Shadow::default() }));
         r = r.child(more.child(text(format!("+{}", names.len() - show)).font(tabular(weight(t.ty.xs, t.ty.medium))).color(t.ink_muted()).a11y_hidden()));
     }
     r

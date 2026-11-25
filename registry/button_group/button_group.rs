@@ -1,4 +1,4 @@
-//! rune-ui registry: button_group 0.3.0. Copied into your app by `rune-ui add button_group`; yours to change. Needs: button's recipes.
+//! rune-ui registry: button_group 0.4.0. Copied into your app by `rune-ui add button_group`; yours to change. Needs: button's recipes.
 //!
 //! Related actions joined into one object: a single raised (or outline) surface divided by hairlines, each segment washing on hover and
 //! answering a press. One object, not a row of separate buttons, so the group reads as one choice of action.
@@ -9,7 +9,7 @@
 
 use rune::{El, Icon, row, text};
 
-use super::base::{ButtonVariant, Press, Size, SizeExt, State, States, Theme, glyph, paint, paint_state, press, recipes, resolve};
+use super::base::{ButtonVariant, Press, Shape, Size, SizeExt, State, States, Theme, glyph, paint, paint_state, press, recipes, resolve};
 
 struct Segment<S: 'static> {
     key: String,
@@ -69,7 +69,7 @@ impl<S: 'static> ButtonGroup<S> {
         let base = States { disabled: self.disabled, ..States::default() };
         // The surface without its press scale: segments answer a press, the group does not move.
         let surface = resolve(&parts.root, base).without(rune_ui_style::LayerKind::Scale);
-        let mut g = paint(row().key(self.key.clone()).role("group").label(self.name.clone()).h(h).radius(r).continuous_corners().center_y(), &surface);
+        let mut g = paint(row().key(self.key.clone()).role("group").label(self.name.clone()).h(h).radius(r).round_as(t).center_y(), &surface);
         let n = self.items.len();
         for (i, seg) in self.items.into_iter().enumerate() {
             if i > 0 {
@@ -83,7 +83,7 @@ impl<S: 'static> ButtonGroup<S> {
             }
             let corners = [if i == 0 { r } else { 0.0 }, if i + 1 == n { r } else { 0.0 }, if i + 1 == n { r } else { 0.0 }, if i == 0 { r } else { 0.0 }];
             let ink = parts.label.resolve(st);
-            let mut face = row().key(seg.key.clone()).role("button").label(seg.label.clone()).focusable(!self.disabled).h(h).px(self.size.pad(t)).gap(t.metrics.gap).center().corners(corners);
+            let mut face = row().key(seg.key.clone()).role("button").label(seg.label.clone()).focusable(!self.disabled).h(h).px(self.size.pad(t)).gap(t.metrics.gap).center().corners(corners).round_as(t);
             face = paint_state(face, &t.mat.row, st);
             if let Some(ic) = seg.icon {
                 face = face.child(glyph(ic, self.size.icon(t), ink));

@@ -1,60 +1,74 @@
-//! rune-ui registry: context_menu 0.3.0. Copied into your app by `rune-ui add context_menu`; yours to change.
+//! rune-ui registry: context_menu 0.4.0. Copied into your app by `rune-ui add context_menu`; yours to change. Needs: popup.
 //!
-//! A menu where the pointer pressed with the secondary button. Behaviour is rune-kit's `context_menu` (it opens at the point, flips to
-//! stay in the window, holds the keys while open); our look comes through `Theme::to_kit()`. Store the point from
-//! `El::on_secondary_press` in your state, and clear it in `on_close` and in each item's handler.
+//! A menu where the pointer pressed with the secondary button: rune-ui's popup with role `menu`, opening at that point, flipping to stay
+//! in the window, closing on Escape, Tab, a press outside or a choice, focus going back to the area. Store the point from
+//! `El::on_secondary_press` in your state and clear it in `on_close`.
 //!
 //! ```ignore
 //! ContextMenu::new("file-menu", area, s.menu_at).item(ContextMenuItem::new("Rename")).on_close(|s: &mut App| s.menu_at = None).build(t, &mut layer)
 //! ```
 
-use rune::{El, PointerPress};
-pub use rune_kit::MenuItem as ContextMenuItem;
+use rune::{El, PointerPress, Side, row};
 
-use super::base::Theme;
+use super::base::{Press, Theme, press};
+use super::popup::{Entry, Popup, Row, mount, point_anchor};
 
-pub struct ContextMenu {
-    inner: rune_kit::Menu,
+/// A menu row (see `popup::Row`).
+pub type ContextMenuItem<S> = Row<S>;
+
+pub struct ContextMenu<S: 'static> {
+    key: String,
+    area: El,
+    point: Option<PointerPress>,
+    entries: Vec<Entry<S>>,
+    close: Option<Press<S>>,
 }
 
-impl ContextMenu {
+impl<S: 'static> ContextMenu<S> {
     /// A context menu over `area`, open at `point` (closed while it is none).
-    pub fn new(key: impl Into<String>, area: El, point: Option<PointerPress>) -> ContextMenu {
-        ContextMenu { inner: rune_kit::context_menu(key, area, point).standard() }
+    pub fn new(key: impl Into<String>, area: El, point: Option<PointerPress>) -> ContextMenu<S> {
+        ContextMenu { key: key.into(), area, point, entries: Vec::new(), close: None }
     }
 
-    /// Open at a window point you computed (a keyboard "menu" key, a picture).
-    pub fn at(mut self, x: f32, y: f32) -> Self {
-        self.inner = self.inner.open(true).at(x, y);
+    pub fn item(mut self, i: ContextMenuItem<S>) -> Self {
+        self.entries.push(Entry::Row(i));
         self
     }
 
-    pub fn item(mut self, i: ContextMenuItem) -> Self {
-        self.inner = self.inner.item(i);
-        self
-    }
-
-    pub fn danger_item(mut self, i: ContextMenuItem) -> Self {
-        self.inner = self.inner.separator().item(i.danger(true));
+    pub fn danger_item(mut self, i: ContextMenuItem<S>) -> Self {
+        self.entries.push(Entry::Separator);
+        self.entries.push(Entry::Row(i.danger(true)));
         self
     }
 
     pub fn separator(mut self) -> Self {
-        self.inner = self.inner.separator();
+        self.entries.push(Entry::Separator);
         self
     }
 
     pub fn label(mut self, words: impl Into<String>) -> Self {
-        self.inner = self.inner.group_label(words);
+        self.entries.push(Entry::Label(words.into()));
         self
     }
 
-    pub fn on_close<S: 'static>(mut self, f: impl Fn(&mut S) + 'static) -> Self {
-        self.inner = self.inner.on_close(f);
+    pub fn on_close(mut self, f: impl Fn(&mut S) + 'static) -> Self {
+        self.close = Some(press(f));
         self
     }
 
     pub fn build(self, t: &Theme, layer: &mut Vec<El>) -> El {
-        self.inner.build(t.to_kit(), layer)
+        let area_key = format!("{}-area", self.key);
+        let area = row().key(area_key.clone()).focusable(true).label("Context menu area").child(self.area);
+        if let Some(p) = self.point {
+            let close = self.close.unwrap_or_else(|| press(|_: &mut S| {}));
+            let anchor = format!("{}-point", self.key);
+            layer.push(point_anchor(&anchor, p.x, p.y));
+            let mut popup = Popup::<S>::new(self.key.clone(), "menu", "Context menu");
+            popup.min_w = 200.0;
+            popup.entries = self.entries;
+            let surface = popup.surface(t, close.clone());
+            mount(t, layer, &self.key, surface, &anchor, Side::Bottom, &area_key, close);
+        }
+        area
     }
 }

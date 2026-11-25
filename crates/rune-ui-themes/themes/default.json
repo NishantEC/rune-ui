@@ -3,15 +3,29 @@
   "name": "default",
   "description": "rune-ui's default theme: an almost colourless page, raised controls lit from above, one ink object per view.",
   "base": {
-    "$type": "number",
     "spacing": {
+      "$type": "number",
       "$value": 4
     },
     "radius": {
+      "$type": "number",
       "$value": 8
     },
     "density": {
+      "$type": "number",
       "$value": 1.0
+    },
+    "type-scale": {
+      "$type": "number",
+      "$value": 1.0
+    },
+    "corners": {
+      "$type": "string",
+      "$value": "continuous"
+    },
+    "font": {
+      "$type": "string",
+      "$value": "inter"
     }
   },
   "color": {
@@ -416,6 +430,9 @@
         },
         "grain": {
           "$value": 0.06
+        },
+        "texture": {
+          "$value": 1.0
         }
       }
     },
@@ -618,6 +635,9 @@
         },
         "grain": {
           "$value": 0.1
+        },
+        "texture": {
+          "$value": 1.0
         }
       }
     }

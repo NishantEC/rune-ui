@@ -2,7 +2,7 @@
 //! dark modes have the same keys, and the JSON Schema names exactly the keys the parser accepts.
 
 use rune_ui_style::ThemeFile;
-use rune_ui_style::tokens::{BASE_KEYS, COMPONENT_KEYS, HUE_STEPS, LINE_ROLES, NEUTRAL_STEPS, NUMBER_KEYS, RAMPS, STATE_KEYS, SURFACE_ROLES, TONE_ROLES};
+use rune_ui_style::tokens::{BASE_KEYS, BASE_WORDS, COMPONENT_KEYS, HUE_STEPS, LINE_ROLES, NEUTRAL_STEPS, NUMBER_KEYS, RAMPS, STATE_KEYS, SURFACE_ROLES, TONE_ROLES};
 use rune_ui_themes::{ALL, DEFAULT, SCHEMA};
 use serde_json::Value;
 
@@ -84,7 +84,8 @@ fn sorted(keys: &[&str]) -> Vec<String> {
 fn the_schema_names_exactly_what_the_parser_accepts() {
     let s: Value = serde_json::from_str(SCHEMA).unwrap();
     assert_eq!(s["additionalProperties"], Value::Bool(false));
-    assert_eq!(props(&s, &["properties", "base"]), sorted(&BASE_KEYS));
+    let base: Vec<&str> = BASE_KEYS.iter().copied().chain(BASE_WORDS.iter().map(|(k, _)| *k)).collect();
+    assert_eq!(props(&s, &["properties", "base"]), sorted(&base));
     assert_eq!(props(&s, &["properties", "color"]), sorted(&RAMPS));
     assert_eq!(props(&s, &["properties", "color", "properties", "neutral"]), sorted(&NEUTRAL_STEPS));
     assert_eq!(props(&s, &["properties", "color", "properties", "blue"]), sorted(&HUE_STEPS));

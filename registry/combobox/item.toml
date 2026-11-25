@@ -2,17 +2,17 @@
 schema = 1
 name = "combobox"
 title = "Combobox"
-version = "0.3.0"
+version = "0.4.0"
 type = "component"
 group = "form"
 description = "One choice of many with a search: rune-kit's combobox behaviour in our look."
 
 [requires]
-style = ">=0.3.0, <0.4.0"
+style = ">=0.4.0, <0.5.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
-registry = ["base", "icons"]
+registry = ["base", "icons", "popup"]
 cargo = ["rune", "rune-ui-style", "rune-kit"]
 # What the stories use besides this item: they are copied only when these are installed too.
 stories = []
@@ -20,11 +20,11 @@ stories = []
 [[files]]
 path = "combobox.rs"
 target = "src/ui/combobox.rs"
-sha256 = "c09910ed9e14e47487c2f4ac93a953dce78289674156451a052b7e07eca21ab2"
+sha256 = "b821ec3bb1293415e1f5da5378340e04b3f38a0cb6e529eea53f9bcac7251d6f"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/combobox.rs"
 role = "story"
-sha256 = "3d52b14600ed3f9f8f920f57a8aac61b86d2ddaf7e5d59cbc3814bb34b6c61fb"
+sha256 = "60ddeec039e16cb02e0d359e05efcdffc5e787e827fe03c36aa0e8fe02903b20"

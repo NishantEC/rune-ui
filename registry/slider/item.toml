@@ -2,13 +2,13 @@
 schema = 1
 name = "slider"
 title = "Slider"
-version = "0.3.0"
+version = "0.4.0"
 type = "component"
 group = "form"
 description = "A value in a range: a well track, an ink fill and a raised thumb; drag or arrow keys."
 
 [requires]
-style = ">=0.3.0, <0.4.0"
+style = ">=0.4.0, <0.5.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "slider.rs"
 target = "src/ui/slider.rs"
-sha256 = "cf8d6f761f78a6aec1f8fe46bf42c97523f46ac625fdd3a6d88bdcafae413f46"
+sha256 = "bd4a0cdba5d0986b77d5a66749bc8751e40a9810a043e346ae0ef5fc9cc14623"
 
 # Copied only once the gallery block is installed.
 [[files]]

@@ -1,4 +1,4 @@
-//! rune-ui registry: scroll_area 0.3.0. Copied into your app by `rune-ui add scroll_area`; yours to change.
+//! rune-ui registry: scroll_area 0.4.0. Copied into your app by `rune-ui add scroll_area`; yours to change.
 //!
 //! A region that scrolls inside a fixed height, clipped to its corners, its top and bottom edges fading so a cut-off row reads as one
 //! that scrolls. Scrolling (wheel, trackpad momentum, keys, scroll bars as the system shows them) is Rune's.
@@ -9,7 +9,7 @@
 
 use rune::{El, col};
 
-use super::base::Theme;
+use super::base::{Shape, Theme};
 
 pub struct ScrollArea {
     key: String,
@@ -47,7 +47,7 @@ impl ScrollArea {
 
     pub fn build(self, t: &Theme) -> El {
         let inner = col().w_full().children(self.children);
-        let s = col().key(self.key).w_full().h(self.height).radius(t.radius.lg).scroll(rune::ScrollSpec { stick_bottom: false }).child(inner);
+        let s = col().key(self.key).w_full().h(self.height).radius(t.radius.lg).round_as(t).scroll(rune::ScrollSpec { stick_bottom: false }).child(inner);
         let f = t.space.at(4.0);
         let s = if self.fade { s.clip_fade(0.0, f, 0.0, f) } else { s.clip_rounded(t.radius.lg) };
         match self.width {

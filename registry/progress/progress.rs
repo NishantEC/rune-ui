@@ -1,4 +1,4 @@
-//! rune-ui registry: progress 0.3.0. Copied into your app by `rune-ui add progress`; yours to change.
+//! rune-ui registry: progress 0.4.0. Copied into your app by `rune-ui add progress`; yours to change.
 //!
 //! How far along: a thin **well** track and an **ink** fill (or a meaning's solid colour), an optional label and figure above it in
 //! tabular figures. It reports its value to assistive technology.
@@ -10,7 +10,7 @@
 use rune::{El, col, el, row, text};
 use rune_ui_style::{Recipe, tabular};
 
-use super::base::{Theme, Tone, paint};
+use super::base::{Shape, Theme, Tone, paint};
 
 pub struct Progress {
     key: String,
@@ -50,7 +50,7 @@ impl Progress {
     pub fn build(self, t: &Theme) -> El {
         let h = 6.0;
         let ink = self.tone.map_or(t.c.primary.bg, |tone| tone.colors(t).2);
-        let track = paint(row().key(format!("{}-track", self.key)).w_full().h(h).radius(h / 2.0), &t.mat.well.base).child(paint(el().w_frac(self.value).h(h).radius(h / 2.0), &Recipe::new().fill(ink)).a11y_hidden());
+        let track = paint(row().key(format!("{}-track", self.key)).w_full().h(h).radius(h / 2.0).round_as(t), &t.mat.well.base).child(paint(el().w_frac(self.value).h(h).radius(h / 2.0).round_as(t), &Recipe::new().fill(ink)).a11y_hidden());
         let name = self.label.clone().unwrap_or_else(|| "Progress".to_owned());
         let mut c = col().key(self.key).role("progressbar").label(name).range_value(f64::from(self.value) * 100.0, 0.0, 100.0).gap(t.space.at(1.5));
         c = match self.width {

@@ -2,13 +2,13 @@
 schema = 1
 name = "alert_dialog"
 title = "AlertDialog"
-version = "0.3.0"
+version = "0.4.0"
 type = "component"
 group = "overlays"
 description = "A dialog that needs an answer: no dismissal by a press outside; a destructive form."
 
 [requires]
-style = ">=0.3.0, <0.4.0"
+style = ">=0.4.0, <0.5.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "alert_dialog.rs"
 target = "src/ui/alert_dialog.rs"
-sha256 = "2e7c1dd28bba12666bdf13a1703f5b201873254000be3b09a5e1a9f0a6c963d6"
+sha256 = "a44c2ad1ff2335a695a842320ff8e93e0e10866268273f3f5a5eaf983edda57c"
 
 # Copied only once the gallery block is installed.
 [[files]]

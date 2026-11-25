@@ -1,4 +1,4 @@
-//! rune-ui registry: toggle_group 0.3.0. Copied into your app by `rune-ui add toggle_group`; yours to change.
+//! rune-ui registry: toggle_group 0.4.0. Copied into your app by `rune-ui add toggle_group`; yours to change.
 //!
 //! Two to five toggles side by side: one choice ([`ToggleGroup::single`], a radio group to assistive technology) or several
 //! ([`ToggleGroup::multiple`]). A **well** track holds the items; chosen ones are **raised**, so the two materials explain the control.
@@ -11,7 +11,7 @@
 use rune::{El, Icon, row, text};
 use rune_ui_style::{Delta, Radius};
 
-use super::base::{Choose, Size, SizeExt, State, States, Theme, glyph, paint, paint_state};
+use super::base::{Choose, Shape, Size, SizeExt, State, States, Theme, glyph, paint, paint_state};
 
 const PAD: f32 = 3.0;
 
@@ -78,7 +78,7 @@ impl<'a, S: 'static> ToggleGroup<'a, S> {
         let h = self.size.height(t);
         let outer = self.size.radius(t);
         let inner = Radius::inner(outer, PAD);
-        let mut track = row().key(self.key.clone()).role(if self.multiple { "group" } else { "radiogroup" }).label(self.name.clone()).h(h).padding(PAD).gap(2.0).center_y().radius(outer).continuous_corners();
+        let mut track = row().key(self.key.clone()).role(if self.multiple { "group" } else { "radiogroup" }).label(self.name.clone()).h(h).padding(PAD).gap(2.0).center_y().radius(outer).round_as(t);
         track = paint(track, &t.mat.well.state(if self.disabled { State::Disabled } else { State::Rest }));
         if self.full {
             track = track.w_full();
@@ -95,7 +95,7 @@ impl<'a, S: 'static> ToggleGroup<'a, S> {
             {
                 st.set(s, true);
             }
-            let mut item = row().key(format!("{}-{i}", self.key)).role(if self.multiple { "button" } else { "radio" }).label((*label).to_owned()).checked(on).focusable(!self.disabled).h(h - 2.0 * PAD).gap(t.metrics.gap).center().radius(inner).continuous_corners();
+            let mut item = row().key(format!("{}-{i}", self.key)).role(if self.multiple { "button" } else { "radio" }).label((*label).to_owned()).checked(on).focusable(!self.disabled).h(h - 2.0 * PAD).gap(t.metrics.gap).center().radius(inner).round_as(t);
             item = if self.icon_only { item.w(h - 2.0 * PAD).help((*label).to_owned()) } else { item.px(self.size.pad(t) - 2.0) };
             if self.full {
                 item = item.grow(1.0).min_w(0.0);

@@ -47,6 +47,8 @@ pub struct MaterialColors {
     pub shade: Color,
     pub focus: Color,
     pub grain: f32,
+    /// Flat (0) to tactile (1): how far apart the gradients' ends are and how strong the lit edges and rims are.
+    pub texture: f32,
 }
 
 /// Every material of a theme.
@@ -69,6 +71,17 @@ pub struct Materials {
 
 impl Materials {
     pub fn derive(c: &MaterialColors, e: &Elevation, m: &Motion, k: &Controls) -> Materials {
+        // Texture: at 0 every gradient is flat (its top is its bottom) and edges and rims vanish; at 1 the theme's own values.
+        let x = c.texture.clamp(0.0, 1.0);
+        let fade = |col: Color| col.alpha(col.a * x);
+        let c = &MaterialColors {
+            raised_top: mix(c.raised_bottom, c.raised_top, x),
+            raised_edge: fade(c.raised_edge),
+            ink_top: mix(c.ink_bottom, c.ink_top, x),
+            ink_rim: fade(c.ink_rim),
+            ink_edge: fade(c.ink_edge),
+            ..*c
+        };
         let ring = || Delta::new().ring(k.ring, k.ring_offset, c.focus);
         let sink = || Delta::new().shadow_none().scale(m.press_scale);
         let off = || Delta::new().shadow_none().opacity(k.disabled);
@@ -87,7 +100,7 @@ impl Materials {
 
         let ink = control(Recipe::new().gradient(c.ink_top, c.ink_bottom).inner_rim(c.ink_rim).inner_top_edge(c.ink_edge).shadows(&e.xs));
 
-        let danger = control(Recipe::new().gradient(mix(c.danger, Color::WHITE, 0.14), c.danger).inner_rim(mix(c.danger, Color::BLACK, 0.35).alpha(0.55)).inner_top_edge(Color::WHITE.alpha(0.22)).shadows(&e.xs));
+        let danger = control(Recipe::new().gradient(mix(c.danger, Color::WHITE, 0.14 * x), c.danger).inner_rim(mix(c.danger, Color::BLACK, 0.35).alpha(0.55 * x)).inner_top_edge(Color::WHITE.alpha(0.22 * x)).shadows(&e.xs));
 
         let floating = Material::new(Recipe::new().fill(c.floating).shadows(&e.md).shadow(Shadow { spread: 1.0, color: c.float_ring, ..Shadow::default() }));
 

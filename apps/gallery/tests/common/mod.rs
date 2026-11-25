@@ -7,6 +7,8 @@ pub fn elements(item: &str, dark: bool) -> Vec<ElementInfo> {
     set_headless(true);
     let mut s = App::default();
     apply_scene(&mut s, &format!("item-{item}"));
+    let mut s = s;
+    s.g.scroll = false;
     let mut rt = Runtime::new(s, view, (1320.0, 6000.0), Env { system_dark: dark, scale: 1.0 });
     rt.frame(0.0);
     rt.elements()

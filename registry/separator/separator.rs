@@ -1,4 +1,4 @@
-//! rune-ui registry: separator 0.3.0. Copied into your app by `rune-ui add separator`; yours to change.
+//! rune-ui registry: separator 0.4.0. Copied into your app by `rune-ui add separator`; yours to change.
 //!
 //! A hairline between groups: across (`horizontal`) or down (`vertical`), optionally with quiet words in the middle ("or").
 //! Structure, not depth, so it is the one line colour.

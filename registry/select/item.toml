@@ -2,17 +2,17 @@
 schema = 1
 name = "select"
 title = "Select"
-version = "0.3.0"
+version = "0.4.0"
 type = "component"
 group = "form"
 description = "One choice of a few: a well trigger over rune-kit's listbox behaviour."
 
 [requires]
-style = ">=0.3.0, <0.4.0"
+style = ">=0.4.0, <0.5.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
-registry = ["base", "icons"]
+registry = ["base", "icons", "popup"]
 cargo = ["rune", "rune-ui-style", "rune-kit"]
 # What the stories use besides this item: they are copied only when these are installed too.
 stories = []
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "select.rs"
 target = "src/ui/select.rs"
-sha256 = "382e98798fba89a87cf79d08c50ac9745649daa531b7cfb6a6b0a8f1ed439851"
+sha256 = "eb63c2b5968668989936edb3782760293d9bf7a1292de35214992dfcf2d57898"
 
 # Copied only once the gallery block is installed.
 [[files]]

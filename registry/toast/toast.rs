@@ -1,4 +1,4 @@
-//! rune-ui registry: toast 0.3.0. Copied into your app by `rune-ui add toast`; yours to change.
+//! rune-ui registry: toast 0.4.0. Copied into your app by `rune-ui add toast`; yours to change.
 //!
 //! A short message that comes and goes: the **floating** material, an optional meaning icon, a title and a line under it, an action and
 //! a close button. It is a polite live region. [`Toaster`] is where they stack (bottom right, newest last), mounted into the overlay
@@ -13,7 +13,7 @@ use std::rc::Rc;
 use rune::{El, Shadow, col, row, text};
 use rune_ui_style::{ButtonVariant, Recipe, Size, weight};
 
-use super::base::{Press, Theme, Tone, glyph, paint};
+use super::base::{Press, Shape, Theme, Tone, glyph, paint};
 use super::button::Button;
 use super::icons;
 
@@ -53,7 +53,7 @@ impl<S: 'static> Toast<S> {
     }
 
     pub fn build(self, t: &Theme) -> El {
-        let mut r = paint(row().key(self.key.clone()).role("status").label(self.title.clone()).w(360.0).padding(t.metrics.pad_md).gap(t.metrics.pad_md - 4.0).items_start().radius(t.radius.lg).continuous_corners(), &Recipe::new().fill(t.c.floating.bg).shadows(&t.elevation.md).shadow(Shadow { spread: 1.0, color: t.c.line, ..Shadow::default() })).live_region(rune::LiveRegion::Polite);
+        let mut r = paint(row().key(self.key.clone()).role("status").label(self.title.clone()).w(360.0).padding(t.metrics.pad_md).gap(t.metrics.pad_md - 4.0).items_start().radius(t.radius.lg).round_as(t), &Recipe::new().fill(t.c.floating.bg).shadows(&t.elevation.md).shadow(Shadow { spread: 1.0, color: t.c.line, ..Shadow::default() })).live_region(rune::LiveRegion::Polite);
         if let Some(tone) = self.tone {
             let icon = match tone {
                 Tone::Success => &icons::CIRCLE_CHECK,

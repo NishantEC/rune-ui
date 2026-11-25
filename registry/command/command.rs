@@ -1,4 +1,4 @@
-//! rune-ui registry: command 0.3.0. Copied into your app by `rune-ui add command`; yours to change. Needs: kbd.
+//! rune-ui registry: command 0.4.0. Copied into your app by `rune-ui add command`; yours to change. Needs: kbd.
 //!
 //! A command palette: a search over grouped commands. Typing filters (every word of the query must appear in the label); Up and Down
 //! move the highlight, Return runs it, a press runs any row. The **floating** material; the search is a bare line over a hairline (the
@@ -15,7 +15,7 @@ use std::rc::Rc;
 use rune::{El, Icon, Key, KeyEvent, TextEdit, col, el, row, text};
 use rune_ui_style::weight;
 
-use super::base::{Choose, Pick, States, Theme, glyph, paint, paint_state};
+use super::base::{Choose, Pick, Shape, States, Theme, glyph, paint, paint_state};
 use super::icons;
 use super::kbd::Kbd;
 
@@ -128,7 +128,7 @@ impl<'a, S: 'static> Command<'a, S> {
             .caret(t.ink(), t.c.accent.fg.alpha(0.28))
             .label("Command")
             .on_edit(rune::edit_access(move |s: &mut S| access(s)))
-            .on_key(move |s: &mut S, k: &KeyEvent, _| {
+            .on_input_key(move |s: &mut S, k: &KeyEvent, _: &mut rune::Tx| {
                 match k.key {
                     Key::Down if n > 0 => move_to.as_ref().map(|f| f(s, (at + 1) % n)).is_some(),
                     Key::Up if n > 0 => move_to.as_ref().map(|f| f(s, (at + n - 1) % n)).is_some(),
@@ -157,7 +157,7 @@ impl<'a, S: 'static> Command<'a, S> {
                 list = list.child(row().h(28.0).px(t.space.at(2.5)).center_y().child(text(item.group.clone()).font(weight(t.ty.xs, t.ty.medium)).color(t.ink_faint())));
             }
             let st = States { selected: i == at, ..States::default() };
-            let mut r = row().key(format!("{}-{}", self.key, item.key)).role("option").label(item.label.clone()).focus_selected(i == at).h(t.metrics.row).px(t.metrics.pad_md - 4.0).gap(t.metrics.gap).center_y().radius(t.radius.md).continuous_corners();
+            let mut r = row().key(format!("{}-{}", self.key, item.key)).role("option").label(item.label.clone()).focus_selected(i == at).h(t.metrics.row).px(t.metrics.pad_md - 4.0).gap(t.metrics.gap).center_y().radius(t.radius.md).round_as(t);
             r = paint_state(r, &t.mat.row, st);
             if let Some(ic) = item.icon {
                 r = r.child(glyph(ic, t.control.icon_lg, if i == at { t.ink() } else { t.ink_muted() }));
@@ -172,7 +172,7 @@ impl<'a, S: 'static> Command<'a, S> {
             }
             list = list.child(r);
         }
-        let p = col().key(self.key.clone()).role("dialog").label("Command palette").w(self.width).radius(t.radius.xl).continuous_corners().clip_rounded(t.radius.xl);
+        let p = col().key(self.key.clone()).role("dialog").label("Command palette").w(self.width).radius(t.radius.xl).round_as(t).clip_rounded(t.radius.xl);
         paint(p, &t.mat.floating.base).child(search).child(list)
     }
 

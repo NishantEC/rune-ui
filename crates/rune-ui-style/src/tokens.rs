@@ -25,8 +25,11 @@ pub const TONE_ROLES: [&str; 4] = ["info", "success", "warning", "danger"];
 pub const LINE_ROLES: [&str; 2] = ["line", "ring"];
 pub const STATE_KEYS: [&str; 4] = ["hover", "pressed", "selected", "disabled"];
 pub const COMPONENT_KEYS: [&str; 11] = ["raised-top", "raised-bottom", "raised-edge", "ink-top", "ink-bottom", "ink-rim", "ink-edge", "well-shadow", "thumb", "float-ring", "shade"];
-pub const NUMBER_KEYS: [&str; 3] = ["elevation", "well-blur", "grain"];
-pub const BASE_KEYS: [&str; 3] = ["spacing", "radius", "density"];
+pub const NUMBER_KEYS: [&str; 4] = ["elevation", "well-blur", "grain", "texture"];
+/// The numeric base knobs.
+pub const BASE_KEYS: [&str; 4] = ["spacing", "radius", "density", "type-scale"];
+/// The base knobs that are words, and the words each allows.
+pub const BASE_WORDS: [(&str, &[&str]); 2] = [("corners", &["continuous", "round"]), ("font", &["inter", "system", "serif", "mono"])];
 
 /// A surface and the text that reads on it.
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -74,6 +77,30 @@ impl Mode {
     }
 }
 
+/// How rounded corners are drawn.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub enum Corners {
+    /// Apple's continuous curve (a squircle): it eases into the straight edges.
+    #[default]
+    Continuous,
+    /// A plain circular arc.
+    Round,
+}
+
+/// The type family.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub enum Font {
+    /// The built-in Inter.
+    #[default]
+    Inter,
+    /// The platform's UI font (SF on macOS), Inter where it is missing.
+    System,
+    /// A serif (New York, then Georgia), Inter where neither is installed.
+    Serif,
+    /// The platform's monospaced font.
+    Mono,
+}
+
 /// The base knobs.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Base {
@@ -81,8 +108,12 @@ pub struct Base {
     pub spacing: f32,
     /// The middle of the radius ladder (a control's corner), in points.
     pub radius: f32,
-    /// Multiplies control heights and paddings (1 comfortable, 0.875 compact).
+    /// Control heights, paddings, gaps, rows and the type ramp: 1.0 comfortable, 0.8 compact.
     pub density: f32,
+    /// Multiplies every type size (1.0 as designed).
+    pub type_scale: f32,
+    pub corners: Corners,
+    pub font: Font,
 }
 
 /// A whole theme file, parsed and checked.
@@ -110,10 +141,7 @@ impl ThemeFile {
         if name.is_empty() {
             p.push("name", "a non-empty string is required");
         }
-        let base = root.get("base").map(|b| {
-            let n = p.numbers(b, "base", &BASE_KEYS);
-            Base { spacing: n.get("spacing").copied().unwrap_or(4.0), radius: n.get("radius").copied().unwrap_or(8.0), density: n.get("density").copied().unwrap_or(1.0) }
-        });
+        let base = root.get("base").map(|b| p.base(b));
         let mut ramps = BTreeMap::new();
         if let Some(color) = root.get("color").and_then(|c| p.object(c, "color")) {
             p.keys(color, "color", &RAMPS, &["$type"]);
@@ -194,7 +222,7 @@ impl Problems {
     /// A token: `{"$value": …}` (and an optional `$description`).
     fn leaf<'a>(&mut self, v: &'a Value, path: &str) -> Option<&'a Value> {
         let o = self.object(v, path)?;
-        self.keys(o, path, &["$value"], &["$description"]);
+        self.keys(o, path, &["$value"], &["$description", "$type"]);
         o.get("$value")
     }
 
@@ -215,6 +243,45 @@ impl Problems {
             }
         }
         out
+    }
+
+    /// The base knobs: numbers, and words from a fixed list.
+    fn base(&mut self, v: &Value) -> Base {
+        let mut b = Base { spacing: 4.0, radius: 8.0, density: 1.0, type_scale: 1.0, corners: Corners::Continuous, font: Font::Inter };
+        let Some(o) = self.object(v, "base") else { return b };
+        let all: Vec<&str> = BASE_KEYS.iter().copied().chain(BASE_WORDS.iter().map(|(k, _)| *k)).collect();
+        self.keys(o, "base", &all, &[]);
+        for k in BASE_KEYS {
+            let at = join("base", k);
+            if let Some(val) = o.get(k).and_then(|x| self.leaf(x, &at)) {
+                match val.as_f64() {
+                    Some(n) => match k {
+                        "spacing" => b.spacing = n as f32,
+                        "radius" => b.radius = n as f32,
+                        "density" => b.density = n as f32,
+                        _ => b.type_scale = n as f32,
+                    },
+                    None => self.push(&at, "must be a number"),
+                }
+            }
+        }
+        for (k, allowed) in BASE_WORDS {
+            let at = join("base", k);
+            if let Some(val) = o.get(k).and_then(|x| self.leaf(x, &at)) {
+                match val.as_str().filter(|w| allowed.contains(w)) {
+                    Some(w) => match w {
+                        "continuous" => b.corners = Corners::Continuous,
+                        "round" => b.corners = Corners::Round,
+                        "inter" => b.font = Font::Inter,
+                        "system" => b.font = Font::System,
+                        "serif" => b.font = Font::Serif,
+                        _ => b.font = Font::Mono,
+                    },
+                    None => self.push(&at, &format!("must be one of {}", allowed.join(", "))),
+                }
+            }
+        }
+        b
     }
 
     /// `{ramp.step}` or `{ramp.step} / alpha`.

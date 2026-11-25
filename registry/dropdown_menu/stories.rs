@@ -14,7 +14,7 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> rune::El {
     let (t, g) = (c.t, c.g);
     let open = g.is_open("dropdown-demo");
     let trigger = Button::<S>::new("dropdown-trigger", "Account").variant(ButtonVariant::Secondary).trailing_icon(&icons::CHEVRON_DOWN).on_press(move |s: &mut S| acc(s).toggle_open("dropdown-demo")).build(t);
-    let menu = DropdownMenu::new("dropdown-demo")
+    let menu = DropdownMenu::<S>::new("dropdown-demo")
         .trigger(trigger)
         .open(open)
         .on_close(move |s: &mut S| acc(s).close("dropdown-demo"))

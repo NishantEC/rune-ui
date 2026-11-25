@@ -1,4 +1,4 @@
-//! rune-ui registry: sidebar 0.3.0. Copied into your app by `rune-ui add sidebar`; yours to change.
+//! rune-ui registry: sidebar 0.4.0. Copied into your app by `rune-ui add sidebar`; yours to change.
 //!
 //! An app's side column: a header, groups of rows under quiet labels, a footer. A row is an icon, its words and an optional count;
 //! it washes on hover and takes the selected wash and the first ink when it is the current page. The column sits on the slab colour.
@@ -13,7 +13,7 @@ use std::rc::Rc;
 use rune::{El, Icon, col, row, text};
 use rune_ui_style::{tabular, weight};
 
-use super::base::{Press, State, States, Theme, glyph, paint, paint_state};
+use super::base::{Press, Shape, State, States, Theme, glyph, paint, paint_state};
 
 /// One row.
 pub struct SidebarItem<S: 'static> {
@@ -62,7 +62,7 @@ impl<S: 'static> SidebarItem<S> {
             st.set(p, true);
         }
         let ink = if self.selected { t.ink() } else { t.ink_muted() };
-        let mut r = row().key(self.key).role("link").label(self.label.clone()).focusable(true).w_full().h(t.metrics.row).px(t.metrics.gap).gap(t.metrics.gap).center_y().radius(t.radius.md).continuous_corners();
+        let mut r = row().key(self.key).role("link").label(self.label.clone()).focusable(true).w_full().h(t.metrics.row).px(t.metrics.gap).gap(t.metrics.gap).center_y().radius(t.radius.md).round_as(t);
         if self.selected {
             r = r.checked(true);
         }

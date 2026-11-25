@@ -2,13 +2,13 @@
 schema = 1
 name = "tooltip"
 title = "Tooltip"
-version = "0.3.0"
+version = "0.4.0"
 type = "component"
 group = "overlays"
 description = "A short ink label on hover or focus, from rune-kit's tooltip behaviour."
 
 [requires]
-style = ">=0.3.0, <0.4.0"
+style = ">=0.4.0, <0.5.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = ["button"]
 [[files]]
 path = "tooltip.rs"
 target = "src/ui/tooltip.rs"
-sha256 = "edb80e26f4e59b4041099773654bc0578c50b802d38dabc3b55fab1aef289fe0"
+sha256 = "d288b47f6c51f01b32c603a22d373269ce807b6035533e989b64dc2c573e776e"
 
 # Copied only once the gallery block is installed.
 [[files]]

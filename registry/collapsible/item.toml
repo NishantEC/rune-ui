@@ -2,13 +2,13 @@
 schema = 1
 name = "collapsible"
 title = "Collapsible"
-version = "0.3.0"
+version = "0.4.0"
 type = "component"
 group = "structure"
 description = "One section that folds behind its trigger."
 
 [requires]
-style = ">=0.3.0, <0.4.0"
+style = ">=0.4.0, <0.5.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "collapsible.rs"
 target = "src/ui/collapsible.rs"
-sha256 = "e0221640655be3b59b47bf8a33e826446c2c2a1408e4b9f4c9fd9031d7040314"
+sha256 = "5f091796cbe1121effbb1d86f099ef758430c9fbabe7c8da8b1b27179511a5c0"
 
 # Copied only once the gallery block is installed.
 [[files]]

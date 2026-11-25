@@ -2,13 +2,13 @@
 schema = 1
 name = "badge"
 title = "Badge"
-version = "0.3.0"
+version = "0.4.0"
 type = "component"
 group = "display"
 description = "A small label: default, secondary, outline, destructive or a meaning, with an optional dot or count."
 
 [requires]
-style = ">=0.3.0, <0.4.0"
+style = ">=0.4.0, <0.5.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "badge.rs"
 target = "src/ui/badge.rs"
-sha256 = "548f73f3dce2253fca7db5ce3d1ef8199b449f302d56bcee36e7f17742367620"
+sha256 = "a2c2419a36c3b7195c68561b919747c8faaeb35465d015d2b5b608797c9a6ecc"
 
 # Copied only once the gallery block is installed.
 [[files]]

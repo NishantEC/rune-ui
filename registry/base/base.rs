@@ -1,10 +1,10 @@
-//! rune-ui registry: base 0.3.0. What every component shares: the press type, size metrics, the 40 point hit area, a glyph, the
+//! rune-ui registry: base 0.4.0. What every component shares: the press type, size metrics, the 40 point hit area, a glyph, the
 //! spinner, the words beside a control, and `paint` re-exported from the style layer. `rune-ui init` copies it; yours to change.
 
 use std::rc::Rc;
 
 use rune::{Color, El, Icon, LoopSpec, TextStyle, col, el, icon, row, text};
-pub use rune_ui_style::{ButtonVariant, Delta, Material, Parts, Recipe, Size, State, States, Theme, Tint, Tone, paint, paint_state, recipes, resolve};
+pub use rune_ui_style::{ButtonVariant, Corners, Delta, Material, Parts, Recipe, Size, State, States, Theme, Tint, Tone, paint, paint_state, recipes, resolve};
 
 use super::icons;
 
@@ -72,6 +72,19 @@ impl SizeExt for Size {
 
     fn radius(self, t: &Theme) -> f32 {
         rune_ui_style::Radius::fit(if self == Size::Lg { t.radius.lg } else { t.radius.md }, self.height(t))
+    }
+}
+
+/// The theme's corner style on a rounded surface: Apple's continuous curve or a plain arc (`base.corners` in the theme file). Rune
+/// draws the fill, border, focus ring (outline) and clip in that shape; drop and inner shadows keep circular corners (indistinguishable
+/// at these blurs).
+pub trait Shape {
+    fn round_as(self, t: &Theme) -> El;
+}
+
+impl Shape for El {
+    fn round_as(self, t: &Theme) -> El {
+        if t.corners == Corners::Continuous { self.continuous_corners() } else { self }
     }
 }
 

@@ -1,4 +1,4 @@
-//! rune-ui registry: accordion 0.3.0. Copied into your app by `rune-ui add accordion`; yours to change.
+//! rune-ui registry: accordion 0.4.0. Copied into your app by `rune-ui add accordion`; yours to change.
 //!
 //! Sections that fold, in one slab split by hairlines: each trigger a row with its title and a chevron that turns, saying `expanded`;
 //! the content under it while open. The app decides which are open (one at a time, or several).
@@ -12,7 +12,7 @@ use std::rc::Rc;
 use rune::{El, col, row, text};
 use rune_ui_style::weight;
 
-use super::base::{Choose, State, States, Theme, glyph, paint, paint_state};
+use super::base::{Choose, Shape, State, States, Theme, glyph, paint, paint_state};
 use super::icons;
 
 pub struct Accordion<S: 'static> {
@@ -45,7 +45,7 @@ impl<S: 'static> Accordion<S> {
 
     pub fn build(self, t: &Theme) -> El {
         let r = t.radius.xl;
-        let mut c = paint(col().key(self.key.clone()).w_full().radius(r).continuous_corners().clip_rounded(r), &t.mat.slab.base);
+        let mut c = paint(col().key(self.key.clone()).w_full().radius(r).round_as(t).clip_rounded(r), &t.mat.slab.base);
         for (i, (title, open, content)) in self.items.into_iter().enumerate() {
             if i > 0 {
                 c = c.child(row().w_full().px(t.metrics.inset).child(rune::el().w_full().h(1.0).fill(t.c.line)));

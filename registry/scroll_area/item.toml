@@ -2,13 +2,13 @@
 schema = 1
 name = "scroll_area"
 title = "ScrollArea"
-version = "0.3.0"
+version = "0.4.0"
 type = "component"
 group = "structure"
 description = "A region that scrolls inside a fixed height, its edges fading."
 
 [requires]
-style = ">=0.3.0, <0.4.0"
+style = ">=0.4.0, <0.5.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,11 +20,11 @@ stories = []
 [[files]]
 path = "scroll_area.rs"
 target = "src/ui/scroll_area.rs"
-sha256 = "7c8baf53636f02669e312a3b5348cf26e17d41f61d659fa96739e2aa010bdede"
+sha256 = "8238bf48771ff1a64c1d347251c67166b6091285b9f78007365cbbc3058950eb"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/scroll_area.rs"
 role = "story"
-sha256 = "279e20c324d92b9f560d7b39d4a4dae2f9e8a3e426d7880211f554088c6770f5"
+sha256 = "337cf216cca044f2476a4ca88295c4f7b1e62165c03965293b46b940e9167890"

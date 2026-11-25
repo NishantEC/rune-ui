@@ -2,17 +2,17 @@
 schema = 1
 name = "dropdown_menu"
 title = "DropdownMenu"
-version = "0.3.0"
+version = "0.4.0"
 type = "component"
 group = "overlays"
 description = "A menu under its trigger: rune-kit's menu behaviour on the floating material."
 
 [requires]
-style = ">=0.3.0, <0.4.0"
+style = ">=0.4.0, <0.5.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
-registry = ["base", "icons"]
+registry = ["base", "icons", "popup"]
 cargo = ["rune", "rune-ui-style", "rune-kit"]
 # What the stories use besides this item: they are copied only when these are installed too.
 stories = ["button"]
@@ -20,11 +20,11 @@ stories = ["button"]
 [[files]]
 path = "dropdown_menu.rs"
 target = "src/ui/dropdown_menu.rs"
-sha256 = "0a4fa2394bfa21c3b40c8e71a32459357958dbd868de70b5cfa37543ca6252db"
+sha256 = "98102dcb8254a4f988e5ceb048a4741b20d486b2d5b1ae4d778e497c446efbe8"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/dropdown_menu.rs"
 role = "story"
-sha256 = "9ab2f5e9547730f6e3b43414dacbd2e6a017809d08729e7c99228654eb310a9b"
+sha256 = "50473eddc9d1e7ddf4d18428f66af92830d5caa0257cb190f41f0168afd666eb"

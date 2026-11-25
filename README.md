@@ -84,10 +84,16 @@ rune-ui add gallery
 struct App { gallery: ui::gallery::GalleryState, /* ... */ }
 
 // where the page goes (Neko: its Components route, `neko-rune --open components`, ⌘K → Developer)
-let file = rune_ui_style::ThemeFile::parse(rune_ui_themes::DEFAULT).unwrap(); // or your own theme file
-let page = ui::gallery::page(&file, cx.system_dark(), &s.gallery, |s: &mut App| &mut s.gallery, &ui::stories::all(), &mut layer);
-// …inside your scroll view; `layer` goes to the root's overlay host (above)
+// pass your own theme file's JSON in place of rune_ui_themes::DEFAULT
+let mut layer = Vec::new();
+let page = ui::gallery::page(rune_ui_themes::DEFAULT, cx.system_dark(), &s.gallery, |s: &mut App| &mut s.gallery, &ui::stories::all(), &mut layer);
+ui::base::overlay_root(page, layer) // the page fills its region and scrolls itself, beside the theme editor
 ```
+
+The page has a **theme editor** on its right (about 300 points): light or dark, base neutral (theme, grey, stone, zinc, slate), accent
+(swatches or a hex), radius, corner style (continuous or round), font (Inter, system, serif, mono), type scale, density, shadow
+strength, and material texture (flat to tactile), with Reset, Copy theme and Export. Every control writes a key of the theme file the
+page is read from (`gallery::edit_theme`), so what you see is the tokens at work, and Export writes a theme file valid against the schema.
 
 Stories register themselves. Each item's `stories.rs` is copied to `src/ui/stories/<name>.rs` once the gallery block is installed, and once everything the story shows is installed too. `rune-ui add` keeps `src/ui/stories/mod.rs` listing them. So a component you add appears on the page, and one you have not added does not. For Rune's own hover tooltips to match, also add `tooltip` and call `cx.help_look(ui::tooltip::look(&theme))` in your view.
 

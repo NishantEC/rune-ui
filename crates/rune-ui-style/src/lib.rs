@@ -40,7 +40,10 @@ pub use recipe::{Delta, Layer, LayerKind, Live, Material, Parts, Recipe, State, 
 pub use recipes::{ButtonVariant, Size, Tone};
 pub use scale::{COMFORTABLE, COMPACT, Controls, Elevation, MAX_CORNER_SHARE, Metrics, Motion, Radius, Space, TypeScale, comfort, smooth_stack, tabular, weight};
 pub use theme::{Palette, Theme, ThemeError};
-pub use tokens::{Base, Mode, Role, ThemeFile};
+pub use tokens::{Base, Corners, Font, Mode, Role, ThemeFile};
 
 /// This crate's version, which registry items name in `requires.style`.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
+
+/// The JSON crate theme files are read with, for code that edits a theme file (the gallery's theme editor).
+pub use serde_json;

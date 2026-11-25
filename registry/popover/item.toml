@@ -2,13 +2,13 @@
 schema = 1
 name = "popover"
 title = "Popover"
-version = "0.3.0"
+version = "0.4.0"
 type = "component"
 group = "overlays"
 description = "A floating panel beside its trigger; a press outside or Escape closes it."
 
 [requires]
-style = ">=0.3.0, <0.4.0"
+style = ">=0.4.0, <0.5.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = ["button", "switch"]
 [[files]]
 path = "popover.rs"
 target = "src/ui/popover.rs"
-sha256 = "6818362134e838b40a1bc3a11853d09968b32fa965f451818ff68f14b47202d3"
+sha256 = "c1ba972b70fbc3acb647627b190a39a546da75e8355dbe261c02cd3e9f231cae"
 
 # Copied only once the gallery block is installed.
 [[files]]

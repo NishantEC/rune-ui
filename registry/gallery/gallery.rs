@@ -1,4 +1,4 @@
-//! rune-ui registry: gallery 0.3.0 (a block). Copied into your app by `rune-ui add gallery`; yours to change.
+//! rune-ui registry: gallery 0.4.0 (a block). Copied into your app by `rune-ui add gallery`; yours to change.
 //!
 //! A page that shows every component your app has added, in every state: group tabs, each component's stories (its variants × states),
 //! a light/dark switch and a density switch, and a materials sheet that builds each recipe one layer at a time. It is made from the
@@ -18,8 +18,9 @@
 //! ui::base::overlay_root(scrolling(page), layer) // at the view's root: overlays float above, anchored, out of the layout
 //! ```
 
+use super::base::Shape;
 use rune::{El, TextEdit, col, el, row, text};
-use rune_ui_style::{Layer, LayerKind, Material, Recipe, State as Look, Theme, ThemeFile, paint, weight};
+use rune_ui_style::{Corners, Font, Layer, LayerKind, Material, Recipe, State as Look, Theme, paint, weight};
 use std::collections::HashMap;
 
 /// How a story reaches the gallery's state inside the app's state.
@@ -79,6 +80,12 @@ pub struct GalleryState {
     pub dark: Option<bool>,
     /// The compact density (the theme's `density` knob at `COMPACT`, 0.8; comfortable is the theme's own, 1.0).
     pub compact: bool,
+    /// The theme editor's values, written into the theme file before it is read.
+    pub editor: Editor,
+    /// Lay the page out to fill its window with the content scrolling beside the editor (an app's window), or whole (a picture).
+    pub scroll: bool,
+    /// Where the editor last exported the theme.
+    pub exported: Option<String>,
     /// The overlay open now (a menu, a dialog, a select's list).
     pub open: Option<String>,
     /// Where a secondary press opened the context menu.
@@ -90,13 +97,12 @@ pub struct GalleryState {
     pub values: HashMap<String, f32>,
     pub choices: HashMap<String, String>,
     pub edits: HashMap<String, TextEdit>,
-    pub combos: HashMap<String, rune_kit::ComboboxState>,
     empty: TextEdit,
 }
 
 impl Default for GalleryState {
     fn default() -> Self {
-        let mut s = GalleryState { show: "actions".to_owned(), only: None, dark: None, compact: false, open: None, point: None, toasts: Vec::new(), presses: 0, flags: HashMap::new(), values: HashMap::new(), choices: HashMap::new(), edits: HashMap::new(), combos: HashMap::new(), empty: TextEdit::new("") };
+        let mut s = GalleryState { show: "actions".to_owned(), only: None, dark: None, compact: false, editor: Editor::default(), scroll: true, exported: None, open: None, point: None, toasts: Vec::new(), presses: 0, flags: HashMap::new(), values: HashMap::new(), choices: HashMap::new(), edits: HashMap::new(), empty: TextEdit::new("") };
         for (k, v) in [("name", "Placeholder project"), ("budget", "12.50"), ("query", "theme"), ("secret", "sample-pass"), ("command-miss", "zzz"), ("notes", "A few words about the placeholder project, long enough to wrap onto a second line.")] {
             s.edits.insert(k.to_owned(), TextEdit::new(v));
         }
@@ -137,12 +143,6 @@ impl GalleryState {
     pub fn edit_mut(&mut self, k: &str) -> &mut TextEdit {
         self.edits.entry(k.to_owned()).or_insert_with(|| TextEdit::new(""))
     }
-    pub fn combo(&self, k: &str) -> &rune_kit::ComboboxState {
-        self.combos.get(k).unwrap_or_else(|| blank_combo())
-    }
-    pub fn combo_mut(&mut self, k: &str) -> &mut rune_kit::ComboboxState {
-        self.combos.entry(k.to_owned()).or_default()
-    }
     pub fn is_open(&self, k: &str) -> bool {
         self.open.as_deref() == Some(k)
     }
@@ -154,11 +154,6 @@ impl GalleryState {
             self.open = None;
         }
     }
-}
-
-fn blank_combo() -> &'static rune_kit::ComboboxState {
-    thread_local! { static B: &'static rune_kit::ComboboxState = Box::leak(Box::default()); }
-    B.with(|b| *b)
 }
 
 /// A specimen with its caption under it.
@@ -173,13 +168,13 @@ pub fn specs(t: &Theme, items: Vec<El>) -> El {
 
 /// A labelled line: the label at the left, the content after it.
 pub fn labelled(t: &Theme, label: &str, e: El) -> El {
-    row().gap(t.space.at(6.0)).items_start().child(col().w(96.0).pt(t.space.at(1.5)).child(text(label.to_owned()).font(weight(t.ty.sm, t.ty.medium)).color(t.ink_muted()))).child(e)
+    row().w_full().gap(t.space.at(6.0)).items_start().child(col().w(96.0).min_w(96.0).pt(t.space.at(1.5)).child(text(label.to_owned()).font(weight(t.ty.sm, t.ty.medium)).color(t.ink_muted()))).child(e.grow(1.0).shrink().min_w(0.0))
 }
 
 /// A quiet pill button for the page's own controls (it draws from materials, so it needs no other item).
 fn pill<S: 'static>(t: &Theme, key: String, words: &str, on: bool, f: impl Fn(&mut S) + 'static) -> El {
     let m = if on { &t.mat.raised } else { &t.mat.row };
-    let face = row().key(key).role("button").label(words.to_owned()).checked(on).focusable(true).h(t.control.sm).px(t.space.at(3.0)).center().radius(t.radius.md).continuous_corners();
+    let face = row().key(key).role("button").label(words.to_owned()).checked(on).focusable(true).h(t.control.sm).px(t.space.at(3.0)).center().radius(t.radius.md).round_as(t);
     rune_ui_style::paint_state(face, m, Default::default()).child(text(words.to_owned()).font(weight(t.ty.sm, if on { t.ty.medium } else { t.ty.regular })).color(if on { t.ink() } else { t.ink_muted() }).a11y_hidden()).on_press(f)
 }
 
@@ -210,12 +205,12 @@ fn layers(t: &Theme, name: &str, m: &Material, w: f32, h: f32, r: f32) -> El {
             Layer::BackdropBlur(_) => "+ blur",
             Layer::Grain { .. } => "+ grain (skipped)",
         };
-        items.push(spec(t, word, paint(el().size(w, h).radius(r).continuous_corners(), &so_far)));
+        items.push(spec(t, word, paint(el().size(w, h).radius(r).round_as(t), &so_far)));
     }
     items.push(el().w(1.0).h(h).fill(t.c.line));
     for s in [Look::Hover, Look::Pressed, Look::FocusVisible, Look::Selected, Look::Invalid, Look::Disabled] {
         if m.delta(s).is_some_and(|d| !d.is_empty()) {
-            items.push(spec(t, s.word(), paint(el().size(w, h).radius(r).continuous_corners(), &m.state(s))));
+            items.push(spec(t, s.word(), paint(el().size(w, h).radius(r).round_as(t), &m.state(s))));
         }
     }
     labelled(t, name, specs(t, items))
@@ -233,16 +228,195 @@ pub fn materials(t: &Theme) -> El {
         };
         c = c.child(layers(t, name, m, w, h, r));
     }
-    c.child(labelled(t, "atmosphere", spec(t, "fill + grain (skipped: no grain primitive in Rune)", paint(el().size(240.0, 64.0).radius(t.radius.xl), &t.mat.atmosphere))))
+    c.child(labelled(t, "atmosphere", spec(t, "fill + grain (skipped: no grain primitive in Rune)", paint(el().size(240.0, 64.0).radius(t.radius.xl).round_as(t), &t.mat.atmosphere))))
 }
 
-/// The theme the page draws in: the app's file, in the page's appearance and density.
-pub fn theme_for(file: &ThemeFile, app_dark: bool, g: &GalleryState) -> Theme {
-    let mut f = file.clone();
-    if g.compact {
-        f.base.density = rune_ui_style::COMPACT;
+/// The theme editor's values. Each one writes a key of the theme file (`edit_theme`), which is then read like any theme: the editor
+/// proves the tokens drive everything.
+#[derive(Clone, Debug, PartialEq)]
+pub struct Editor {
+    /// Index into [`NEUTRALS`].
+    pub neutral: usize,
+    /// The accent as `#rrggbb` (`None`: the theme's own).
+    pub accent: Option<String>,
+    /// `base.radius`, in points (`None`: the theme's own).
+    pub radius: Option<f32>,
+    pub corners: Corners,
+    pub font: Font,
+    /// `base.type-scale`.
+    pub type_scale: f32,
+    /// Multiplies each mode's `elevation`.
+    pub shadow: f32,
+    /// Each mode's `texture`: flat (0) to tactile (1).
+    pub texture: f32,
+}
+
+impl Default for Editor {
+    fn default() -> Self {
+        Editor { neutral: 0, accent: None, radius: None, corners: Corners::Continuous, font: Font::Inter, type_scale: 1.0, shadow: 1.0, texture: 1.0 }
     }
-    Theme::from_file(&f, g.dark.unwrap_or(app_dark))
+}
+
+/// The base neutral families: (name, chroma, hue). Index 0 keeps the theme's own ramp.
+pub const NEUTRALS: [(&str, f32, f32); 5] = [("Theme", 0.0, 0.0), ("Grey", 0.0, 0.0), ("Stone", 0.010, 75.0), ("Zinc", 0.008, 265.0), ("Slate", 0.020, 255.0)];
+
+/// Accent swatches.
+pub const ACCENTS: [&str; 6] = ["#2f6fe4", "#7c4dea", "#0f9488", "#d9590f", "#d6336c", "#3f3f46"];
+
+fn ramp_like(ramp: &mut rune_ui_style::serde_json::Value, chroma: f32, hue: f32, keep_ends: bool) {
+    let Some(steps) = ramp.as_object_mut() else { return };
+    for (step, v) in steps.iter_mut() {
+        if step.starts_with('$') {
+            continue;
+        }
+        let Some(old) = v["$value"].as_str().and_then(rune::color::hex) else { continue };
+        if keep_ends && (step == "0" || step == "1000") {
+            continue;
+        }
+        let l = old.to_oklab()[0];
+        // Chroma fades toward black and white so the ends stay neutral and in gamut.
+        let c = chroma * (1.0 - (2.0 * l - 1.0).powi(2)).max(0.0).sqrt();
+        let hex = rune::oklch(l, c, hue).hex();
+        v["$value"] = rune_ui_style::serde_json::Value::from(&hex[..7]);
+    }
+}
+
+/// The theme file with the editor's values written in.
+pub fn edit_theme(json: &str, g: &GalleryState) -> rune_ui_style::serde_json::Value {
+    use rune_ui_style::serde_json::Value;
+    let mut v: Value = rune_ui_style::serde_json::from_str(json).unwrap_or(Value::Null);
+    let e = &g.editor;
+    if e.neutral > 0
+        && let Some((_, c, h)) = NEUTRALS.get(e.neutral)
+    {
+        ramp_like(&mut v["color"]["neutral"], *c, *h, true);
+    }
+    if let Some(accent) = e.accent.as_deref().and_then(rune::color::hex) {
+        let lab = accent.to_oklab();
+        ramp_like(&mut v["color"]["blue"], lab[1].hypot(lab[2]) * 1.15, lab[2].atan2(lab[1]).to_degrees(), false);
+    }
+    if let Some(r) = e.radius {
+        v["base"]["radius"]["$value"] = Value::from(r);
+    }
+    v["base"]["corners"]["$value"] = Value::from(if e.corners == Corners::Continuous { "continuous" } else { "round" });
+    v["base"]["font"]["$value"] = Value::from(match e.font {
+        Font::Inter => "inter",
+        Font::System => "system",
+        Font::Serif => "serif",
+        Font::Mono => "mono",
+    });
+    v["base"]["type-scale"]["$value"] = Value::from(e.type_scale);
+    if g.compact {
+        v["base"]["density"]["$value"] = Value::from(rune_ui_style::COMPACT);
+    }
+    for m in ["light", "dark"] {
+        let el = v["modes"][m]["number"]["elevation"]["$value"].as_f64().unwrap_or(1.0);
+        v["modes"][m]["number"]["elevation"]["$value"] = Value::from(el * f64::from(e.shadow));
+        v["modes"][m]["number"]["texture"]["$value"] = Value::from(e.texture);
+    }
+    v
+}
+
+/// The theme the page draws in: the app's theme file with the editor's values, in the page's appearance.
+pub fn theme_for(json: &str, app_dark: bool, g: &GalleryState) -> Theme {
+    let edited = edit_theme(json, g).to_string();
+    Theme::from_json(&edited, g.dark.unwrap_or(app_dark)).or_else(|_| Theme::from_json(json, g.dark.unwrap_or(app_dark))).expect("the app's theme file parses")
+}
+
+
+// ---- the theme editor ----
+
+fn heading(t: &Theme, words: &str) -> El {
+    text(words.to_owned()).font(weight(t.ty.xs, t.ty.medium)).color(t.ink_faint())
+}
+
+/// A labelled control in the editor.
+fn field(t: &Theme, label: &str, control: El) -> El {
+    col().w_full().gap(t.metrics.label_gap).child(heading(t, label)).child(control)
+}
+
+/// One of a few, as pills that wrap.
+fn choices<S: 'static>(t: &Theme, key: &str, words: &[&str], at: usize, access: Access<S>, set: fn(&mut GalleryState, usize)) -> El {
+    let mut r = row().key(key.to_owned()).role("radiogroup").label(key.to_owned()).w_full().gap(t.space.at(1.0)).flex_wrap();
+    for (i, w) in words.iter().enumerate() {
+        r = r.child(pill::<S>(t, format!("{key}-{i}"), w, i == at, move |s: &mut S| set(access(s), i)));
+    }
+    r
+}
+
+/// A value in a range: a well track, an ink fill, a thumb; drag or press anywhere on it.
+fn slider<S: 'static>(t: &Theme, key: &str, value: f32, min: f32, max: f32, words: String, access: Access<S>, set: fn(&mut GalleryState, f32)) -> El {
+    let frac = ((value - min) / (max - min)).clamp(0.0, 1.0);
+    let track = paint(row().w_full().h(6.0).radius(3.0).round_as(t), &t.mat.well.base).child(paint(el().w_frac(frac).h(6.0).radius(3.0), &Recipe::new().fill(t.c.primary.bg)));
+    let thumb = row().absolute(0.0, 2.0).w_full().h(16.0).child(el().w_frac(frac).h(16.0)).child(paint(el().size(16.0, 16.0).radius(8.0).ml(-16.0 * frac), &t.mat.thumb.base));
+    let bar = col().key(key.to_owned()).role("slider").label(key.to_owned()).range_value(f64::from(value), f64::from(min), f64::from(max)).focusable(true).grow(1.0).h(20.0).justify_center().child(track).child(thumb).on_drag(move |s: &mut S, d: &mut rune::Drag, _: &mut rune::Tx| {
+        set(access(s), min + (d.x / d.w.max(1.0)).clamp(0.0, 1.0) * (max - min));
+    });
+    row().w_full().gap(t.space.at(3.0)).center_y().child(bar).child(text(words).font(rune_ui_style::tabular(t.ty.sm)).color(t.ink_muted()).w(40.0))
+}
+
+/// The editor: every control writes the theme file the whole page is drawn from.
+pub fn editor_panel<S: 'static>(t: &Theme, json: &str, app_dark: bool, g: &GalleryState, access: Access<S>) -> El {
+    let e = &g.editor;
+    let neutral_names: Vec<&str> = NEUTRALS.iter().map(|n| n.0).collect();
+    let mut swatches = row().key("editor-accent").role("radiogroup").label("Accent").gap(t.space.at(1.5)).flex_wrap();
+    for (i, hex) in ACCENTS.iter().enumerate() {
+        let on = e.accent.as_deref() == Some(*hex);
+        let color = rune::color::hex(hex).unwrap_or(t.c.accent.fg);
+        let mut dot = row().key(format!("editor-accent-{i}")).role("radio").label((*hex).to_owned()).checked(on).focusable(true).size(22.0, 22.0).radius(11.0).fill(color).center();
+        if on {
+            dot = dot.box_shadow(rune::Shadow { spread: 2.0, color: t.c.page.bg, ..Default::default() }).box_shadow(rune::Shadow { spread: 3.5, color, ..Default::default() });
+        }
+        let pick = (*hex).to_owned();
+        swatches = swatches.child(dot.on_press(move |s: &mut S| access(s).editor.accent = Some(pick.clone())));
+    }
+    let hex_field = paint(row().w_full().h(t.control.sm).px(t.space.at(2.0)).center_y().radius(t.radius.md).round_as(t), &t.mat.well.base).child(
+        rune::text_input(g.edit("editor-hex"), t.ty.sm).key("editor-hex").single_line().grow(1.0).min_w(0.0).color(t.ink()).placeholder("#rrggbb, then Return", t.ink_faint()).label("Accent hex").on_edit(rune::edit_access(move |s: &mut S| access(s).edit_mut("editor-hex"))).on_submit(move |s: &mut S, _| {
+            let g = access(s);
+            let typed = g.edit("editor-hex").text.trim().to_owned();
+            let typed = if typed.starts_with('#') { typed } else { format!("#{typed}") };
+            if typed.len() == 7 && rune::color::hex(&typed).is_some() {
+                g.editor.accent = Some(typed);
+            }
+        }),
+    );
+    let dark = g.dark.unwrap_or(app_dark);
+    let export_json = rune_ui_style::serde_json::to_string_pretty(&edit_theme(json, g)).unwrap_or_default();
+    let copy_json = export_json.clone();
+    let buttons = row().w_full().gap(t.space.at(1.5)).flex_wrap()
+        .child(pill::<S>(t, "editor-reset".to_owned(), "Reset", false, move |s: &mut S| {
+            let g = access(s);
+            g.editor = Editor::default();
+            g.compact = false;
+            g.dark = None;
+            g.exported = None;
+        }))
+        .child(pill::<S>(t, "editor-copy".to_owned(), "Copy theme", false, |_: &mut S| {}).on_press_tx(move |_: &mut S, tx: &mut rune::Tx| tx.copy(copy_json.clone())))
+        .child(pill::<S>(t, "editor-export".to_owned(), "Export", false, move |s: &mut S| {
+            let dir = std::env::var_os("HOME").map(|h| std::path::PathBuf::from(h).join("Downloads")).filter(|d| d.is_dir()).unwrap_or_else(std::env::temp_dir);
+            let path = dir.join("rune-ui-theme.json");
+            access(s).exported = Some(match std::fs::write(&path, &export_json) {
+                Ok(()) => format!("Wrote {}", path.display()),
+                Err(e) => format!("Could not write {}: {e}", path.display()),
+            });
+        }));
+    let mut c = col().key("gallery-editor").role("region").label("Theme editor").w(300.0).padding(t.metrics.inset).gap(t.metrics.stack)
+        .child(text("Theme").font(t.ty.lg).color(t.ink()).role("heading").level(2))
+        .child(field(t, "Light or dark", choices::<S>(t, "editor-mode", &["Light", "Dark"], usize::from(dark), access, |g, i| g.dark = Some(i == 1))))
+        .child(field(t, "Base neutral", choices::<S>(t, "editor-neutral", &neutral_names, e.neutral, access, |g, i| g.editor.neutral = i)))
+        .child(field(t, "Accent", col().w_full().gap(t.space.at(2.0)).child(swatches).child(hex_field)))
+        .child(field(t, "Radius", slider::<S>(t, "editor-radius", t.radius.md, 0.0, 16.0, format!("{:.0}", t.radius.md), access, |g, v| g.editor.radius = Some(v.round()))))
+        .child(field(t, "Corners", choices::<S>(t, "editor-corners", &["Continuous", "Round"], usize::from(e.corners == Corners::Round), access, |g, i| g.editor.corners = if i == 0 { Corners::Continuous } else { Corners::Round })))
+        .child(field(t, "Font", choices::<S>(t, "editor-font", &["Inter", "System", "Serif", "Mono"], e.font as usize, access, |g, i| g.editor.font = [Font::Inter, Font::System, Font::Serif, Font::Mono][i])))
+        .child(field(t, "Type scale", slider::<S>(t, "editor-type", e.type_scale, 0.85, 1.25, format!("{:.2}", e.type_scale), access, |g, v| g.editor.type_scale = (v * 20.0).round() / 20.0)))
+        .child(field(t, "Density", choices::<S>(t, "editor-density", &["Comfortable", "Compact"], usize::from(g.compact), access, |g, i| g.compact = i == 1)))
+        .child(field(t, "Shadow strength", slider::<S>(t, "editor-shadow", e.shadow, 0.0, 2.5, format!("{:.1}", e.shadow), access, |g, v| g.editor.shadow = (v * 10.0).round() / 10.0)))
+        .child(field(t, "Material: flat to tactile", slider::<S>(t, "editor-texture", e.texture, 0.0, 1.0, format!("{:.0}%", e.texture * 100.0), access, |g, v| g.editor.texture = (v * 20.0).round() / 20.0)))
+        .child(buttons);
+    if let Some(note) = &g.exported {
+        c = c.child(text(note.clone()).font(t.ty.xs).color(t.ink_muted()).wrap().min_w(0.0));
+    }
+    c
 }
 
 /// One component's block: its title and each story.
@@ -262,8 +436,8 @@ pub fn item_block<S: 'static>(c: &mut Ctx<S>, item: &StoryItem<S>) -> El {
 /// Overlays (menus, select lists, popovers, dialogs, sheets, toasts) are pushed into `layer`, never laid out inside the page: the app
 /// mounts them at its root, after its content, with `base::overlay_root(content, layer)` (that is, `rune_kit::root`). Only there do they
 /// float over everything, stay anchored to their triggers through scrolling, and leave the page's layout alone.
-pub fn page<S: 'static>(file: &ThemeFile, app_dark: bool, g: &GalleryState, access: Access<S>, items: &[StoryItem<S>], layer: &mut Vec<El>) -> El {
-    let t = theme_for(file, app_dark, g);
+pub fn page<S: 'static>(json: &str, app_dark: bool, g: &GalleryState, access: Access<S>, items: &[StoryItem<S>], layer: &mut Vec<El>) -> El {
+    let t = theme_for(json, app_dark, g);
     let mut tabs = row().key("gallery-groups").role("tablist").label("Groups").gap(t.space.at(1.0)).flex_wrap();
     let mut shown: Vec<(&str, &str)> = GROUPS.iter().filter(|(k, _, _)| items.iter().any(|i| i.group == *k)).map(|(k, n, _)| (*k, *n)).collect();
     shown.push(("materials", "Materials"));
@@ -278,8 +452,7 @@ pub fn page<S: 'static>(file: &ThemeFile, app_dark: bool, g: &GalleryState, acce
         }));
     }
     let dark = g.dark.unwrap_or(app_dark);
-    let controls = row().gap(t.space.at(1.0)).child(pill::<S>(&t, "gallery-light".to_owned(), "Light", !dark, move |s: &mut S| access(s).dark = Some(false))).child(pill::<S>(&t, "gallery-dark".to_owned(), "Dark", dark, move |s: &mut S| access(s).dark = Some(true))).child(el().w(t.space.at(3.0))).child(pill::<S>(&t, "gallery-comfortable".to_owned(), "Comfortable", !g.compact, move |s: &mut S| access(s).compact = false)).child(pill::<S>(&t, "gallery-compact".to_owned(), "Compact", g.compact, move |s: &mut S| access(s).compact = true));
-    let head = col().w_full().gap(t.space.at(3.0)).child(row().w_full().items_end().gap(t.space.at(3.0)).child(text("Components").font(t.ty.xxl).color(t.ink()).role("heading").level(1)).child(text(format!("{} theme · {} · {} components", t.name, if dark { "dark" } else { "light" }, items.len())).font(t.ty.base).color(t.ink_muted())).child(rune::spacer()).child(controls)).child(tabs);
+    let head = col().w_full().gap(t.space.at(3.0)).child(row().w_full().items_end().gap(t.space.at(3.0)).child(text("Components").font(t.ty.xxl).color(t.ink()).role("heading").level(1)).child(text(format!("{} theme · {} · {} components", t.name, if dark { "dark" } else { "light" }, items.len())).font(t.ty.base).color(t.ink_muted()))).child(tabs);
     let mut body = col().key("gallery").w_full().padding(t.metrics.section - 16.0).gap(t.metrics.section - 16.0).child(head);
     let mut c = Ctx { g, t: &t, layer, access };
     for (key, title, what) in GROUPS {
@@ -296,5 +469,12 @@ pub fn page<S: 'static>(file: &ThemeFile, app_dark: bool, g: &GalleryState, acce
     if g.only.is_none() && (g.show == "materials" || g.show == "all") {
         body = body.child(col().key("group-materials").w_full().gap(t.space.at(6.0)).child(text("Materials").font(t.ty.xl).color(t.ink()).role("heading").level(2)).child(materials(&t)));
     }
-    col().key("gallery-page").w_full().fill(t.c.page.bg).child(body)
+    let panel = paint(editor_panel::<S>(&t, json, app_dark, g, access), &t.mat.slab.base).border_sides([0.0, 0.0, 0.0, 1.0], t.c.line);
+    if g.scroll {
+        // A window: the components scroll; the editor stays.
+        let main = col().key("gallery-scroll").grow(1.0).min_w(0.0).h_full().scroll(rune::ScrollSpec { stick_bottom: false }).child(body);
+        row().key("gallery-page").w_full().h_full().fill(t.c.page.bg).child(main).child(col().h_full().scroll(rune::ScrollSpec { stick_bottom: false }).child(panel))
+    } else {
+        row().key("gallery-page").w_full().fill(t.c.page.bg).items_stretch().child(col().grow(1.0).min_w(0.0).child(body)).child(panel)
+    }
 }

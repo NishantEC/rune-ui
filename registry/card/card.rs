@@ -1,4 +1,4 @@
-//! rune-ui registry: card 0.3.0. Copied into your app by `rune-ui add card`; yours to change. Needs: separator.
+//! rune-ui registry: card 0.4.0. Copied into your app by `rune-ui add card`; yours to change. Needs: separator.
 //!
 //! One surface divided into rows, not a stack of cards. A **slab** card is the group's fill a step off the page, no edge and no shadow,
 //! its rows split by hairlines inset from its sides. A **raised** card (a result, a question) is the floating colour with a small lift
@@ -13,7 +13,7 @@
 use rune::{El, Shadow, col, row, text};
 use rune_ui_style::{Recipe, weight};
 
-use super::base::{Theme, paint};
+use super::base::{Shape, Theme, paint};
 use super::separator::Separator;
 
 pub struct Card {
@@ -74,7 +74,7 @@ impl Card {
         let r = t.radius.xl;
         let pad = t.metrics.inset;
         let recipe = if self.raised { Recipe::new().fill(t.c.floating.bg).shadows(&t.elevation.sm).shadow(Shadow { spread: 1.0, color: t.c.line, ..Shadow::default() }) } else { t.mat.slab.base.clone() };
-        let mut c = paint(col().key(self.key).w_full().radius(r).continuous_corners(), &recipe);
+        let mut c = paint(col().key(self.key).w_full().radius(r).round_as(t), &recipe);
         if self.title.is_some() || self.action.is_some() {
             let mut words = col().grow(1.0).shrink().min_w(0.0).gap(t.space.at(1.0));
             if let Some(ti) = self.title {

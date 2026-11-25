@@ -1,4 +1,4 @@
-//! rune-ui registry: badge 0.3.0. Copied into your app by `rune-ui add badge`; yours to change.
+//! rune-ui registry: badge 0.4.0. Copied into your app by `rune-ui add badge`; yours to change.
 //!
 //! A small label. shadcn's variants (**Default** ink, **Secondary** quiet tint, **Outline**, **Destructive** solid danger) and a meaning
 //! at low alpha ([`Badge::tone`]): its wash behind words in its own ink, never colour alone. A leading dot makes it a status pill (hollow
@@ -12,7 +12,7 @@
 use rune::{Color, El, el, row, text};
 use rune_ui_style::{Recipe, tabular, weight};
 
-use super::base::{Theme, Tone, paint};
+use super::base::{Shape, Theme, Tone, paint};
 
 /// shadcn's badge variants.
 #[non_exhaustive]
@@ -84,10 +84,10 @@ impl Badge {
         if let Some(r) = rim {
             recipe = recipe.inner_rim(r);
         }
-        let mut b = paint(row().key(self.key).role("status").label(self.words.clone()).h(20.0).min_w(20.0).pl(t.space.at(if self.dot == Dot::None { 2.0 } else { 1.75 })).pr(t.space.at(2.0)).gap(t.space.at(1.25)).center().radius(10.0), &recipe);
+        let mut b = paint(row().key(self.key).role("status").label(self.words.clone()).h(20.0).min_w(20.0).pl(t.space.at(if self.dot == Dot::None { 2.0 } else { 1.75 })).pr(t.space.at(2.0)).gap(t.space.at(1.25)).center().radius(10.0).round_as(t), &recipe);
         match self.dot {
-            Dot::Filled => b = b.child(el().size(6.0, 6.0).radius(3.0).fill(dot).a11y_hidden()),
-            Dot::Hollow => b = b.child(el().size(6.0, 6.0).radius(3.0).border(1.5, dot).a11y_hidden()),
+            Dot::Filled => b = b.child(el().size(6.0, 6.0).radius(3.0).round_as(t).fill(dot).a11y_hidden()),
+            Dot::Hollow => b = b.child(el().size(6.0, 6.0).radius(3.0).round_as(t).border(1.5, dot).a11y_hidden()),
             Dot::None => {}
         }
         b.child(text(self.words).font(tabular(weight(t.ty.sm, t.ty.medium))).color(ink).a11y_hidden())

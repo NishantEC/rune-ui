@@ -1,4 +1,4 @@
-//! rune-ui registry: field 0.3.0. Copied into your app by `rune-ui add field`; yours to change. Needs: label.
+//! rune-ui registry: field 0.4.0. Copied into your app by `rune-ui add field`; yours to change. Needs: label.
 //!
 //! A label, a control and its description laid out together; an error replaces the description, in the danger colour and announced
 //! politely. Give the control the same words with `.name(…)` and `.description(…)`/`.invalid(true)` so assistive technology hears them.

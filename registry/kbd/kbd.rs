@@ -1,4 +1,4 @@
-//! rune-ui registry: kbd 0.3.0. Copied into your app by `rune-ui add kbd`; yours to change.
+//! rune-ui registry: kbd 0.4.0. Copied into your app by `rune-ui add kbd`; yours to change.
 //!
 //! Keys as small raised caps: each key in a space-separated combination is its own cap ("⌘ K", "Ctrl Shift P"), in tabular figures.
 //!
@@ -9,7 +9,7 @@
 use rune::{El, row, text};
 use rune_ui_style::{tabular, weight};
 
-use super::base::{Theme, paint};
+use super::base::{Shape, Theme, paint};
 
 pub struct Kbd {
     key: String,
@@ -24,7 +24,7 @@ impl Kbd {
     pub fn build(self, t: &Theme) -> El {
         let mut r = row().key(self.key).role("note").label(self.keys.clone()).gap(t.space.at(0.75)).center_y();
         for k in self.keys.split_whitespace() {
-            let cap = row().h(20.0).min_w(20.0).px(t.space.at(1.25)).center().radius(t.radius.sm).continuous_corners();
+            let cap = row().h(20.0).min_w(20.0).px(t.space.at(1.25)).center().radius(t.radius.sm).round_as(t);
             let recipe = t.mat.raised.base.clone().shadow_none().shadow(rune::Shadow { y: 1.0, color: t.c.line, ..rune::Shadow::default() });
             r = r.child(paint(cap, &recipe).child(text(k.to_owned()).font(tabular(weight(t.ty.xs, t.ty.medium))).color(t.ink_muted()).a11y_hidden()));
         }

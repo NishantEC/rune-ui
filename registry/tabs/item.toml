@@ -2,13 +2,13 @@
 schema = 1
 name = "tabs"
 title = "Tabs"
-version = "0.3.0"
+version = "0.4.0"
 type = "component"
 group = "structure"
 description = "Views of one place: a line under the chosen tab, or a contained well."
 
 [requires]
-style = ">=0.3.0, <0.4.0"
+style = ">=0.4.0, <0.5.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "tabs.rs"
 target = "src/ui/tabs.rs"
-sha256 = "20e7ba945c55457faf78a6d9c2f149edd28e1c03b71e966d3ae6fa60123d8072"
+sha256 = "c475bc117e532059bc89637db89d66eb69b1136d5db0de5f7f54b7d4b88fe14c"
 
 # Copied only once the gallery block is installed.
 [[files]]

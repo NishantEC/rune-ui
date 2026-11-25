@@ -26,14 +26,61 @@
         "density": {
           "$ref": "#/$defs/number"
         },
-        "$type": {
-          "const": "number"
+        "type-scale": {
+          "$ref": "#/$defs/number"
+        },
+        "corners": {
+          "type": "object",
+          "properties": {
+            "$type": {
+              "const": "string"
+            },
+            "$value": {
+              "enum": [
+                "continuous",
+                "round"
+              ]
+            },
+            "$description": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "$value"
+          ],
+          "additionalProperties": false
+        },
+        "font": {
+          "type": "object",
+          "properties": {
+            "$type": {
+              "const": "string"
+            },
+            "$value": {
+              "enum": [
+                "inter",
+                "system",
+                "serif",
+                "mono"
+              ]
+            },
+            "$description": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "$value"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
         "spacing",
         "radius",
-        "density"
+        "density",
+        "type-scale",
+        "corners",
+        "font"
       ],
       "additionalProperties": false
     },
@@ -399,6 +446,9 @@
     "number": {
       "type": "object",
       "properties": {
+        "$type": {
+          "const": "number"
+        },
         "$value": {
           "type": "number"
         },
@@ -621,12 +671,16 @@
             },
             "$type": {
               "const": "number"
+            },
+            "texture": {
+              "$ref": "#/$defs/number"
             }
           },
           "required": [
             "elevation",
             "well-blur",
-            "grain"
+            "grain",
+            "texture"
           ],
           "additionalProperties": false
         }

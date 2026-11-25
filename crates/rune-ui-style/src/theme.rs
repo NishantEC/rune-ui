@@ -5,7 +5,7 @@ use rune::{Color, TextStyle};
 
 use crate::materials::{MaterialColors, Materials};
 use crate::scale::{Controls, Elevation, Metrics, Motion, Radius, Space, TypeScale, tabular, weight};
-use crate::tokens::{Role, ThemeFile, Tone};
+use crate::tokens::{Corners, Font, Role, ThemeFile, Tone};
 
 /// The colour roles. Every surface role carries the text colour that reads on it.
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -47,6 +47,9 @@ pub struct Palette {
 pub struct Theme {
     pub name: String,
     pub dark: bool,
+    /// How rounded corners are drawn (`base::Shape::shape` applies it to every rounded surface).
+    pub corners: Corners,
+    pub font: Font,
     pub c: Palette,
     pub space: Space,
     pub ty: TypeScale,
@@ -109,7 +112,13 @@ impl Theme {
         let control = Controls::from_density(f.base.density, m.state("disabled"));
         let radius = Radius::from_base(f.base.radius);
         let space = Space { unit: f.base.spacing };
-        let ty = TypeScale::for_density(f.base.density);
+        let family = match f.base.font {
+            Font::Inter => rune::Family::Sans,
+            Font::System => rune::Family::Named("System Font"),
+            Font::Serif => rune::Family::Named("New York, Georgia"),
+            Font::Mono => rune::Family::SystemMono,
+        };
+        let ty = TypeScale::for_density(f.base.density).scaled(f.base.type_scale, family);
         let metrics = Metrics::from_density(f.base.density);
         let colors = MaterialColors {
             raised_top: m.component("raised-top"),
@@ -135,9 +144,10 @@ impl Theme {
             shade,
             focus: c.ring,
             grain: m.number("grain"),
+            texture: m.number("texture"),
         };
         let mat = Materials::derive(&colors, &elevation, &motion, &control);
-        let mut t = Theme { name: f.name.clone(), dark, c, space, ty, radius, elevation, motion, control, metrics, mat, kit: rune_kit::Kit::neutral(dark) };
+        let mut t = Theme { name: f.name.clone(), dark, corners: f.base.corners, font: f.base.font, c, space, ty, radius, elevation, motion, control, metrics, mat, kit: rune_kit::Kit::neutral(dark) };
         t.kit = t.build_kit();
         t
     }

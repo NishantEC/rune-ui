@@ -2,13 +2,13 @@
 schema = 1
 name = "sheet"
 title = "Sheet"
-version = "0.3.0"
+version = "0.4.0"
 type = "component"
 group = "overlays"
 description = "A panel that slides in from an edge over a scrim."
 
 [requires]
-style = ">=0.3.0, <0.4.0"
+style = ">=0.4.0, <0.5.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = ["button"]
 [[files]]
 path = "sheet.rs"
 target = "src/ui/sheet.rs"
-sha256 = "d01a4e7d23a88496016e6c50d75ace173bb79ae80b7a542a5bbd84ec3da836e0"
+sha256 = "cf29fb86f59ad6f1f6c873fc0890b3f228cd16bae95dd443406dd11098edfee0"
 
 # Copied only once the gallery block is installed.
 [[files]]

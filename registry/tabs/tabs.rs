@@ -1,4 +1,4 @@
-//! rune-ui registry: tabs 0.3.0. Copied into your app by `rune-ui add tabs`; yours to change.
+//! rune-ui registry: tabs 0.4.0. Copied into your app by `rune-ui add tabs`; yours to change.
 //!
 //! Views of one place. **Line**: words over a hairline, the chosen tab in the first ink with a 2 point ink line under it. **Contained**:
 //! a well track holding the chosen tab raised (like a toggle group). A tab may lead with an icon and end with a count. Left and Right
@@ -13,7 +13,7 @@ use std::rc::Rc;
 use rune::{Color, El, Icon, Key, KeyEvent, col, el, row, text};
 use rune_ui_style::{Delta, Radius, tabular};
 
-use super::base::{Choose, State, States, Theme, glyph, paint, paint_state};
+use super::base::{Choose, Shape, State, States, Theme, glyph, paint, paint_state};
 
 /// The two looks.
 #[non_exhaustive]
@@ -85,7 +85,7 @@ impl<S: 'static> Tabs<S> {
         let h = t.control.md;
         let n = self.tabs.len();
         let mut strip = row().key(self.key.clone()).role("tablist").label(self.name.clone());
-        strip = if line { strip.w_full().gap(t.metrics.inset - 4.0).border_sides([0.0, 0.0, 1.0, 0.0], t.c.line) } else { paint(strip.h(h).padding(3.0).gap(2.0).center_y().radius(t.radius.md).continuous_corners(), &t.mat.well.base) };
+        strip = if line { strip.w_full().gap(t.metrics.inset - 4.0).border_sides([0.0, 0.0, 1.0, 0.0], t.c.line) } else { paint(strip.h(h).padding(3.0).gap(2.0).center_y().radius(t.radius.md).round_as(t), &t.mat.well.base) };
         let chosen = t.mat.raised.clone().on(State::Pressed, Delta::new());
         for (i, (label, icon, count)) in self.tabs.into_iter().enumerate() {
             let on = i == self.selected;
@@ -105,15 +105,15 @@ impl<S: 'static> Tabs<S> {
                 face = face.child(text(c.to_string()).font(tabular(t.ty.xs)).color(t.ink_faint()).a11y_hidden());
             }
             let mut cell = if line {
-                let face = paint_state(face.h(h).px(t.space.at(1.5)).radius(t.radius.sm), &t.mat.row, States { focus_visible: false, ..st });
-                let bar = el().w_full().h(2.0).radius(1.0).fill(if on { t.c.primary.bg } else { Color::TRANSPARENT }).a11y_hidden();
+                let face = paint_state(face.h(h).px(t.space.at(1.5)).radius(t.radius.sm).round_as(t), &t.mat.row, States { focus_visible: false, ..st });
+                let bar = el().w_full().h(2.0).radius(1.0).round_as(t).fill(if on { t.c.primary.bg } else { Color::TRANSPARENT }).a11y_hidden();
                 let mut c = col().gap(t.space.at(0.5)).child(face).child(bar);
                 if st.focus_visible {
                     c = paint(c, &t.mat.ghost.state(State::FocusVisible));
                 }
                 c.focus_ring(t.control.ring, t.control.ring_offset, t.c.ring)
             } else {
-                paint_state(face.h(h - 6.0).px(t.space.at(2.5)).radius(Radius::inner(t.radius.md, 3.0)).continuous_corners(), if on { &chosen } else { &t.mat.row }, st)
+                paint_state(face.h(h - 6.0).px(t.space.at(2.5)).radius(Radius::inner(t.radius.md, 3.0)).round_as(t), if on { &chosen } else { &t.mat.row }, st)
             };
             cell = cell.key(format!("{}-{i}", self.key)).role("tab").label(label).checked(on).focusable(true);
             if let Some(f) = self.change.clone() {

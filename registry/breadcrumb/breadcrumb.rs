@@ -1,4 +1,4 @@
-//! rune-ui registry: breadcrumb 0.3.0. Copied into your app by `rune-ui add breadcrumb`; yours to change.
+//! rune-ui registry: breadcrumb 0.4.0. Copied into your app by `rune-ui add breadcrumb`; yours to change.
 //!
 //! Where you are: links to the places above, each a quiet row that washes on hover, separated by small chevrons, and the current page
 //! last in the first ink (it is the page's heading). A navigation landmark named "Breadcrumb".
@@ -12,7 +12,7 @@ use std::rc::Rc;
 use rune::{El, row, text};
 use rune_ui_style::weight;
 
-use super::base::{Press, Theme, glyph, paint_state};
+use super::base::{Press, Shape, Theme, glyph, paint_state};
 use super::icons;
 
 pub struct Breadcrumb<S: 'static> {
@@ -43,7 +43,7 @@ impl<S: 'static> Breadcrumb<S> {
         for (i, (words, press)) in self.parts.into_iter().enumerate() {
             let w = text(words.clone()).font(t.ty.base).color(t.ink_muted()).a11y_hidden();
             r = r.child(match press {
-                Some(f) => paint_state(row().key(format!("{}-{i}", self.key)).role("link").label(words).focusable(true).h(t.control.sm).px(t.space.at(1.5)).center_y().radius(t.radius.sm), &t.mat.row, Default::default()).on_press(move |s: &mut S| f(s)).child(w),
+                Some(f) => paint_state(row().key(format!("{}-{i}", self.key)).role("link").label(words).focusable(true).h(t.control.sm).px(t.space.at(1.5)).center_y().radius(t.radius.sm).round_as(t), &t.mat.row, Default::default()).on_press(move |s: &mut S| f(s)).child(w),
                 None => row().px(t.space.at(1.5)).child(w),
             });
             r = r.child(glyph(&icons::CHEVRON_RIGHT, t.control.icon_sm, t.ink_faint()));

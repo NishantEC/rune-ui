@@ -1,4 +1,4 @@
-//! rune-ui registry: slider 0.3.0. Copied into your app by `rune-ui add slider`; yours to change.
+//! rune-ui registry: slider 0.4.0. Copied into your app by `rune-ui add slider`; yours to change.
 //!
 //! A value in a range. The track is a **well**, the part up to the value is **ink**, the thumb a raised disc. Drag anywhere on it (a
 //! press without moving jumps there), or use the arrow keys (Shift for ten steps) and Home/End. It reports its value, minimum and
@@ -12,7 +12,7 @@ use std::rc::Rc;
 
 use rune::{Drag, El, Key, KeyEvent, Phase, Tx, el, row};
 
-use super::base::{Slide, State, States, Theme, paint, resolve, states};
+use super::base::{Shape, Slide, State, States, Theme, paint, resolve, states};
 
 const H: f32 = 20.0;
 const TRACK: f32 = 6.0;
@@ -73,12 +73,12 @@ impl<S: 'static> Slider<S> {
         let v = snap(self.value);
         let frac = (v - min) / (max - min);
         let st = states(self.pinned, self.disabled, false);
-        let well = paint(row().w_full().h(TRACK).radius(TRACK / 2.0), &resolve(&t.mat.well, States::default()));
-        let fill = paint(el().w_frac(frac).h(TRACK).radius(TRACK / 2.0), &resolve(&t.mat.ink, States::default()).shadow_none()).a11y_hidden();
-        let thumb = paint(el().size(THUMB, THUMB).radius(THUMB / 2.0), &t.mat.thumb.base).a11y_hidden();
+        let well = paint(row().w_full().h(TRACK).radius(TRACK / 2.0).round_as(t), &resolve(&t.mat.well, States::default()));
+        let fill = paint(el().w_frac(frac).h(TRACK).radius(TRACK / 2.0).round_as(t), &resolve(&t.mat.ink, States::default()).shadow_none()).a11y_hidden();
+        let thumb = paint(el().size(THUMB, THUMB).radius(THUMB / 2.0).round_as(t), &t.mat.thumb.base).a11y_hidden();
         // The thumb's centre travels the track's width less the thumb.
         let thumb = row().absolute(0.0, (H - THUMB) / 2.0).w_full().h(THUMB).child(el().w_frac(frac).h(THUMB)).child(rune::el().ml(-THUMB * frac).child(thumb));
-        let mut e = row().key(self.key.clone()).role("slider").label(self.name.clone()).range_value(v as f64, min as f64, max as f64).focusable(!self.disabled).h(H).center_y().radius(H / 2.0).child(well.child(fill)).child(thumb);
+        let mut e = row().key(self.key.clone()).role("slider").label(self.name.clone()).range_value(v as f64, min as f64, max as f64).focusable(!self.disabled).h(H).center_y().radius(H / 2.0).round_as(t).child(well.child(fill)).child(thumb);
         e = match self.width {
             Some(w) => e.w(w),
             None => e.w_full(),
