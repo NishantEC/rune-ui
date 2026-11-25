@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "tree"
+title = "Tree"
+version = "0.8.0"
+type = "component"
+group = "structure"
+description = "Nested rows that fold: one Tab stop, Up and Down, Right opens or goes in, Left closes or goes up, Home and End, type to jump; one or several chosen; lazy children."
+
+[requires]
+style = ">=0.8.0, <0.9.0"
+rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "tree.rs"
+target = "src/ui/tree.rs"
+sha256 = "88de1542f5d29c8a7f012bcc13b8d63212b81f1bc8601caaa6bf98afe839db9b"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/tree.rs"
+role = "story"
+sha256 = "2c3180248fea0530c3a99edbd1463a4cd69f306bd0b7f5c3bb1aad81cfb0eddd"
