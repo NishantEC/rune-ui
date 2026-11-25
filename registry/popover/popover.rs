@@ -1,4 +1,4 @@
-//! rune-ui registry: popover 0.2.0. Copied into your app by `rune-ui add popover`; yours to change.
+//! rune-ui registry: popover 0.3.0. Copied into your app by `rune-ui add popover`; yours to change.
 //!
 //! A floating panel beside its trigger: the **floating** material, a title, anything inside. Behaviour comes from Rune and rune-kit:
 //! `rune_kit::popover::anchored` places it beside the trigger and keeps it in the window, `rune_kit::scrim` closes it on a press outside,
@@ -71,7 +71,7 @@ impl<S: 'static> Popover<S> {
 
     /// The panel alone, drawn in place.
     pub fn panel(&mut self, t: &Theme) -> El {
-        let mut p = col().key(format!("{}-panel", self.key)).role("dialog").w(self.width).padding(t.space.at(3.0)).gap(t.space.at(2.0)).radius(t.radius.lg).continuous_corners();
+        let mut p = col().key(format!("{}-panel", self.key)).role("dialog").w(self.width).padding(t.metrics.pad_md - 2.0).gap(t.metrics.gap).radius(t.radius.lg).continuous_corners();
         p = paint(p, &t.mat.floating.base);
         if let Some(title) = &self.title {
             p = p.label(title.clone()).child(text(title.clone()).font(weight(t.ty.base, t.ty.semibold)).color(t.c.floating.fg));

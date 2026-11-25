@@ -104,6 +104,13 @@ Stories register themselves. Each item's `stories.rs` is copied to `src/ui/stori
 
 Wave 2 will add Calendar, DatePicker, Carousel, Chart, Menubar, NavigationMenu, Pagination, Resizable, HoverCard, InputOTP, DataTable, Drawer and Form.
 
+## Density
+
+The theme's `density` knob has two named settings: **Comfortable** (1.0, the default: 36 point controls, 16 point side padding, 14 point
+words, 36 point rows, 20 points between fields) and **Compact** (0.8: 30 point controls, 12 point padding, 13 point words, 30 point
+rows, 12 between fields). Control heights, paddings, gaps, row heights, insets and the type ramp all follow it; the gallery page switches
+between them. `docs/recipes.md` has the full table.
+
 ## Themes
 
 A theme is one JSON file with a `light` mode and a `dark` mode, checked against `crates/rune-ui-themes/theme.schema.json`. Unknown keys are errors. To make your own, copy `themes/default.json`, change values, and run `cargo test -p rune-ui-themes`. The tests check contrast for every role, light/dark parity, and agreement with the schema. While developing, `rune_ui_themes::load(path, dark)` reloads a file from disk.

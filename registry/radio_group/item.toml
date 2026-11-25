@@ -2,13 +2,13 @@
 schema = 1
 name = "radio_group"
 title = "RadioGroup"
-version = "0.2.0"
+version = "0.3.0"
 type = "component"
 group = "form"
 description = "One of a few, shown: rings that fill with an ink dot."
 
 [requires]
-style = ">=0.2.0, <0.3.0"
+style = ">=0.3.0, <0.4.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "radio_group.rs"
 target = "src/ui/radio_group.rs"
-sha256 = "4ba8239051fe9decca5325538fb6482555b2db7d61320c874112bd7e7cbd5885"
+sha256 = "23abc7f21355f4cce86cd78c33ba7da8ad5eb210672f5f349cded194fdadb684"
 
 # Copied only once the gallery block is installed.
 [[files]]

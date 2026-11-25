@@ -1,4 +1,4 @@
-//! rune-ui registry: collapsible 0.2.0. Copied into your app by `rune-ui add collapsible`; yours to change.
+//! rune-ui registry: collapsible 0.3.0. Copied into your app by `rune-ui add collapsible`; yours to change.
 //!
 //! One section that folds behind its trigger: a row with a chevron that turns, saying `expanded` to assistive technology, and the
 //! content under it while open. The fold lands at once.
@@ -59,7 +59,7 @@ impl<S: 'static> Collapsible<S> {
 
     pub fn build(self, t: &Theme) -> El {
         let st = states(self.pinned, self.disabled, false);
-        let mut trigger = row().key(format!("{}-trigger", self.key)).role("button").label(self.title.clone()).expanded(self.open).focusable(!self.disabled).w_full().h(t.control.md).px(t.space.at(1.5)).gap(t.space.at(1.5)).center_y().radius(t.radius.md);
+        let mut trigger = row().key(format!("{}-trigger", self.key)).role("button").label(self.title.clone()).expanded(self.open).focusable(!self.disabled).w_full().h(t.control.md).px(t.metrics.gap - 2.0).gap(t.metrics.gap).center_y().radius(t.radius.md);
         trigger = paint_state(trigger, &t.mat.row, st);
         let chevron = glyph(if self.open { &icons::CHEVRON_DOWN } else { &icons::CHEVRON_RIGHT }, t.control.icon, t.ink_muted());
         trigger = trigger.child(chevron).child(text(self.title).font(weight(t.ty.base, t.ty.medium)).color(t.ink()).grow(1.0).a11y_hidden());

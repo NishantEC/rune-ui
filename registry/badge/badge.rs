@@ -1,4 +1,4 @@
-//! rune-ui registry: badge 0.2.0. Copied into your app by `rune-ui add badge`; yours to change.
+//! rune-ui registry: badge 0.3.0. Copied into your app by `rune-ui add badge`; yours to change.
 //!
 //! A small label. shadcn's variants (**Default** ink, **Secondary** quiet tint, **Outline**, **Destructive** solid danger) and a meaning
 //! at low alpha ([`Badge::tone`]): its wash behind words in its own ink, never colour alone. A leading dot makes it a status pill (hollow

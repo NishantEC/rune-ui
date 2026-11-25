@@ -1,4 +1,4 @@
-//! rune-ui registry: kbd 0.2.0. Copied into your app by `rune-ui add kbd`; yours to change.
+//! rune-ui registry: kbd 0.3.0. Copied into your app by `rune-ui add kbd`; yours to change.
 //!
 //! Keys as small raised caps: each key in a space-separated combination is its own cap ("⌘ K", "Ctrl Shift P"), in tabular figures.
 //!

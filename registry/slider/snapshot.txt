@@ -1,6 +1,6 @@
-item-slider group 0 0 1240 105
-slider-live slider 0 62 220 20
-slider-min slider 244 62 220 20
-slider-max slider 488 62 220 20
-slider-focus slider 732 62 220 20
-slider-disabled slider 976 62 220 20
+item-slider group 0 0 1240 108
+slider-live slider 0 64 220 20
+slider-min slider 244 64 220 20
+slider-max slider 488 64 220 20
+slider-focus slider 732 64 220 20
+slider-disabled slider 976 64 220 20

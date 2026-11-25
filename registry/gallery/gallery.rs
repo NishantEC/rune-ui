@@ -1,4 +1,4 @@
-//! rune-ui registry: gallery 0.2.0 (a block). Copied into your app by `rune-ui add gallery`; yours to change.
+//! rune-ui registry: gallery 0.3.0 (a block). Copied into your app by `rune-ui add gallery`; yours to change.
 //!
 //! A page that shows every component your app has added, in every state: group tabs, each component's stories (its variants × states),
 //! a light/dark switch and a density switch, and a materials sheet that builds each recipe one layer at a time. It is made from the
@@ -77,7 +77,7 @@ pub struct GalleryState {
     pub only: Option<String>,
     /// Light or dark; `None` follows the app.
     pub dark: Option<bool>,
-    /// The compact density (the theme's `density` knob at 0.875).
+    /// The compact density (the theme's `density` knob at `COMPACT`, 0.8; comfortable is the theme's own, 1.0).
     pub compact: bool,
     /// The overlay open now (a menu, a dialog, a select's list).
     pub open: Option<String>,
@@ -168,7 +168,7 @@ pub fn spec(t: &Theme, caption: &str, e: El) -> El {
 
 /// Specimens side by side, wrapping.
 pub fn specs(t: &Theme, items: Vec<El>) -> El {
-    row().w_full().gap(t.space.at(6.0)).items_start().flex_wrap().children(items)
+    row().w_full().gap(t.metrics.stack + 4.0).items_start().flex_wrap().children(items)
 }
 
 /// A labelled line: the label at the left, the content after it.
@@ -240,7 +240,7 @@ pub fn materials(t: &Theme) -> El {
 pub fn theme_for(file: &ThemeFile, app_dark: bool, g: &GalleryState) -> Theme {
     let mut f = file.clone();
     if g.compact {
-        f.base.density = 0.875;
+        f.base.density = rune_ui_style::COMPACT;
     }
     Theme::from_file(&f, g.dark.unwrap_or(app_dark))
 }
@@ -248,7 +248,7 @@ pub fn theme_for(file: &ThemeFile, app_dark: bool, g: &GalleryState) -> Theme {
 /// One component's block: its title and each story.
 pub fn item_block<S: 'static>(c: &mut Ctx<S>, item: &StoryItem<S>) -> El {
     let t = c.t;
-    let mut b = col().key(format!("item-{}", item.name)).w_full().gap(t.space.at(4.0)).child(row().gap(t.space.at(2.0)).items_end().child(text(item.title).font(t.ty.lg).color(t.ink()).role("heading").level(3)).child(text(item.name).font(t.ty.xs).color(t.ink_faint())));
+    let mut b = col().key(format!("item-{}", item.name)).w_full().gap(t.metrics.stack - 4.0).child(row().gap(t.space.at(2.0)).items_end().child(text(item.title).font(t.ty.lg).color(t.ink()).role("heading").level(3)).child(text(item.name).font(t.ty.xs).color(t.ink_faint())));
     for st in &item.stories {
         let body = (st.build)(c);
         b = b.child(col().w_full().gap(t.space.at(2.0)).child(text(st.name).font(weight(t.ty.sm, t.ty.medium)).color(t.ink_muted())).child(body));
@@ -280,14 +280,14 @@ pub fn page<S: 'static>(file: &ThemeFile, app_dark: bool, g: &GalleryState, acce
     let dark = g.dark.unwrap_or(app_dark);
     let controls = row().gap(t.space.at(1.0)).child(pill::<S>(&t, "gallery-light".to_owned(), "Light", !dark, move |s: &mut S| access(s).dark = Some(false))).child(pill::<S>(&t, "gallery-dark".to_owned(), "Dark", dark, move |s: &mut S| access(s).dark = Some(true))).child(el().w(t.space.at(3.0))).child(pill::<S>(&t, "gallery-comfortable".to_owned(), "Comfortable", !g.compact, move |s: &mut S| access(s).compact = false)).child(pill::<S>(&t, "gallery-compact".to_owned(), "Compact", g.compact, move |s: &mut S| access(s).compact = true));
     let head = col().w_full().gap(t.space.at(3.0)).child(row().w_full().items_end().gap(t.space.at(3.0)).child(text("Components").font(t.ty.xxl).color(t.ink()).role("heading").level(1)).child(text(format!("{} theme · {} · {} components", t.name, if dark { "dark" } else { "light" }, items.len())).font(t.ty.base).color(t.ink_muted())).child(rune::spacer()).child(controls)).child(tabs);
-    let mut body = col().key("gallery").w_full().padding(t.space.at(10.0)).gap(t.space.at(10.0)).child(head);
+    let mut body = col().key("gallery").w_full().padding(t.metrics.section - 16.0).gap(t.metrics.section - 16.0).child(head);
     let mut c = Ctx { g, t: &t, layer, access };
     for (key, title, what) in GROUPS {
         let list: Vec<&StoryItem<S>> = items.iter().filter(|i| i.group == key && match &g.only { Some(o) => o == i.name, None => g.show == "all" || g.show == key }).collect();
         if list.is_empty() {
             continue;
         }
-        let mut sec = col().key(format!("group-{key}")).w_full().gap(t.space.at(8.0)).child(col().gap(t.space.at(1.0)).child(text(title).font(t.ty.xl).color(t.ink()).role("heading").level(2)).child(text(what).font(t.ty.base).color(t.ink_muted())));
+        let mut sec = col().key(format!("group-{key}")).w_full().gap(t.metrics.section - 16.0).child(col().gap(t.space.at(1.0)).child(text(title).font(t.ty.xl).color(t.ink()).role("heading").level(2)).child(text(what).font(t.ty.base).color(t.ink_muted())));
         for item in list {
             sec = sec.child(item_block(&mut c, item));
         }

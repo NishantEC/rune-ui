@@ -2,13 +2,13 @@
 schema = 1
 name = "textarea"
 title = "Textarea"
-version = "0.2.0"
+version = "0.3.0"
 type = "component"
 group = "form"
 description = "Several lines on the well material, growing with its text."
 
 [requires]
-style = ">=0.2.0, <0.3.0"
+style = ">=0.3.0, <0.4.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "textarea.rs"
 target = "src/ui/textarea.rs"
-sha256 = "fd636a287f25fd7e191e5c0f1cf5e3fbfb06b6a03b1c2fc8cbbcd6178567e547"
+sha256 = "88a23747cb8b57b1869409a70ec50eac1d1e05592568a42cd781cfb8a1c996db"
 
 # Copied only once the gallery block is installed.
 [[files]]

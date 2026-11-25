@@ -1,6 +1,6 @@
-item-popover group 0 0 1240 189
-popover-inplace-panel dialog 0 62 280 104
-popover-switch switch 8 124 256 30
-popover-demo-trigger group 304 62 80 30
-hit(popover-button) button 304 57 80 40
-popover-button button 304 62 80 30
+item-popover group 0 0 1240 206
+popover-inplace-panel dialog 0 64 280 118
+popover-switch switch 10 132 252 36
+popover-demo-trigger group 304 64 95 36
+hit(popover-button) button 304 62 95 40
+popover-button button 304 64 95 36

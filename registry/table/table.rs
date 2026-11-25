@@ -1,4 +1,4 @@
-//! rune-ui registry: table 0.2.0. Copied into your app by `rune-ui add table`; yours to change.
+//! rune-ui registry: table 0.3.0. Copied into your app by `rune-ui add table`; yours to change.
 //!
 //! Rows of data under a quiet header, split by hairlines, in a slab. Columns take a width or share what is left, and align left or
 //! right (figures right, in tabular figures). A header can show the sort and answer a press; rows wash on hover and may be selected.
@@ -90,7 +90,7 @@ impl<S: 'static> Table<S> {
 
     fn cell(&self, t: &Theme, i: usize, content: El) -> El {
         let c = &self.columns[i];
-        let mut cell = row().h_full().px(t.space.at(3.0)).center_y().min_w(0.0);
+        let mut cell = row().h_full().px(t.metrics.pad_md - 2.0).center_y().min_w(0.0);
         cell = if c.right { cell.justify_end() } else { cell };
         cell = match c.width {
             Some(w) => cell.w(w),
@@ -102,7 +102,7 @@ impl<S: 'static> Table<S> {
     pub fn build(self, t: &Theme) -> El {
         let r = t.radius.xl;
         let mut table = paint(col().key(self.key.clone()).role("table").label(self.name.clone()).w_full().radius(r).continuous_corners().clip_rounded(r), &t.mat.slab.base);
-        let mut head = row().key(format!("{}-head", self.key)).role("row").w_full().h(36.0).border_sides([0.0, 0.0, 1.0, 0.0], t.c.line);
+        let mut head = row().key(format!("{}-head", self.key)).role("row").w_full().h(t.metrics.table_head).border_sides([0.0, 0.0, 1.0, 0.0], t.c.line);
         for (i, c) in self.columns.iter().enumerate() {
             let sorted = self.sort.filter(|(at, _)| *at == i);
             let mut words = row().gap(t.space.at(1.0)).center_y().child(text(c.title.clone()).font(weight(t.ty.sm, t.ty.medium)).color(if sorted.is_some() { t.ink() } else { t.ink_muted() }).a11y_hidden());
@@ -117,7 +117,7 @@ impl<S: 'static> Table<S> {
         }
         table = table.child(head);
         for (ri, cells) in self.rows.iter().enumerate() {
-            let mut line = row().key(format!("{}-row-{ri}", self.key)).role("row").w_full().h(40.0);
+            let mut line = row().key(format!("{}-row-{ri}", self.key)).role("row").w_full().h(t.metrics.table_row);
             if ri > 0 {
                 line = line.border_sides([1.0, 0.0, 0.0, 0.0], t.c.line);
             }

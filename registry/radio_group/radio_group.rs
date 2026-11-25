@@ -1,4 +1,4 @@
-//! rune-ui registry: radio_group 0.2.0. Copied into your app by `rune-ui add radio_group`; yours to change.
+//! rune-ui registry: radio_group 0.3.0. Copied into your app by `rune-ui add radio_group`; yours to change.
 //!
 //! One of a few, all shown. Each option is a ring (a small **well**) that fills with an **ink** dot when chosen, its words beside it,
 //! the whole line pressable. Lines sit far enough apart to keep a 40 point pitch.
@@ -50,7 +50,7 @@ impl<'a, S: 'static> RadioGroup<'a, S> {
     }
 
     pub fn build(self, t: &Theme) -> El {
-        let mut g = if self.horizontal { row().gap(t.space.at(5.0)) } else { col().gap(t.space.at(2.5)) }.key(self.key.clone()).role("radiogroup").label(self.name.clone());
+        let mut g = if self.horizontal { row().gap(t.space.at(5.0)) } else { col().gap(t.metrics.stack / 2.0) }.key(self.key.clone()).role("radiogroup").label(self.name.clone());
         for (i, (label, help)) in self.options.iter().enumerate() {
             let on = self.selected == Some(i);
             let mut st = States { disabled: self.disabled, ..States::default() };

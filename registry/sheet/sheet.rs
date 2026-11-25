@@ -1,4 +1,4 @@
-//! rune-ui registry: sheet 0.2.0. Copied into your app by `rune-ui add sheet`; yours to change.
+//! rune-ui registry: sheet 0.3.0. Copied into your app by `rune-ui add sheet`; yours to change.
 //!
 //! A panel against one edge of the window over a scrim (settings, details, a form that needs room). The **floating** material, rounded
 //! only on its free edges, a title and a close button, then its body. Behaviour is Rune's `El::modal` (focus trapped, Escape and a press
@@ -96,7 +96,7 @@ impl<S: 'static> Sheet<S> {
         if let Some(f) = self.close.clone() {
             top = top.child(super::button::Button::<S>::new(format!("{}-close", self.key), "Close").variant(ButtonVariant::Ghost).size(rune_ui_style::Size::Sm).icon_only(&icons::CLOSE).on_press(move |s: &mut S| f(s)).build(t));
         }
-        let mut p = col().key(format!("{}-sheet", self.key)).role("dialog").label(self.title.clone()).padding(t.space.at(5.0)).gap(t.space.at(4.0)).corners(corners).continuous_corners();
+        let mut p = col().key(format!("{}-sheet", self.key)).role("dialog").label(self.title.clone()).padding(t.metrics.panel).gap(t.metrics.stack - 4.0).corners(corners).continuous_corners();
         p = match self.side {
             Side::Bottom => p.w_full().h(self.size),
             _ => p.w(self.size).h_full(),

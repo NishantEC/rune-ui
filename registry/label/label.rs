@@ -1,4 +1,4 @@
-//! rune-ui registry: label 0.2.0. Copied into your app by `rune-ui add label`; yours to change.
+//! rune-ui registry: label 0.3.0. Copied into your app by `rune-ui add label`; yours to change.
 //!
 //! A control's visible name: the small medium style in the first ink, an optional required mark, quieter when the control is disabled.
 //! Pair it with the control's own `.name(…)` (Rune's accessibility tree takes a control's name from the control).

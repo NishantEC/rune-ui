@@ -1,4 +1,4 @@
-//! rune-ui registry: select 0.2.0. Copied into your app by `rune-ui add select`; yours to change.
+//! rune-ui registry: select 0.3.0. Copied into your app by `rune-ui add select`; yours to change.
 //!
 //! One choice of a few. Behaviour is rune-kit's `Select` (keys, typeahead, dismissal, a listbox placed beside its trigger and kept in
 //! the window), handed our look through `Theme::to_kit()`. The trigger is a **well** (it holds a value) with the choice and a chevron;
@@ -121,7 +121,7 @@ impl<'a, S: 'static> Select<'a, S> {
         let mut st = states(self.pinned, false, false);
         st.invalid = self.invalid;
         st.open = open;
-        let trigger = select.build(&kit, layer).w(self.width).h(self.size.height(t)).pl(self.size.pad(t) - 4.0).pr(t.space.at(1.5)).py(0.0).gap(t.space.at(1.5)).radius(self.size.radius(t)).continuous_corners().justify_between().border(0.0, Color::TRANSPARENT).hover(Color::TRANSPARENT);
+        let trigger = select.build(&kit, layer).w(self.width).h(self.size.height(t)).pl(self.size.pad(t) - 4.0).pr(t.metrics.gap).py(0.0).gap(t.metrics.gap).radius(self.size.radius(t)).continuous_corners().justify_between().border(0.0, Color::TRANSPARENT).hover(Color::TRANSPARENT);
         let mut trigger = paint(trigger, &resolve(&parts.root, st));
         if !self.disabled
             && let Some((w, o, c)) = parts.root.live().focus_ring

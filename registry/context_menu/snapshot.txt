@@ -1,3 +1,3 @@
-item-context_menu group 0 0 1240 182
-context-demo-trigger group 0 62 1240 120
-context-area group 0 62 320 120
+item-context_menu group 0 0 1240 208
+context-demo-trigger group 0 64 320 120
+context-area group 0 64 320 120

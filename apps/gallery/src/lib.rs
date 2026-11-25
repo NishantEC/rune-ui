@@ -60,6 +60,14 @@ pub const OPEN_SCENES: [(&str, &str, &str); 10] = [
 
 /// Sets up a scene by name: a group, `materials`, `all`, `item-<name>`, or one of [`OPEN_SCENES`].
 pub fn apply_scene(s: &mut App, name: &str) {
+    // `<scene>-compact`: the same scene at the compact density.
+    let name = match name.strip_suffix("-compact") {
+        Some(n) => {
+            s.g.compact = true;
+            n
+        }
+        None => name,
+    };
     if let Some((_, item, key)) = OPEN_SCENES.iter().find(|(n, _, _)| *n == name) {
         s.g.only = Some((*item).to_owned());
         s.g.open = Some((*key).to_owned());
@@ -87,7 +95,7 @@ macro_rules! scenes {
 /// A named scene and how it sets up the state.
 pub type Scene = (&'static str, fn(&mut App));
 
-pub const SCENES: &[Scene] = scenes!["actions", "form", "overlays", "structure", "display", "materials", "all", "open-select", "open-combobox", "open-context-menu", "open-alert-dialog", "open-toast", "open-dropdown-menu", "open-popover", "open-dialog", "open-sheet", "open-command"];
+pub const SCENES: &[Scene] = scenes!["actions", "form", "overlays", "structure", "display", "materials", "all", "actions-compact", "form-compact", "structure-compact", "open-select", "open-combobox", "open-context-menu", "open-alert-dialog", "open-toast", "open-dropdown-menu", "open-popover", "open-dialog", "open-sheet", "open-command"];
 
 static HEADLESS: AtomicBool = AtomicBool::new(false);
 

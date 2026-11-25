@@ -1,4 +1,4 @@
-//! rune-ui registry: breadcrumb 0.2.0. Copied into your app by `rune-ui add breadcrumb`; yours to change.
+//! rune-ui registry: breadcrumb 0.3.0. Copied into your app by `rune-ui add breadcrumb`; yours to change.
 //!
 //! Where you are: links to the places above, each a quiet row that washes on hover, separated by small chevrons, and the current page
 //! last in the first ink (it is the page's heading). A navigation landmark named "Breadcrumb".

@@ -1,4 +1,4 @@
-//! rune-ui registry: empty 0.2.0. Copied into your app by `rune-ui add empty`; yours to change.
+//! rune-ui registry: empty 0.3.0. Copied into your app by `rune-ui add empty`; yours to change.
 //!
 //! Nothing here yet: an icon in a small well, what is missing (the heading), why or what to expect, and the one thing to do.
 //!

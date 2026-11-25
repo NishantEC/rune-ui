@@ -1,4 +1,4 @@
-//! rune-ui registry: toggle_group 0.2.0. Copied into your app by `rune-ui add toggle_group`; yours to change.
+//! rune-ui registry: toggle_group 0.3.0. Copied into your app by `rune-ui add toggle_group`; yours to change.
 //!
 //! Two to five toggles side by side: one choice ([`ToggleGroup::single`], a radio group to assistive technology) or several
 //! ([`ToggleGroup::multiple`]). A **well** track holds the items; chosen ones are **raised**, so the two materials explain the control.
@@ -95,7 +95,7 @@ impl<'a, S: 'static> ToggleGroup<'a, S> {
             {
                 st.set(s, true);
             }
-            let mut item = row().key(format!("{}-{i}", self.key)).role(if self.multiple { "button" } else { "radio" }).label((*label).to_owned()).checked(on).focusable(!self.disabled).h(h - 2.0 * PAD).gap(t.space.at(1.5)).center().radius(inner).continuous_corners();
+            let mut item = row().key(format!("{}-{i}", self.key)).role(if self.multiple { "button" } else { "radio" }).label((*label).to_owned()).checked(on).focusable(!self.disabled).h(h - 2.0 * PAD).gap(t.metrics.gap).center().radius(inner).continuous_corners();
             item = if self.icon_only { item.w(h - 2.0 * PAD).help((*label).to_owned()) } else { item.px(self.size.pad(t) - 2.0) };
             if self.full {
                 item = item.grow(1.0).min_w(0.0);

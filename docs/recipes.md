@@ -72,8 +72,27 @@ Every component takes `.recipe(|parts| …)` (Button now; the others as they nee
 
 ## Tokens
 
-Three base knobs: `spacing` (the grid unit, 4), `radius` (the ladder's middle, 8: xs 3, sm 5, md 8, lg 11, xl 14, xxl 18) and `density`
-(control heights 26/30/36 at 1.0, 23/26/32 at 0.875; the 40 point hit area never shrinks).
+Three base knobs: `spacing` (the grid unit, 4), `radius` (the ladder's middle, 8: xs 3, sm 5, md 8, lg 11, xl 14, xxl 18) and `density`.
+Density has two named settings, **Comfortable** (1.0, the default) and **Compact** (0.8), and everything between is interpolated and
+rounded to whole points. The 40 point hit area never shrinks.
+
+| Follows density (`Theme::control`, `Theme::metrics`, `Theme::ty`) | Compact (0.8) | Comfortable (1.0) |
+| --- | --- | --- |
+| Control heights sm / md / lg | 26 / 30 / 36 | 32 / 36 / 44 |
+| Control side padding sm / md / lg | 10 / 12 / 16 | 12 / 16 / 20 |
+| Icon sizes sm / md | 12 / 14 | 14 / 16 |
+| Gap inside a control, label to control | 6, 6 | 8, 8 |
+| Between stacked fields | 12 | 20 |
+| List, menu, sidebar, command rows | 30 | 36 |
+| Card row: least height, padding above and below | 56, 10 | 64, 14 |
+| Slab, card and accordion side padding | 16 | 20 |
+| Table rows, header | 40, 36 | 48, 40 |
+| Dialog and sheet padding | 20 | 24 |
+| Between groups | 40 | 56 |
+| Type: control words, hints, small, reading | 13/18, 12/16, 11/15, 14/21 | 14/20, 13/18, 12/16, 15/22 |
+
+rune-kit's select and combobox option rows are a fixed 28 points (rune-kit has no knob for them); its standard menu rows follow the
+density's row height through the line height `to_kit()` gives them.
 
 | Tier | Where in the file | Keys |
 | --- | --- | --- |

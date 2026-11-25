@@ -1,4 +1,4 @@
-//! rune-ui registry: button 0.2.0. Copied into your app by `rune-ui add button`; yours to change.
+//! rune-ui registry: button 0.3.0. Copied into your app by `rune-ui add button`; yours to change.
 //!
 //! shadcn's six variants on the materials: **Default** (ink, a view's one primary action), **Secondary** (raised), **Outline**,
 //! **Ghost**, **Destructive** and **Link**. Three sizes. Words, an icon and words, a trailing icon, or an icon alone (the label is then
@@ -116,7 +116,7 @@ impl<S: 'static> Button<S> {
         let ink = parts.label.resolve(st);
         let strong = !matches!(self.variant, ButtonVariant::Ghost | ButtonVariant::Link);
         let live = st.live();
-        let mut face = row().key(self.key.clone()).role(if self.variant == ButtonVariant::Link { "link" } else { "button" }).label(self.label.clone()).focusable(live).h(h).gap(t.space.at(if self.size == Size::Sm { 1.0 } else { 1.5 })).center().radius(self.size.radius(t)).continuous_corners();
+        let mut face = row().key(self.key.clone()).role(if self.variant == ButtonVariant::Link { "link" } else { "button" }).label(self.label.clone()).focusable(live).h(h).gap(if self.size == Size::Sm { t.metrics.gap - 2.0 } else { t.metrics.gap }).center().radius(self.size.radius(t)).continuous_corners();
         if let Some(v) = self.selected {
             face = face.checked(v);
         }

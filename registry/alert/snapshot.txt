@@ -1,8 +1,8 @@
-item-alert group 0 0 1240 440
-alert-neutral alert 0 62 520 66
-alert-info alert 0 140 520 66
-alert-success alert 0 218 520 66
-alert-warning alert 0 296 520 66
-alert-danger alert 0 374 520 66
-hit(alert-retry) group 456 381 50 40
-alert-retry button 456 388 50 26
+item-alert group 0 0 1240 482
+alert-neutral alert 0 64 520 74
+alert-info alert 0 150 520 74
+alert-success alert 0 236 520 74
+alert-warning alert 0 322 520 74
+alert-danger alert 0 408 520 74
+hit(alert-retry) group 447 420 57 40
+alert-retry button 447 424 57 32

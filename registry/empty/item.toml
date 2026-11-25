@@ -2,13 +2,13 @@
 schema = 1
 name = "empty"
 title = "Empty"
-version = "0.2.0"
+version = "0.3.0"
 type = "component"
 group = "display"
 description = "Nothing here yet: what is missing, why, and the one thing to do."
 
 [requires]
-style = ">=0.2.0, <0.3.0"
+style = ">=0.3.0, <0.4.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = ["button"]
 [[files]]
 path = "empty.rs"
 target = "src/ui/empty.rs"
-sha256 = "aaec6c7f84b9812f7a6a24441cbf42efd8cf8615768d964a423616c82fa5be13"
+sha256 = "4e915f33ce8737a103a96f98ae782e8d136bf997d233875b8e13aa010bec6dd0"
 
 # Copied only once the gallery block is installed.
 [[files]]

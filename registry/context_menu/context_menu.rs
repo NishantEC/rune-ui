@@ -1,4 +1,4 @@
-//! rune-ui registry: context_menu 0.2.0. Copied into your app by `rune-ui add context_menu`; yours to change.
+//! rune-ui registry: context_menu 0.3.0. Copied into your app by `rune-ui add context_menu`; yours to change.
 //!
 //! A menu where the pointer pressed with the secondary button. Behaviour is rune-kit's `context_menu` (it opens at the point, flips to
 //! stay in the window, holds the keys while open); our look comes through `Theme::to_kit()`. Store the point from

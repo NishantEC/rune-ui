@@ -1,4 +1,4 @@
-//! rune-ui registry: skeleton 0.2.0. Copied into your app by `rune-ui add skeleton`; yours to change.
+//! rune-ui registry: skeleton 0.3.0. Copied into your app by `rune-ui add skeleton`; yours to change.
 //!
 //! The shape of what is loading, still (no shimmer: a frequent wait should not move). A block, lines of text (the last one shorter), a
 //! circle, or a row (a circle and two lines). Each group says "Loading" to assistive technology once.

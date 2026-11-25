@@ -1,4 +1,4 @@
-//! rune-ui registry: dropdown_menu 0.2.0. Copied into your app by `rune-ui add dropdown_menu`; yours to change.
+//! rune-ui registry: dropdown_menu 0.3.0. Copied into your app by `rune-ui add dropdown_menu`; yours to change.
 //!
 //! A menu under its trigger. Behaviour is rune-kit's `Menu` (arrow keys, typeahead, submenus, Escape and a press outside, placement kept
 //! in the window), handed our look through `Theme::to_kit()`: the **floating** material, rows that take the hover wash, a quiet group

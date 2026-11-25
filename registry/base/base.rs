@@ -1,4 +1,4 @@
-//! rune-ui registry: base 0.2.0. What every component shares: the press type, size metrics, the 40 point hit area, a glyph, the
+//! rune-ui registry: base 0.3.0. What every component shares: the press type, size metrics, the 40 point hit area, a glyph, the
 //! spinner, the words beside a control, and `paint` re-exported from the style layer. `rune-ui init` copies it; yours to change.
 
 use std::rc::Rc;
@@ -63,11 +63,11 @@ impl SizeExt for Size {
     }
 
     fn pad(self, t: &Theme) -> f32 {
-        t.space.at(match self {
-            Size::Sm => 2.5,
-            Size::Lg => 4.0,
-            _ => 3.0,
-        })
+        match self {
+            Size::Sm => t.metrics.pad_sm,
+            Size::Lg => t.metrics.pad_lg,
+            _ => t.metrics.pad_md,
+        }
     }
 
     fn radius(self, t: &Theme) -> f32 {

@@ -57,6 +57,94 @@ impl TypeScale {
     };
 }
 
+impl TypeScale {
+    /// The ramp at a density: [`TypeScale::DEFAULT`] (13 point controls) at compact, and one step roomier at comfortable (14 point
+    /// controls on a 20 point line, 13 point hints). Headings stay put; sizes land on half points, line heights on whole ones.
+    pub fn for_density(density: f32) -> TypeScale {
+        let k = comfort(density);
+        let d = TypeScale::DEFAULT;
+        let at = |s: TextStyle, size: f32, lh: f32| TextStyle { size: half(lerp(s.size, size, k)), line_height: lerp(s.line_height, lh, k).round(), ..s };
+        TypeScale { xs: at(d.xs, 12.0, 16.0), sm: at(d.sm, 13.0, 18.0), base: at(d.base, 14.0, 20.0), md: at(d.md, 15.0, 22.0), ..d }
+    }
+}
+
+/// Where a density sits between compact (0.8: 0) and comfortable (1.0: 1).
+pub fn comfort(density: f32) -> f32 {
+    ((density - COMPACT) / (COMFORTABLE - COMPACT)).clamp(0.0, 1.0)
+}
+
+/// The density knob's two named settings.
+pub const COMFORTABLE: f32 = 1.0;
+pub const COMPACT: f32 = 0.8;
+
+fn lerp(a: f32, b: f32, k: f32) -> f32 {
+    a + (b - a) * k
+}
+
+fn half(v: f32) -> f32 {
+    (v * 2.0).round() / 2.0
+}
+
+/// Spacing that follows the density knob: control padding, the gaps inside and between controls, row heights, card and panel insets,
+/// the space between groups. Comfortable is roomy; compact is tight. Every value is on the 4 point grid (2 point half steps) at both
+/// ends and rounded to whole points between them.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Metrics {
+    /// A control's side padding for its words, by size; the icon's side gets 2 points less.
+    pub pad_sm: f32,
+    pub pad_md: f32,
+    pub pad_lg: f32,
+    /// Between an icon and words inside a control.
+    pub gap: f32,
+    /// Between a field's label and its control.
+    pub label_gap: f32,
+    /// Between stacked fields or controls in a form.
+    pub stack: f32,
+    /// A row in a list, a menu, a sidebar, a command palette.
+    pub row: f32,
+    /// A card's row (a title over a hint, a control at the right): its least height and its padding above and below.
+    pub line: f32,
+    pub line_py: f32,
+    /// A slab's, card's or accordion's side padding.
+    pub inset: f32,
+    /// A table's rows and its header.
+    pub table_row: f32,
+    pub table_head: f32,
+    /// A dialog's or sheet's padding.
+    pub panel: f32,
+    /// Between groups on a page.
+    pub section: f32,
+}
+
+impl Metrics {
+    /// Today's tight values: comfortable before the roomier retune.
+    pub const COMPACT: Metrics = Metrics { pad_sm: 10.0, pad_md: 12.0, pad_lg: 16.0, gap: 6.0, label_gap: 6.0, stack: 12.0, row: 30.0, line: 56.0, line_py: 10.0, inset: 16.0, table_row: 40.0, table_head: 36.0, panel: 20.0, section: 40.0 };
+    /// Roomy: controls breathe, rows are tall, groups stand apart.
+    pub const COMFORTABLE: Metrics = Metrics { pad_sm: 12.0, pad_md: 16.0, pad_lg: 20.0, gap: 8.0, label_gap: 8.0, stack: 20.0, row: 36.0, line: 64.0, line_py: 14.0, inset: 20.0, table_row: 48.0, table_head: 40.0, panel: 24.0, section: 56.0 };
+
+    pub fn from_density(density: f32) -> Metrics {
+        let k = comfort(density);
+        let (a, b) = (Metrics::COMPACT, Metrics::COMFORTABLE);
+        let m = |x: f32, y: f32| lerp(x, y, k).round();
+        Metrics {
+            pad_sm: m(a.pad_sm, b.pad_sm),
+            pad_md: m(a.pad_md, b.pad_md),
+            pad_lg: m(a.pad_lg, b.pad_lg),
+            gap: m(a.gap, b.gap),
+            label_gap: m(a.label_gap, b.label_gap),
+            stack: m(a.stack, b.stack),
+            row: m(a.row, b.row),
+            line: m(a.line, b.line),
+            line_py: m(a.line_py, b.line_py),
+            inset: m(a.inset, b.inset),
+            table_row: m(a.table_row, b.table_row),
+            table_head: m(a.table_head, b.table_head),
+            panel: m(a.panel, b.panel),
+            section: m(a.section, b.section),
+        }
+    }
+}
+
 /// Figures of one width, for counts, money and times that change in place.
 pub fn tabular(style: TextStyle) -> TextStyle {
     TextStyle { features: "'tnum' 1", ..style }
@@ -196,10 +284,12 @@ pub struct Controls {
 impl Controls {
     pub const DEFAULT: Controls = Controls { sm: 26.0, md: 30.0, lg: 36.0, hit: 40.0, icon_sm: 12.0, icon: 14.0, icon_lg: 16.0, disabled: 0.45, ring: 2.0, ring_offset: 2.0 };
 
-    /// Heights from the theme's density knob (1 comfortable; 0.875 compact), rounded to whole points. The hit area never shrinks.
+    /// Heights from the theme's density knob: 32/36/44 comfortable (1.0), 26/30/36 compact (0.8), whole points between. The hit area
+    /// never shrinks below 40.
     pub fn from_density(density: f32, disabled: f32) -> Controls {
-        let d = |h: f32| (h * density).round();
-        Controls { sm: d(26.0), md: d(30.0), lg: d(36.0), disabled, ..Controls::DEFAULT }
+        let k = comfort(density);
+        let d = |compact: f32, roomy: f32| lerp(compact, roomy, k).round();
+        Controls { sm: d(26.0, 32.0), md: d(30.0, 36.0), lg: d(36.0, 44.0), icon_sm: d(12.0, 14.0), icon: d(14.0, 16.0), icon_lg: 16.0, disabled, ..Controls::DEFAULT }
     }
 
     /// How far a control `size` points tall falls short of the hit area on each side.
@@ -244,8 +334,19 @@ mod tests {
     fn the_base_knobs_scale_the_ladders() {
         assert_eq!(Radius::from_base(8.0), Radius::DEFAULT);
         assert_eq!(Radius::from_base(12.0).xl, 21.0);
-        let compact = Controls::from_density(0.875, 0.45);
-        assert_eq!((compact.sm, compact.md, compact.lg, compact.hit), (23.0, 26.0, 32.0, 40.0));
+        let roomy = Controls::from_density(COMFORTABLE, 0.45);
+        assert_eq!((roomy.sm, roomy.md, roomy.lg, roomy.hit), (32.0, 36.0, 44.0, 40.0));
+        let compact = Controls::from_density(COMPACT, 0.45);
+        assert_eq!((compact.sm, compact.md, compact.lg, compact.hit), (26.0, 30.0, 36.0, 40.0));
+        assert_eq!(Metrics::from_density(COMFORTABLE), Metrics::COMFORTABLE);
+        assert_eq!(Metrics::from_density(COMPACT), Metrics::COMPACT);
+        assert_eq!(TypeScale::for_density(COMPACT), TypeScale::DEFAULT);
+        assert_eq!(TypeScale::for_density(COMFORTABLE).base.size, 14.0);
+        for m in [Metrics::COMPACT, Metrics::COMFORTABLE] {
+            for v in [m.pad_sm, m.pad_md, m.pad_lg, m.gap, m.label_gap, m.stack, m.row, m.line, m.line_py, m.inset, m.table_row, m.table_head, m.panel, m.section] {
+                assert_eq!(v % 2.0, 0.0, "on the grid: {v}");
+            }
+        }
     }
 
     #[test]

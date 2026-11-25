@@ -1,4 +1,4 @@
-//! rune-ui registry: card 0.2.0. Copied into your app by `rune-ui add card`; yours to change. Needs: separator.
+//! rune-ui registry: card 0.3.0. Copied into your app by `rune-ui add card`; yours to change. Needs: separator.
 //!
 //! One surface divided into rows, not a stack of cards. A **slab** card is the group's fill a step off the page, no edge and no shadow,
 //! its rows split by hairlines inset from its sides. A **raised** card (a result, a question) is the floating colour with a small lift
@@ -72,7 +72,7 @@ impl Card {
 
     pub fn build(self, t: &Theme) -> El {
         let r = t.radius.xl;
-        let pad = t.space.at(4.0);
+        let pad = t.metrics.inset;
         let recipe = if self.raised { Recipe::new().fill(t.c.floating.bg).shadows(&t.elevation.sm).shadow(Shadow { spread: 1.0, color: t.c.line, ..Shadow::default() }) } else { t.mat.slab.base.clone() };
         let mut c = paint(col().key(self.key).w_full().radius(r).continuous_corners(), &recipe);
         if self.title.is_some() || self.action.is_some() {
@@ -115,7 +115,7 @@ pub fn line(t: &Theme, key: impl Into<String>, title: impl Into<String>, hint: O
     if let Some(h) = hint {
         words = words.child(text(h.to_owned()).font(t.ty.sm).color(t.ink_muted()).wrap().min_w(0.0));
     }
-    let mut l = row().key(key.into()).w_full().min_h(56.0).px(t.space.at(4.0)).py(t.space.at(2.5)).gap(t.space.at(4.0)).center_y().child(words);
+    let mut l = row().key(key.into()).w_full().min_h(t.metrics.line).px(t.metrics.inset).py(t.metrics.line_py).gap(t.metrics.inset).center_y().child(words);
     if let Some(c) = control {
         l = l.child(c);
     }

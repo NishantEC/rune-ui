@@ -1,4 +1,4 @@
-//! rune-ui registry: textarea 0.2.0. Copied into your app by `rune-ui add textarea`; yours to change.
+//! rune-ui registry: textarea 0.3.0. Copied into your app by `rune-ui add textarea`; yours to change.
 //!
 //! Several lines on the **well** material, `rows` tall at first and growing with the text to `max_rows`. Focus rings the well; invalid
 //! rings it in the danger colour. Editing is Rune's `text_input`.
@@ -72,7 +72,7 @@ impl<'a, S: 'static> Textarea<'a, S> {
         let parts = recipes::field(t);
         let mut st = states(self.pinned, self.disabled, false);
         st.invalid = self.invalid;
-        let mut well = col().key(self.key.clone()).role("group").px(t.space.at(2.5)).py(t.space.at(2.0)).radius(t.radius.lg).continuous_corners();
+        let mut well = col().key(self.key.clone()).role("group").px(t.metrics.pad_md - 2.0).py(t.metrics.gap).radius(t.radius.lg).continuous_corners();
         well = paint(well, &resolve(&parts.root, st));
         if st.live() && !st.pinned() && !self.invalid
             && let Some((w, o, c)) = parts.root.live().focus_ring

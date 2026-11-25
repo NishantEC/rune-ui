@@ -12,7 +12,7 @@ fn snapshot(item: &str) -> String {
     let mut out = String::new();
     for e in &els {
         let Some(k) = &e.key else { continue };
-        if k.starts_with("gallery") || k.starts_with("group-") || k == "kit-root" {
+        if k.starts_with("gallery") || k.starts_with("group-") || k == "kit-root" || k == "canvas" {
             continue;
         }
         let r = e.rect;

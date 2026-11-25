@@ -1,4 +1,4 @@
-item-kbd group 0 0 1240 105
-kbd-one note 0 62 29 20
-kbd-chord note 67 62 44 20
-kbd-three note 134 62 89 20
+item-kbd group 0 0 1240 108
+kbd-one note 0 64 31 20
+kbd-chord note 70 64 45 20
+kbd-three note 139 64 93 20

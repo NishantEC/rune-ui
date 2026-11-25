@@ -1,4 +1,4 @@
-//! rune-ui registry: field 0.2.0. Copied into your app by `rune-ui add field`; yours to change. Needs: label.
+//! rune-ui registry: field 0.3.0. Copied into your app by `rune-ui add field`; yours to change. Needs: label.
 //!
 //! A label, a control and its description laid out together; an error replaces the description, in the danger colour and announced
 //! politely. Give the control the same words with `.name(…)` and `.description(…)`/`.invalid(true)` so assistive technology hears them.
@@ -64,7 +64,7 @@ impl Field {
         if self.required {
             label = label.required();
         }
-        let mut c = col().key(self.key.clone()).gap(t.space.at(1.5)).child(label.build(t));
+        let mut c = col().key(self.key.clone()).gap(t.metrics.label_gap).child(label.build(t));
         c = match self.width {
             Some(w) => c.w(w),
             None => c.w_full(),

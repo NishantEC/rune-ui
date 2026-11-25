@@ -1,4 +1,4 @@
-//! rune-ui registry: accordion 0.2.0. Copied into your app by `rune-ui add accordion`; yours to change.
+//! rune-ui registry: accordion 0.3.0. Copied into your app by `rune-ui add accordion`; yours to change.
 //!
 //! Sections that fold, in one slab split by hairlines: each trigger a row with its title and a chevron that turns, saying `expanded`;
 //! the content under it while open. The app decides which are open (one at a time, or several).
@@ -48,7 +48,7 @@ impl<S: 'static> Accordion<S> {
         let mut c = paint(col().key(self.key.clone()).w_full().radius(r).continuous_corners().clip_rounded(r), &t.mat.slab.base);
         for (i, (title, open, content)) in self.items.into_iter().enumerate() {
             if i > 0 {
-                c = c.child(row().w_full().px(t.space.at(4.0)).child(rune::el().w_full().h(1.0).fill(t.c.line)));
+                c = c.child(row().w_full().px(t.metrics.inset).child(rune::el().w_full().h(1.0).fill(t.c.line)));
             }
             let mut st = States::default();
             if let Some((at, s)) = self.pinned
@@ -56,14 +56,14 @@ impl<S: 'static> Accordion<S> {
             {
                 st.set(s, true);
             }
-            let mut trigger = row().key(format!("{}-{i}", self.key)).role("button").label(title.clone()).expanded(open).focusable(true).w_full().h(44.0).px(t.space.at(4.0)).gap(t.space.at(2.0)).center_y();
+            let mut trigger = row().key(format!("{}-{i}", self.key)).role("button").label(title.clone()).expanded(open).focusable(true).w_full().h(t.metrics.row + 8.0).px(t.metrics.inset).gap(t.metrics.gap).center_y();
             trigger = paint_state(trigger, &t.mat.row, st).child(text(title).font(weight(t.ty.base, t.ty.medium)).color(t.ink()).grow(1.0).a11y_hidden()).child(glyph(if open { &icons::CHEVRON_DOWN } else { &icons::CHEVRON_RIGHT }, t.control.icon, t.ink_muted()));
             if let Some(f) = self.toggle.clone() {
                 trigger = trigger.on_press(move |s: &mut S| f(s, i));
             }
             c = c.child(trigger);
             if open {
-                c = c.child(col().key(format!("{}-{i}-content", self.key)).w_full().px(t.space.at(4.0)).pb(t.space.at(4.0)).child(content));
+                c = c.child(col().key(format!("{}-{i}-content", self.key)).w_full().px(t.metrics.inset).pb(t.metrics.inset).child(content));
             }
         }
         c

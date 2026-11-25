@@ -2,13 +2,13 @@
 schema = 1
 name = "separator"
 title = "Separator"
-version = "0.2.0"
+version = "0.3.0"
 type = "component"
 group = "structure"
 description = "A hairline between groups, across or down, with optional words."
 
 [requires]
-style = ">=0.2.0, <0.3.0"
+style = ">=0.3.0, <0.4.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "separator.rs"
 target = "src/ui/separator.rs"
-sha256 = "a8e9460bab21c67ede81fbb50cb227b48ba0b7eef2091f8f852c1de0c2736b8e"
+sha256 = "9c6ca9a1febe4f6b03fb495c7cc450a1462f1f82a440fb02ae3bfc2f381ae860"
 
 # Copied only once the gallery block is installed.
 [[files]]

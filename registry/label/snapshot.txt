@@ -1,4 +1,4 @@
-item-label group 0 0 1240 101
-label-plain group 0 62 75 16
-label-required group 99 62 39 16
-label-disabled group 170 62 40 16
+item-label group 0 0 1240 106
+label-plain group 0 64 82 18
+label-required group 106 64 42 18
+label-disabled group 180 64 43 18

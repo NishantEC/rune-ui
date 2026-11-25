@@ -2,13 +2,13 @@
 schema = 1
 name = "toast"
 title = "Toast"
-version = "0.2.0"
+version = "0.3.0"
 type = "component"
 group = "display"
 description = "A short message on the floating material, with an action; a region to stack them."
 
 [requires]
-style = ">=0.2.0, <0.3.0"
+style = ">=0.3.0, <0.4.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "toast.rs"
 target = "src/ui/toast.rs"
-sha256 = "5f776874cd0785d084c6abc65e1ddade2ad9dbfb5e21f77df5739d6065bce876"
+sha256 = "02a63ceb2126691ea501b6b4c393921925b931c9bf13da324793af20e5184b0a"
 
 # Copied only once the gallery block is installed.
 [[files]]

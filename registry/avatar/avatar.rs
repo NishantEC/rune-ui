@@ -1,4 +1,4 @@
-//! rune-ui registry: avatar 0.2.0. Copied into your app by `rune-ui add avatar`; yours to change.
+//! rune-ui registry: avatar 0.3.0. Copied into your app by `rune-ui add avatar`; yours to change.
 //!
 //! A person as their initials in a circle (or an image, clipped to it, with the 1 point outline every image gets so it never bleeds into
 //! the page). Three sizes. [`group`] stacks a few, overlapping, each ringed in the page colour, with a "+N" for the rest.

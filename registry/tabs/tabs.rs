@@ -1,4 +1,4 @@
-//! rune-ui registry: tabs 0.2.0. Copied into your app by `rune-ui add tabs`; yours to change.
+//! rune-ui registry: tabs 0.3.0. Copied into your app by `rune-ui add tabs`; yours to change.
 //!
 //! Views of one place. **Line**: words over a hairline, the chosen tab in the first ink with a 2 point ink line under it. **Contained**:
 //! a well track holding the chosen tab raised (like a toggle group). A tab may lead with an icon and end with a count. Left and Right
@@ -85,7 +85,7 @@ impl<S: 'static> Tabs<S> {
         let h = t.control.md;
         let n = self.tabs.len();
         let mut strip = row().key(self.key.clone()).role("tablist").label(self.name.clone());
-        strip = if line { strip.w_full().gap(t.space.at(4.0)).border_sides([0.0, 0.0, 1.0, 0.0], t.c.line) } else { paint(strip.h(h).padding(3.0).gap(2.0).center_y().radius(t.radius.md).continuous_corners(), &t.mat.well.base) };
+        strip = if line { strip.w_full().gap(t.metrics.inset - 4.0).border_sides([0.0, 0.0, 1.0, 0.0], t.c.line) } else { paint(strip.h(h).padding(3.0).gap(2.0).center_y().radius(t.radius.md).continuous_corners(), &t.mat.well.base) };
         let chosen = t.mat.raised.clone().on(State::Pressed, Delta::new());
         for (i, (label, icon, count)) in self.tabs.into_iter().enumerate() {
             let on = i == self.selected;

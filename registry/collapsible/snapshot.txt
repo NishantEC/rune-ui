@@ -1,8 +1,8 @@
-item-collapsible group 0 0 1240 145
-collapsible-open group 0 62 320 60
-collapsible-open-trigger button 0 62 320 30
-collapsible-open-content group 0 96 320 26
-collapsible-closed group 344 62 320 30
-collapsible-closed-trigger button 344 62 320 30
-collapsible-disabled group 688 62 320 30
-collapsible-disabled-trigger button 688 62 320 30
+item-collapsible group 0 0 1240 156
+collapsible-open group 0 64 320 68
+collapsible-open-trigger button 0 64 320 36
+collapsible-open-content group 0 104 320 28
+collapsible-closed group 344 64 320 36
+collapsible-closed-trigger button 344 64 320 36
+collapsible-disabled group 688 64 320 36
+collapsible-disabled-trigger button 688 64 320 36

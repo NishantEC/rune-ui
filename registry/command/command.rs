@@ -1,4 +1,4 @@
-//! rune-ui registry: command 0.2.0. Copied into your app by `rune-ui add command`; yours to change. Needs: kbd.
+//! rune-ui registry: command 0.3.0. Copied into your app by `rune-ui add command`; yours to change. Needs: kbd.
 //!
 //! A command palette: a search over grouped commands. Typing filters (every word of the query must appear in the label); Up and Down
 //! move the highlight, Return runs it, a press runs any row. The **floating** material; the search is a bare line over a hairline (the
@@ -145,7 +145,7 @@ impl<'a, S: 'static> Command<'a, S> {
         if let Some(k) = descendant {
             input = input.active_descendant(k);
         }
-        let search = row().w_full().h(44.0).px(t.space.at(4.0)).gap(t.space.at(2.5)).center_y().border_sides([0.0, 0.0, 1.0, 0.0], t.c.line).child(glyph(&icons::SEARCH, t.control.icon_lg, t.ink_faint())).child(input);
+        let search = row().w_full().h(t.control.lg + 4.0).px(t.metrics.inset - 4.0).gap(t.space.at(2.5)).center_y().border_sides([0.0, 0.0, 1.0, 0.0], t.c.line).child(glyph(&icons::SEARCH, t.control.icon_lg, t.ink_faint())).child(input);
         let mut list = col().key(format!("{}-list", self.key)).role("listbox").label("Commands").w_full().max_h(320.0).padding(t.space.at(1.5)).gap(1.0).clip_rounded(0.0).scroll(rune::ScrollSpec { stick_bottom: false });
         if shown.is_empty() {
             list = list.child(row().w_full().h(64.0).center().child(text(self.empty.clone()).font(t.ty.base).color(t.ink_muted())));
@@ -157,7 +157,7 @@ impl<'a, S: 'static> Command<'a, S> {
                 list = list.child(row().h(28.0).px(t.space.at(2.5)).center_y().child(text(item.group.clone()).font(weight(t.ty.xs, t.ty.medium)).color(t.ink_faint())));
             }
             let st = States { selected: i == at, ..States::default() };
-            let mut r = row().key(format!("{}-{}", self.key, item.key)).role("option").label(item.label.clone()).focus_selected(i == at).h(36.0).px(t.space.at(2.5)).gap(t.space.at(2.5)).center_y().radius(t.radius.md).continuous_corners();
+            let mut r = row().key(format!("{}-{}", self.key, item.key)).role("option").label(item.label.clone()).focus_selected(i == at).h(t.metrics.row).px(t.metrics.pad_md - 4.0).gap(t.metrics.gap).center_y().radius(t.radius.md).continuous_corners();
             r = paint_state(r, &t.mat.row, st);
             if let Some(ic) = item.icon {
                 r = r.child(glyph(ic, t.control.icon_lg, if i == at { t.ink() } else { t.ink_muted() }));

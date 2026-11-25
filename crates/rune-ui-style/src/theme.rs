@@ -4,7 +4,7 @@
 use rune::{Color, TextStyle};
 
 use crate::materials::{MaterialColors, Materials};
-use crate::scale::{Controls, Elevation, Motion, Radius, Space, TypeScale, tabular, weight};
+use crate::scale::{Controls, Elevation, Metrics, Motion, Radius, Space, TypeScale, tabular, weight};
 use crate::tokens::{Role, ThemeFile, Tone};
 
 /// The colour roles. Every surface role carries the text colour that reads on it.
@@ -54,6 +54,8 @@ pub struct Theme {
     pub elevation: Elevation,
     pub motion: Motion,
     pub control: Controls,
+    /// Spacing that follows the density knob (paddings, gaps, row heights, insets).
+    pub metrics: Metrics,
     pub mat: Materials,
     kit: rune_kit::Kit,
 }
@@ -107,7 +109,8 @@ impl Theme {
         let control = Controls::from_density(f.base.density, m.state("disabled"));
         let radius = Radius::from_base(f.base.radius);
         let space = Space { unit: f.base.spacing };
-        let ty = TypeScale::DEFAULT;
+        let ty = TypeScale::for_density(f.base.density);
+        let metrics = Metrics::from_density(f.base.density);
         let colors = MaterialColors {
             raised_top: m.component("raised-top"),
             raised_bottom: m.component("raised-bottom"),
@@ -134,7 +137,7 @@ impl Theme {
             grain: m.number("grain"),
         };
         let mat = Materials::derive(&colors, &elevation, &motion, &control);
-        let mut t = Theme { name: f.name.clone(), dark, c, space, ty, radius, elevation, motion, control, mat, kit: rune_kit::Kit::neutral(dark) };
+        let mut t = Theme { name: f.name.clone(), dark, c, space, ty, radius, elevation, motion, control, metrics, mat, kit: rune_kit::Kit::neutral(dark) };
         t.kit = t.build_kit();
         t
     }
@@ -173,7 +176,8 @@ impl Theme {
         k.radius.md = self.radius.lg;
         k.radius.sm = Radius::inner(self.radius.lg, 4.0);
         k.ty.ui_medium = self.ty.base;
-        k.ty.text_small_medium = self.ty.base;
+        // A standard menu row is its text's line plus 4 above and below: the line makes the row the density's row height.
+        k.ty.text_small_medium = TextStyle { line_height: self.metrics.row - 8.0, ..self.ty.base };
         k.ty.ui_compact = self.ty.base;
         k.ty.text_xsmall = self.ty.sm;
         k.ty.text_xsmall_medium = weight(self.ty.sm, self.ty.medium);

@@ -1,6 +1,6 @@
-item-sheet group 0 0 1240 345
-sheet-inplace-sheet dialog 0 62 320 260
-hit(sheet-inplace-close) button 267 75 40 40
-sheet-inplace-close button 274 82 26 26
-hit(sheet-open) button 344 57 66 40
-sheet-open button 344 62 66 30
+item-sheet group 0 0 1240 348
+sheet-inplace-sheet dialog 0 64 320 260
+hit(sheet-inplace-close) button 260 84 40 40
+sheet-inplace-close button 264 88 32 32
+hit(sheet-open) button 344 62 78 40
+sheet-open button 344 64 78 36

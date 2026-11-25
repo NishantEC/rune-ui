@@ -2,13 +2,13 @@
 schema = 1
 name = "checkbox"
 title = "Checkbox"
-version = "0.2.0"
+version = "0.3.0"
 type = "component"
 group = "form"
 description = "On, off or mixed: a small well that fills with ink, with words beside it."
 
 [requires]
-style = ">=0.2.0, <0.3.0"
+style = ">=0.3.0, <0.4.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "checkbox.rs"
 target = "src/ui/checkbox.rs"
-sha256 = "020592455417232aa731c1c0032b60023061fcc02b1a1adda8fc811b1bc29253"
+sha256 = "b1085722f1523feb17eff0a4ec0821925b2c750578ff393b93c617cb0fa03b71"
 
 # Copied only once the gallery block is installed.
 [[files]]

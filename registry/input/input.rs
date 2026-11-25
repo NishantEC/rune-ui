@@ -1,4 +1,4 @@
-//! rune-ui registry: input 0.2.0. Copied into your app by `rune-ui add input`; yours to change.
+//! rune-ui registry: input 0.3.0. Copied into your app by `rune-ui add input`; yours to change.
 //!
 //! One line of text on the **well** material: a tint pressed into the page with a soft shadow inside its top edge, no outline at rest.
 //! Focus rings the well (the editor inside has focus, so it is the well's `focus_within` ring); invalid rings it in the danger colour.
@@ -145,7 +145,7 @@ impl<'a, S: 'static> Input<'a, S> {
         let parts = recipes::field(t);
         let mut st = states(self.pinned, self.disabled, false);
         st.invalid = self.invalid;
-        let mut well = row().key(self.key.clone()).role("group").h(self.size.height(t)).gap(t.space.at(1.5)).px(self.size.pad(t) - 2.0).center_y().radius(self.size.radius(t)).continuous_corners();
+        let mut well = row().key(self.key.clone()).role("group").h(self.size.height(t)).gap(t.metrics.gap).px(self.size.pad(t) - 2.0).center_y().radius(self.size.radius(t)).continuous_corners();
         // The well shows focus while its editor has it: `focus_within`, not the well's own focus ring.
         well = rune_ui_style::paint(well, &rune_ui_style::resolve(&parts.root, st));
         if st.live() && !st.pinned() && !self.invalid

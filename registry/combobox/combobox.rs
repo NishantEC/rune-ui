@@ -1,4 +1,4 @@
-//! rune-ui registry: combobox 0.2.0. Copied into your app by `rune-ui add combobox`; yours to change.
+//! rune-ui registry: combobox 0.3.0. Copied into your app by `rune-ui add combobox`; yours to change.
 //!
 //! One choice of many, with a search. Behaviour is rune-kit's `Combobox` (its state machine: open, filter, highlight, choose; keys and
 //! dismissal), handed our look through `Theme::to_kit()`: the trigger is a **well**, the popover the **floating** material with a search

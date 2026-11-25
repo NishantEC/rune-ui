@@ -1,4 +1,4 @@
-//! rune-ui registry: spinner 0.2.0. Copied into your app by `rune-ui add spinner`; yours to change.
+//! rune-ui registry: spinner 0.3.0. Copied into your app by `rune-ui add spinner`; yours to change.
 //!
 //! Work in progress: a faint ring with a turning arc, the one thing in the library that loops (Rune stops it under Reduce Motion). Three
 //! sizes; the second ink by default, or a meaning's colour. It says what is loading.

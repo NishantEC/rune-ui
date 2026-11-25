@@ -1,2 +1,2 @@
-item-scroll_area group 0 0 1240 265
-scroll-area group 0 62 260 180
+item-scroll_area group 0 0 1240 268
+scroll-area group 0 64 260 180

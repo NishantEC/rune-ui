@@ -1,4 +1,4 @@
-//! rune-ui registry: alert 0.2.0. Copied into your app by `rune-ui add alert`; yours to change.
+//! rune-ui registry: alert 0.3.0. Copied into your app by `rune-ui add alert`; yours to change.
 //!
 //! A message that belongs to the page: a meaning's wash at low alpha, its icon, a title and a description in readable inks, and an
 //! optional action at the right. Never a border; the wash and the words carry it. Danger and warning alerts announce themselves.
@@ -49,7 +49,7 @@ impl Alert {
         if let Some(d) = &self.description {
             text_col = text_col.child(text(d.clone()).font(t.ty.base).color(if neutral { t.ink_muted() } else { words }).wrap().min_w(0.0));
         }
-        let mut a = paint(row().key(self.key).role("alert").label(self.title).w_full().padding(t.space.at(3.5)).gap(t.space.at(3.0)).items_start().radius(t.radius.lg).continuous_corners(), &Recipe::new().fill(wash)).child(glyph(icon, t.control.icon_lg, if neutral { t.ink_muted() } else { solid }).mt(1.0)).child(text_col);
+        let mut a = paint(row().key(self.key).role("alert").label(self.title).w_full().padding(t.metrics.pad_md).gap(t.metrics.pad_md - 4.0).items_start().radius(t.radius.lg).continuous_corners(), &Recipe::new().fill(wash)).child(glyph(icon, t.control.icon_lg, if neutral { t.ink_muted() } else { solid }).mt(1.0)).child(text_col);
         if matches!(self.tone, Tone::Danger | Tone::Warning) {
             a = a.live_region(rune::LiveRegion::Polite);
         }
