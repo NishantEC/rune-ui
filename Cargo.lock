@@ -1005,6 +1005,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "gallery"
+version = "0.2.0"
+dependencies = [
+ "png 0.17.16",
+ "rune",
+ "rune-kit",
+ "rune-ui-style",
+ "rune-ui-themes",
+ "serde_json",
+]
+
+[[package]]
 name = "gethostname"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2669,37 +2681,27 @@ dependencies = [
 
 [[package]]
 name = "rune-ui-cli"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
- "serde_json",
-]
-
-[[package]]
-name = "rune-ui-gallery"
-version = "0.1.0"
-dependencies = [
- "png 0.17.16",
- "rune",
- "rune-kit",
- "rune-ui-style",
- "rune-ui-themes",
  "serde_json",
 ]
 
 [[package]]
 name = "rune-ui-style"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "rune",
  "rune-kit",
+ "serde_json",
 ]
 
 [[package]]
 name = "rune-ui-themes"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "rune",
  "rune-ui-style",
+ "serde_json",
 ]
 
 [[package]]

@@ -6,7 +6,7 @@ resolver = "2"
 members = ["crates/rune-ui-style", "crates/rune-ui-themes", "crates/rune-ui-cli", "apps/gallery"]
 
 [workspace.package]
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 license = "MIT"
 repository = "local"

@@ -1,0 +1,643 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rune-ui/theme.schema.json",
+  "title": "rune-ui theme",
+  "description": "A rune-ui theme: base knobs, colour ramps (tier 1), and light and dark modes of roles (tier 2), state alphas and component tokens (tier 3). Shaped like W3C design tokens ($type, $value, {aliases}). Unknown keys are errors.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "base": {
+      "type": "object",
+      "properties": {
+        "spacing": {
+          "$ref": "#/$defs/number"
+        },
+        "radius": {
+          "$ref": "#/$defs/number"
+        },
+        "density": {
+          "$ref": "#/$defs/number"
+        },
+        "$type": {
+          "const": "number"
+        }
+      },
+      "required": [
+        "spacing",
+        "radius",
+        "density"
+      ],
+      "additionalProperties": false
+    },
+    "color": {
+      "type": "object",
+      "properties": {
+        "neutral": {
+          "type": "object",
+          "properties": {
+            "0": {
+              "$ref": "#/$defs/hex"
+            },
+            "25": {
+              "$ref": "#/$defs/hex"
+            },
+            "50": {
+              "$ref": "#/$defs/hex"
+            },
+            "100": {
+              "$ref": "#/$defs/hex"
+            },
+            "150": {
+              "$ref": "#/$defs/hex"
+            },
+            "200": {
+              "$ref": "#/$defs/hex"
+            },
+            "300": {
+              "$ref": "#/$defs/hex"
+            },
+            "400": {
+              "$ref": "#/$defs/hex"
+            },
+            "500": {
+              "$ref": "#/$defs/hex"
+            },
+            "600": {
+              "$ref": "#/$defs/hex"
+            },
+            "700": {
+              "$ref": "#/$defs/hex"
+            },
+            "750": {
+              "$ref": "#/$defs/hex"
+            },
+            "800": {
+              "$ref": "#/$defs/hex"
+            },
+            "850": {
+              "$ref": "#/$defs/hex"
+            },
+            "900": {
+              "$ref": "#/$defs/hex"
+            },
+            "925": {
+              "$ref": "#/$defs/hex"
+            },
+            "950": {
+              "$ref": "#/$defs/hex"
+            },
+            "975": {
+              "$ref": "#/$defs/hex"
+            },
+            "1000": {
+              "$ref": "#/$defs/hex"
+            }
+          },
+          "required": [
+            "0",
+            "25",
+            "50",
+            "100",
+            "150",
+            "200",
+            "300",
+            "400",
+            "500",
+            "600",
+            "700",
+            "750",
+            "800",
+            "850",
+            "900",
+            "925",
+            "950",
+            "975",
+            "1000"
+          ],
+          "additionalProperties": false
+        },
+        "blue": {
+          "type": "object",
+          "properties": {
+            "50": {
+              "$ref": "#/$defs/hex"
+            },
+            "100": {
+              "$ref": "#/$defs/hex"
+            },
+            "200": {
+              "$ref": "#/$defs/hex"
+            },
+            "300": {
+              "$ref": "#/$defs/hex"
+            },
+            "400": {
+              "$ref": "#/$defs/hex"
+            },
+            "500": {
+              "$ref": "#/$defs/hex"
+            },
+            "600": {
+              "$ref": "#/$defs/hex"
+            },
+            "700": {
+              "$ref": "#/$defs/hex"
+            },
+            "800": {
+              "$ref": "#/$defs/hex"
+            },
+            "900": {
+              "$ref": "#/$defs/hex"
+            },
+            "950": {
+              "$ref": "#/$defs/hex"
+            }
+          },
+          "required": [
+            "50",
+            "100",
+            "200",
+            "300",
+            "400",
+            "500",
+            "600",
+            "700",
+            "800",
+            "900",
+            "950"
+          ],
+          "additionalProperties": false
+        },
+        "green": {
+          "type": "object",
+          "properties": {
+            "50": {
+              "$ref": "#/$defs/hex"
+            },
+            "100": {
+              "$ref": "#/$defs/hex"
+            },
+            "200": {
+              "$ref": "#/$defs/hex"
+            },
+            "300": {
+              "$ref": "#/$defs/hex"
+            },
+            "400": {
+              "$ref": "#/$defs/hex"
+            },
+            "500": {
+              "$ref": "#/$defs/hex"
+            },
+            "600": {
+              "$ref": "#/$defs/hex"
+            },
+            "700": {
+              "$ref": "#/$defs/hex"
+            },
+            "800": {
+              "$ref": "#/$defs/hex"
+            },
+            "900": {
+              "$ref": "#/$defs/hex"
+            },
+            "950": {
+              "$ref": "#/$defs/hex"
+            }
+          },
+          "required": [
+            "50",
+            "100",
+            "200",
+            "300",
+            "400",
+            "500",
+            "600",
+            "700",
+            "800",
+            "900",
+            "950"
+          ],
+          "additionalProperties": false
+        },
+        "amber": {
+          "type": "object",
+          "properties": {
+            "50": {
+              "$ref": "#/$defs/hex"
+            },
+            "100": {
+              "$ref": "#/$defs/hex"
+            },
+            "200": {
+              "$ref": "#/$defs/hex"
+            },
+            "300": {
+              "$ref": "#/$defs/hex"
+            },
+            "400": {
+              "$ref": "#/$defs/hex"
+            },
+            "500": {
+              "$ref": "#/$defs/hex"
+            },
+            "600": {
+              "$ref": "#/$defs/hex"
+            },
+            "700": {
+              "$ref": "#/$defs/hex"
+            },
+            "800": {
+              "$ref": "#/$defs/hex"
+            },
+            "900": {
+              "$ref": "#/$defs/hex"
+            },
+            "950": {
+              "$ref": "#/$defs/hex"
+            }
+          },
+          "required": [
+            "50",
+            "100",
+            "200",
+            "300",
+            "400",
+            "500",
+            "600",
+            "700",
+            "800",
+            "900",
+            "950"
+          ],
+          "additionalProperties": false
+        },
+        "red": {
+          "type": "object",
+          "properties": {
+            "50": {
+              "$ref": "#/$defs/hex"
+            },
+            "100": {
+              "$ref": "#/$defs/hex"
+            },
+            "200": {
+              "$ref": "#/$defs/hex"
+            },
+            "300": {
+              "$ref": "#/$defs/hex"
+            },
+            "400": {
+              "$ref": "#/$defs/hex"
+            },
+            "500": {
+              "$ref": "#/$defs/hex"
+            },
+            "600": {
+              "$ref": "#/$defs/hex"
+            },
+            "700": {
+              "$ref": "#/$defs/hex"
+            },
+            "800": {
+              "$ref": "#/$defs/hex"
+            },
+            "900": {
+              "$ref": "#/$defs/hex"
+            },
+            "950": {
+              "$ref": "#/$defs/hex"
+            }
+          },
+          "required": [
+            "50",
+            "100",
+            "200",
+            "300",
+            "400",
+            "500",
+            "600",
+            "700",
+            "800",
+            "900",
+            "950"
+          ],
+          "additionalProperties": false
+        },
+        "$type": {
+          "const": "color"
+        }
+      },
+      "required": [
+        "neutral",
+        "blue",
+        "green",
+        "amber",
+        "red"
+      ],
+      "additionalProperties": false
+    },
+    "modes": {
+      "type": "object",
+      "properties": {
+        "light": {
+          "$ref": "#/$defs/mode"
+        },
+        "dark": {
+          "$ref": "#/$defs/mode"
+        }
+      },
+      "required": [
+        "light",
+        "dark"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "name",
+    "base",
+    "color",
+    "modes"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "hex": {
+      "type": "object",
+      "properties": {
+        "$value": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        }
+      },
+      "required": [
+        "$value"
+      ],
+      "additionalProperties": false
+    },
+    "color": {
+      "type": "object",
+      "properties": {
+        "$value": {
+          "type": "string",
+          "pattern": "^\\{[a-z]+\\.[0-9]+\\}( / (0|1|0?\\.[0-9]+))?$"
+        }
+      },
+      "required": [
+        "$value"
+      ],
+      "additionalProperties": false
+    },
+    "number": {
+      "type": "object",
+      "properties": {
+        "$value": {
+          "type": "number"
+        },
+        "$description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "$value"
+      ],
+      "additionalProperties": false
+    },
+    "role": {
+      "type": "object",
+      "properties": {
+        "bg": {
+          "$ref": "#/$defs/color"
+        },
+        "fg": {
+          "$ref": "#/$defs/color"
+        }
+      },
+      "required": [
+        "bg",
+        "fg"
+      ],
+      "additionalProperties": false
+    },
+    "tone": {
+      "type": "object",
+      "properties": {
+        "bg": {
+          "$ref": "#/$defs/color"
+        },
+        "fg": {
+          "$ref": "#/$defs/color"
+        },
+        "solid": {
+          "$ref": "#/$defs/color"
+        },
+        "on-solid": {
+          "$ref": "#/$defs/color"
+        }
+      },
+      "required": [
+        "bg",
+        "fg",
+        "solid",
+        "on-solid"
+      ],
+      "additionalProperties": false
+    },
+    "mode": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "type": "object",
+          "properties": {
+            "page": {
+              "$ref": "#/$defs/role"
+            },
+            "surface": {
+              "$ref": "#/$defs/role"
+            },
+            "floating": {
+              "$ref": "#/$defs/role"
+            },
+            "muted": {
+              "$ref": "#/$defs/role"
+            },
+            "subtle": {
+              "$ref": "#/$defs/role"
+            },
+            "primary": {
+              "$ref": "#/$defs/role"
+            },
+            "secondary": {
+              "$ref": "#/$defs/role"
+            },
+            "accent": {
+              "$ref": "#/$defs/role"
+            },
+            "input": {
+              "$ref": "#/$defs/role"
+            },
+            "info": {
+              "$ref": "#/$defs/tone"
+            },
+            "success": {
+              "$ref": "#/$defs/tone"
+            },
+            "warning": {
+              "$ref": "#/$defs/tone"
+            },
+            "danger": {
+              "$ref": "#/$defs/tone"
+            },
+            "line": {
+              "$ref": "#/$defs/color"
+            },
+            "ring": {
+              "$ref": "#/$defs/color"
+            },
+            "$type": {
+              "const": "color"
+            }
+          },
+          "required": [
+            "page",
+            "surface",
+            "floating",
+            "muted",
+            "subtle",
+            "primary",
+            "secondary",
+            "accent",
+            "input",
+            "info",
+            "success",
+            "warning",
+            "danger",
+            "line",
+            "ring"
+          ],
+          "additionalProperties": false
+        },
+        "state": {
+          "type": "object",
+          "properties": {
+            "hover": {
+              "$ref": "#/$defs/number"
+            },
+            "pressed": {
+              "$ref": "#/$defs/number"
+            },
+            "selected": {
+              "$ref": "#/$defs/number"
+            },
+            "disabled": {
+              "$ref": "#/$defs/number"
+            },
+            "$type": {
+              "const": "number"
+            }
+          },
+          "required": [
+            "hover",
+            "pressed",
+            "selected",
+            "disabled"
+          ],
+          "additionalProperties": false
+        },
+        "component": {
+          "type": "object",
+          "properties": {
+            "raised-top": {
+              "$ref": "#/$defs/color"
+            },
+            "raised-bottom": {
+              "$ref": "#/$defs/color"
+            },
+            "raised-edge": {
+              "$ref": "#/$defs/color"
+            },
+            "ink-top": {
+              "$ref": "#/$defs/color"
+            },
+            "ink-bottom": {
+              "$ref": "#/$defs/color"
+            },
+            "ink-rim": {
+              "$ref": "#/$defs/color"
+            },
+            "ink-edge": {
+              "$ref": "#/$defs/color"
+            },
+            "well-shadow": {
+              "$ref": "#/$defs/color"
+            },
+            "thumb": {
+              "$ref": "#/$defs/color"
+            },
+            "float-ring": {
+              "$ref": "#/$defs/color"
+            },
+            "shade": {
+              "$ref": "#/$defs/color"
+            },
+            "$type": {
+              "const": "color"
+            }
+          },
+          "required": [
+            "raised-top",
+            "raised-bottom",
+            "raised-edge",
+            "ink-top",
+            "ink-bottom",
+            "ink-rim",
+            "ink-edge",
+            "well-shadow",
+            "thumb",
+            "float-ring",
+            "shade"
+          ],
+          "additionalProperties": false
+        },
+        "number": {
+          "type": "object",
+          "properties": {
+            "elevation": {
+              "$ref": "#/$defs/number"
+            },
+            "well-blur": {
+              "$ref": "#/$defs/number"
+            },
+            "grain": {
+              "$ref": "#/$defs/number"
+            },
+            "$type": {
+              "const": "number"
+            }
+          },
+          "required": [
+            "elevation",
+            "well-blur",
+            "grain"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "role",
+        "state",
+        "component",
+        "number"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

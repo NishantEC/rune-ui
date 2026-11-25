@@ -9,6 +9,8 @@ license.workspace = true
 rune.workspace = true
 # Layer 1 (behaviour): menus and selects keep rune-kit's keys, focus and dismissal; `Theme::kit` hands it our tokens.
 rune-kit.workspace = true
+# Theme files are JSON (tokens.rs parses them strictly).
+serde_json.workspace = true
 
 [lints]
 workspace = true

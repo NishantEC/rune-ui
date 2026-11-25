@@ -1,15 +1,15 @@
 //! # rune-ui-style
 //!
-//! Layer 2 of rune-ui (README.md): the style system that components are built from, the way Tailwind is for the web.
+//! Layer 2 of rune-ui (`ARCHITECTURE.md`): the style system components are built from, the way Tailwind is for the web.
 //!
-//! * [`scale`]: space, type, radius, elevation (smooth shadow stacks) and motion, as short ladders of named steps;
-//!   [`Controls`] for control heights and hit areas.
-//! * [`theme`]: [`ThemeData`] (hex strings and a few numbers; themes ship as this) resolved into a [`Theme`]: colour roles
-//!   ([`Palette`]), the scales, and the [`Materials`].
-//! * [`recipe`]: a surface as data. A [`Recipe`] is an ordered list of [`Layer`]s (fill, gradient, lit top edge, inner shadow,
-//!   inner rim, drop shadows, ring, wash, scale, opacity, backdrop blur, grain); a [`Material`] has a recipe for each [`State`].
-//! * [`paint`]: the one painter. [`plan`] resolves a recipe into Rune calls ([`Op`]); [`paint()`] makes them on an `El`;
-//!   [`paint_material`] adds Rune's live hover, press and focus.
+//! * [`tokens`]: theme files. Three tiers (ramps, roles with a matching text colour, rare component tokens), state alphas, three base
+//!   knobs (`spacing`, `radius`, `density`), a light and a dark mode, parsed strictly (unknown keys are errors).
+//! * [`scale`]: space, type, radius, elevation (smooth shadow stacks), motion and control sizes.
+//! * [`theme`]: a [`Theme`] (one mode resolved: [`Palette`], scales, [`Materials`]) and [`Theme::to_kit`], the rune-kit adapter.
+//! * [`recipe`]: [`Recipe`] (layers), [`Delta`], [`Material`] (a delta per [`State`]), [`Parts`], and the one resolver [`resolve`]
+//!   (disabled > loading > pressed > hover > rest; selected under, focus, invalid and open on top).
+//! * [`recipes`]: component variants as enums ([`ButtonVariant`], [`Size`], [`Tone`]) and their parts.
+//! * [`paint`]: the one painter: [`plan`] lists the Rune calls ([`Op`]), [`paint()`] makes them, [`paint_state`] adds Rune's live states.
 //!
 //! ```
 //! use rune::{Color, Shadow, el};
@@ -28,12 +28,19 @@ pub mod color;
 pub mod materials;
 pub mod paint;
 pub mod recipe;
+pub mod recipes;
 pub mod scale;
 pub mod theme;
+pub mod tokens;
 
 pub use color::{contrast, hex, lightness, mix, over};
 pub use materials::{MaterialColors, Materials};
-pub use paint::{Look, Op, apply, apply_live, paint, paint_material, plan, resolve};
-pub use recipe::{Layer, LayerKind, Live, Material, Recipe, State};
+pub use paint::{Op, apply, apply_live, paint, paint_state, plan};
+pub use recipe::{Delta, Layer, LayerKind, Live, Material, Parts, Recipe, State, States, Tint, resolve};
+pub use recipes::{ButtonVariant, Size, Tone};
 pub use scale::{Controls, Elevation, MAX_CORNER_SHARE, Motion, Radius, Space, TypeScale, smooth_stack, tabular, weight};
-pub use theme::{Palette, Theme, ThemeData, Tone, ToneData};
+pub use theme::{Palette, Theme, ThemeError};
+pub use tokens::{Base, Mode, Role, ThemeFile};
+
+/// This crate's version, which registry items name in `requires.style`.
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");

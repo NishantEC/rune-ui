@@ -88,6 +88,12 @@ pub const MAX_CORNER_SHARE: f32 = 0.38;
 impl Radius {
     pub const DEFAULT: Radius = Radius { xs: 3.0, sm: 5.0, md: 8.0, lg: 11.0, xl: 14.0, xxl: 18.0, full: 999.0 };
 
+    /// The ladder from the theme's one radius knob (`md`): the other steps keep their proportion to it.
+    pub fn from_base(md: f32) -> Radius {
+        let k = |f: f32| (md * f * 2.0).round() / 2.0;
+        Radius { xs: k(0.375), sm: k(0.625), md, lg: k(1.375), xl: k(1.75), xxl: k(2.25), full: 999.0 }
+    }
+
     /// Concentric nesting: the radius of something `inset` points inside a shape of radius `outer`.
     pub fn inner(outer: f32, inset: f32) -> f32 {
         (outer - inset).max(0.0)
@@ -190,6 +196,12 @@ pub struct Controls {
 impl Controls {
     pub const DEFAULT: Controls = Controls { sm: 26.0, md: 30.0, lg: 36.0, hit: 40.0, icon_sm: 12.0, icon: 14.0, icon_lg: 16.0, disabled: 0.45, ring: 2.0, ring_offset: 2.0 };
 
+    /// Heights from the theme's density knob (1 comfortable; 0.875 compact), rounded to whole points. The hit area never shrinks.
+    pub fn from_density(density: f32, disabled: f32) -> Controls {
+        let d = |h: f32| (h * density).round();
+        Controls { sm: d(26.0), md: d(30.0), lg: d(36.0), disabled, ..Controls::DEFAULT }
+    }
+
     /// How far a control `size` points tall falls short of the hit area on each side.
     pub fn slop(&self, size: f32) -> f32 {
         ((self.hit - size) / 2.0).max(0.0)
@@ -226,6 +238,14 @@ mod tests {
         let total: f32 = s.iter().map(|l| l.color.a).sum();
         assert!((total - 0.2).abs() < 1e-5);
         assert_eq!(s.last().unwrap().y, 16.0);
+    }
+
+    #[test]
+    fn the_base_knobs_scale_the_ladders() {
+        assert_eq!(Radius::from_base(8.0), Radius::DEFAULT);
+        assert_eq!(Radius::from_base(12.0).xl, 21.0);
+        let compact = Controls::from_density(0.875, 0.45);
+        assert_eq!((compact.sm, compact.md, compact.lg, compact.hit), (23.0, 26.0, 32.0, 40.0));
     }
 
     #[test]

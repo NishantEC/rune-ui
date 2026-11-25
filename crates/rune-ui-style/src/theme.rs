@@ -1,115 +1,51 @@
-//! A theme: [`ThemeData`] (hex strings and a few numbers, nothing else; layer 4 ships these) resolved into a [`Theme`] (colour roles,
-//! the scales, and the materials as recipes) that components read. Nothing outside a theme names a colour.
+//! A [`Theme`]: one mode of a theme file resolved into what components read: colour roles ([`Palette`]), the scales and the materials.
+//! Nothing outside a theme names a colour.
 
 use rune::{Color, TextStyle};
 
-use crate::color::hex;
 use crate::materials::{MaterialColors, Materials};
-use crate::scale::{Controls, Elevation, Motion, Radius, Space, TypeScale, weight};
+use crate::scale::{Controls, Elevation, Motion, Radius, Space, TypeScale, tabular, weight};
+use crate::tokens::{Role, ThemeFile, Tone};
 
-/// A meaning's two inks: the words and the dot. Its wash is the dot at the theme's `tone_wash` alpha.
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub struct ToneData {
-    pub ink: &'static str,
-    pub dot: &'static str,
-}
-
-/// A theme as data. Colours are sRGB hex (`#rrggbb`, or `#rrggbbaa` for a colour at an alpha).
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub struct ThemeData {
-    pub name: &'static str,
-    pub dark: bool,
-
-    /// The window behind everything.
-    pub page: &'static str,
-    /// A group's slab, a step off the page.
-    pub surface: &'static str,
-    pub surface_hover: &'static str,
-    /// What floats: menus, popovers, dialogs.
-    pub floating: &'static str,
-    /// Text: the first ink, the second (secondary), the third (hints; still 3:1 on the page).
-    pub ink: &'static str,
-    pub ink_muted: &'static str,
-    pub ink_faint: &'static str,
-    /// Words on the ink material.
-    pub on_ink: &'static str,
-    /// A hairline between rows.
-    pub line: &'static str,
-    /// The keyboard focus ring (neutral, not a hue).
-    pub focus: &'static str,
-    /// The one hue for selection and links.
-    pub accent: &'static str,
-    pub info: ToneData,
-    pub success: ToneData,
-    pub warning: ToneData,
-    pub danger: ToneData,
-    /// The destructive button's colour and its words (solid, so the words keep 4.5:1).
-    pub danger_solid: &'static str,
-    pub on_danger: &'static str,
-    /// How strong a meaning's wash is behind its words (0 to 1).
-    pub tone_wash: f32,
-
-    pub raised_top: &'static str,
-    pub raised_bottom: &'static str,
-    pub raised_edge: &'static str,
-    pub ink_top: &'static str,
-    pub ink_bottom: &'static str,
-    pub ink_rim: &'static str,
-    pub ink_edge: &'static str,
-    pub well: &'static str,
-    pub well_shadow: &'static str,
-    pub well_blur: f32,
-    pub hover: &'static str,
-    pub pressed: &'static str,
-    pub selected: &'static str,
-    pub thumb: &'static str,
-    /// What shadows are made of.
-    pub shade: &'static str,
-    /// The hairline baked into floating shadows.
-    pub float_ring: &'static str,
-    /// Every shadow alpha is multiplied by this (a dark page needs deeper shadows to show them).
-    pub elevation: f32,
-    /// Grain over atmosphere surfaces (0 = none).
-    pub grain: f32,
-}
-
-/// A meaning, resolved.
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub struct Tone {
-    pub ink: Color,
-    pub dot: Color,
-    pub wash: Color,
-}
-
-/// The colour roles.
+/// The colour roles. Every surface role carries the text colour that reads on it.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Palette {
-    pub page: Color,
-    pub surface: Color,
-    pub surface_hover: Color,
-    pub floating: Color,
-    pub ink: Color,
-    pub ink_muted: Color,
-    pub ink_faint: Color,
-    pub on_ink: Color,
-    pub line: Color,
-    pub focus: Color,
-    pub accent: Color,
-    pub hover: Color,
-    pub pressed: Color,
-    pub selected: Color,
+    /// The window behind everything; `fg` is the first ink.
+    pub page: Role,
+    /// A group's slab, a step off the page.
+    pub surface: Role,
+    /// Menus, popovers, dialogs.
+    pub floating: Role,
+    /// A quiet tint; `fg` is the second ink.
+    pub muted: Role,
+    /// A quieter tint; `fg` is the third ink (hints, placeholders; still 3:1).
+    pub subtle: Role,
+    /// The ink: the primary action's surface and its words.
+    pub primary: Role,
+    /// The raised material's surface and its words.
+    pub secondary: Role,
+    /// Selection and links.
+    pub accent: Role,
+    /// A well's tint and the text typed into it.
+    pub input: Role,
     pub info: Tone,
     pub success: Tone,
     pub warning: Tone,
     pub danger: Tone,
-    pub danger_solid: Color,
-    pub on_danger: Color,
+    /// A hairline between rows.
+    pub line: Color,
+    /// The keyboard focus ring.
+    pub ring: Color,
+    /// State layers: the page text colour at the theme's alphas.
+    pub hover: Color,
+    pub pressed: Color,
+    pub selected: Color,
 }
 
 /// Everything a component reads.
 #[derive(Clone, Debug)]
 pub struct Theme {
-    pub name: &'static str,
+    pub name: String,
     pub dark: bool,
     pub c: Palette,
     pub space: Space,
@@ -122,107 +58,142 @@ pub struct Theme {
     kit: rune_kit::Kit,
 }
 
-impl Theme {
-    pub fn from_data(d: &ThemeData) -> Theme {
-        let tone = |t: ToneData| {
-            let dot = hex(t.dot);
-            Tone { ink: hex(t.ink), dot, wash: dot.alpha(d.tone_wash) }
-        };
-        let c = Palette {
-            page: hex(d.page),
-            surface: hex(d.surface),
-            surface_hover: hex(d.surface_hover),
-            floating: hex(d.floating),
-            ink: hex(d.ink),
-            ink_muted: hex(d.ink_muted),
-            ink_faint: hex(d.ink_faint),
-            on_ink: hex(d.on_ink),
-            line: hex(d.line),
-            focus: hex(d.focus),
-            accent: hex(d.accent),
-            hover: hex(d.hover),
-            pressed: hex(d.pressed),
-            selected: hex(d.selected),
-            info: tone(d.info),
-            success: tone(d.success),
-            warning: tone(d.warning),
-            danger: tone(d.danger),
-            danger_solid: hex(d.danger_solid),
-            on_danger: hex(d.on_danger),
-        };
-        let shade = hex(d.shade);
-        let elevation = Elevation::new(shade, d.elevation);
-        let (motion, control, radius, space, ty) = (Motion::DEFAULT, Controls::DEFAULT, Radius::DEFAULT, Space::DEFAULT, TypeScale::DEFAULT);
-        let colors = MaterialColors {
-            raised_top: hex(d.raised_top),
-            raised_bottom: hex(d.raised_bottom),
-            raised_edge: hex(d.raised_edge),
-            ink_top: hex(d.ink_top),
-            ink_bottom: hex(d.ink_bottom),
-            ink_rim: hex(d.ink_rim),
-            ink_edge: hex(d.ink_edge),
-            danger: c.danger_solid,
-            well: hex(d.well),
-            well_shadow: hex(d.well_shadow),
-            well_blur: d.well_blur,
-            surface: c.surface,
-            surface_hover: c.surface_hover,
-            floating: c.floating,
-            float_ring: hex(d.float_ring),
-            hover: c.hover,
-            pressed: c.pressed,
-            selected: c.selected,
-            thumb: hex(d.thumb),
-            shade,
-            focus: c.focus,
-            grain: d.grain,
-        };
-        let mat = Materials::derive(&colors, &elevation, &motion, &control);
-        let kit = kit_for(&c, &elevation, &radius, &ty, &mat);
-        Theme { name: d.name, dark: d.dark, c, space, ty, radius, elevation, motion, control, mat, kit }
-    }
+/// Why a theme file could not be used.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct ThemeError(pub Vec<String>);
 
-    /// The rune-kit tokens for components whose behaviour is rune-kit's (a select's listbox, a menu): our floating surface and its
-    /// shadows, no border (the shadow's baked ring is the edge), rows in the base size and the first ink, the hover wash under the
-    /// pointer or the keys.
-    pub fn kit(&self) -> &rune_kit::Kit {
-        &self.kit
-    }
-
-    /// The control text style at a size (`sm` or not) and weight.
-    pub fn control_text(&self, sm: bool, w: f32) -> TextStyle {
-        weight(if sm { self.ty.sm } else { self.ty.base }, w)
+impl std::fmt::Display for ThemeError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "theme file has {} problem(s):\n  {}", self.0.len(), self.0.join("\n  "))
     }
 }
 
-fn kit_for(c: &Palette, e: &Elevation, r: &Radius, ty: &TypeScale, mat: &Materials) -> rune_kit::Kit {
-    let mut k = rune_kit::Kit::from_palette(rune_kit::PaletteSeed { bg: c.page, fg: c.ink, accent: c.accent });
-    let floating: Vec<rune::Shadow> = crate::paint::plan(&mat.floating.rest).into_iter().filter_map(|op| if let crate::Op::BoxShadow(s) = op { Some(s) } else { None }).collect();
-    k.c.surface_raised = c.floating;
-    k.c.surface_float = c.floating;
-    k.c.layer_01 = c.floating;
-    k.c.surface_raised_hover = c.hover;
-    k.c.hover = c.hover;
-    k.c.pressed = c.pressed;
-    // rune-kit draws this at half strength round a raised surface: the surface's own colour leaves only the shadow's ring as the edge.
-    k.c.std_border = c.floating;
-    k.c.std_icon = c.ink_muted;
-    k.c.icon_base = c.ink_muted;
-    k.c.text_strong = c.ink;
-    k.c.text_base = c.ink;
-    k.c.text_weak = c.ink_faint;
-    k.c.text_faint = c.ink_faint;
-    k.c.border_focus = c.focus;
-    k.elevation.md = floating.clone();
-    k.elevation.floating = floating;
-    k.elevation.raised = e.sm.clone();
-    k.radius.md = r.lg;
-    k.radius.sm = Radius::inner(r.lg, 4.0);
-    k.ty.ui_medium = ty.base;
-    k.ty.text_small_medium = ty.base;
-    k.ty.ui_compact = ty.base;
-    k.ty.text_xsmall = ty.sm;
-    k.ty.text_xsmall_medium = weight(ty.sm, ty.medium);
-    k.ty.small_medium = crate::scale::tabular(ty.sm);
-    k
+impl std::error::Error for ThemeError {}
+
+impl Theme {
+    /// One mode of a theme file's JSON.
+    pub fn from_json(json: &str, dark: bool) -> Result<Theme, ThemeError> {
+        ThemeFile::parse(json).map(|f| Theme::from_file(&f, dark)).map_err(ThemeError)
+    }
+
+    /// One mode of a parsed theme file.
+    pub fn from_file(f: &ThemeFile, dark: bool) -> Theme {
+        let m = f.mode(dark);
+        let r = |k: &str| m.role(k);
+        let ink = r("page").fg;
+        let c = Palette {
+            page: r("page"),
+            surface: r("surface"),
+            floating: r("floating"),
+            muted: r("muted"),
+            subtle: r("subtle"),
+            primary: r("primary"),
+            secondary: r("secondary"),
+            accent: r("accent"),
+            input: r("input"),
+            info: m.tone("info"),
+            success: m.tone("success"),
+            warning: m.tone("warning"),
+            danger: m.tone("danger"),
+            line: m.line,
+            ring: m.ring,
+            hover: ink.alpha(m.state("hover")),
+            pressed: ink.alpha(m.state("pressed")),
+            selected: ink.alpha(m.state("selected")),
+        };
+        let shade = m.component("shade");
+        let elevation = Elevation::new(shade, m.number("elevation"));
+        let motion = Motion::DEFAULT;
+        let control = Controls::from_density(f.base.density, m.state("disabled"));
+        let radius = Radius::from_base(f.base.radius);
+        let space = Space { unit: f.base.spacing };
+        let ty = TypeScale::DEFAULT;
+        let colors = MaterialColors {
+            raised_top: m.component("raised-top"),
+            raised_bottom: m.component("raised-bottom"),
+            raised_edge: m.component("raised-edge"),
+            ink_top: m.component("ink-top"),
+            ink_bottom: m.component("ink-bottom"),
+            ink_rim: m.component("ink-rim"),
+            ink_edge: m.component("ink-edge"),
+            danger: c.danger.solid,
+            danger_ring: c.danger.solid.alpha(0.75),
+            well: c.input.bg,
+            well_shadow: m.component("well-shadow"),
+            well_blur: m.number("well-blur"),
+            surface: c.surface.bg,
+            floating: c.floating.bg,
+            float_ring: m.component("float-ring"),
+            line: c.line,
+            hover: c.hover,
+            pressed: c.pressed,
+            selected: c.selected,
+            thumb: m.component("thumb"),
+            shade,
+            focus: c.ring,
+            grain: m.number("grain"),
+        };
+        let mat = Materials::derive(&colors, &elevation, &motion, &control);
+        let mut t = Theme { name: f.name.clone(), dark, c, space, ty, radius, elevation, motion, control, mat, kit: rune_kit::Kit::neutral(dark) };
+        t.kit = t.build_kit();
+        t
+    }
+
+    /// The rune-kit tokens for components whose behaviour is rune-kit's (Select, Combobox, DropdownMenu, ContextMenu): our floating
+    /// surface and its shadows, no border (the shadow's baked ring is the edge), rows in the base size and the first ink, the hover wash
+    /// under the pointer or the keys. This is the adapter of `ARCHITECTURE.md`'s behaviour/paint seam.
+    pub fn to_kit(&self) -> &rune_kit::Kit {
+        &self.kit
+    }
+
+    fn build_kit(&self) -> rune_kit::Kit {
+        let c = &self.c;
+        let mut k = rune_kit::Kit::from_palette(rune_kit::PaletteSeed { bg: c.page.bg, fg: c.page.fg, accent: c.accent.fg });
+        let floating: Vec<rune::Shadow> = crate::paint::plan(&self.mat.floating.base).into_iter().filter_map(|op| if let crate::Op::BoxShadow(s) = op { Some(s) } else { None }).collect();
+        k.c.surface_raised = c.floating.bg;
+        k.c.surface_float = c.floating.bg;
+        k.c.layer_01 = c.floating.bg;
+        k.c.surface_raised_hover = c.hover;
+        k.c.hover = c.hover;
+        k.c.pressed = c.pressed;
+        // rune-kit draws this at half strength round a raised surface: the surface's own colour leaves only the shadow's ring as the edge.
+        k.c.std_border = c.floating.bg;
+        k.c.std_icon = c.muted.fg;
+        k.c.icon_base = c.muted.fg;
+        k.c.icon_muted = c.subtle.fg;
+        k.c.text_strong = c.page.fg;
+        k.c.text_base = c.page.fg;
+        k.c.text_weak = c.muted.fg;
+        k.c.text_faint = c.subtle.fg;
+        k.c.border_focus = c.ring;
+        k.elevation.md = floating.clone();
+        k.elevation.floating = floating;
+        k.elevation.raised = self.elevation.sm.clone();
+        k.elevation.button_neutral = Vec::new();
+        k.radius.md = self.radius.lg;
+        k.radius.sm = Radius::inner(self.radius.lg, 4.0);
+        k.ty.ui_medium = self.ty.base;
+        k.ty.text_small_medium = self.ty.base;
+        k.ty.ui_compact = self.ty.base;
+        k.ty.text_xsmall = self.ty.sm;
+        k.ty.text_xsmall_medium = weight(self.ty.sm, self.ty.medium);
+        k.ty.small_medium = tabular(self.ty.sm);
+        k
+    }
+
+    /// The control text style for a size.
+    pub fn control_text(&self, sm: bool, w: f32) -> TextStyle {
+        weight(if sm { self.ty.sm } else { self.ty.base }, w)
+    }
+
+    /// The first, second and third inks.
+    pub fn ink(&self) -> Color {
+        self.c.page.fg
+    }
+    pub fn ink_muted(&self) -> Color {
+        self.c.muted.fg
+    }
+    pub fn ink_faint(&self) -> Color {
+        self.c.subtle.fg
+    }
 }

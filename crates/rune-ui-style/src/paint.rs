@@ -9,7 +9,7 @@
 use rune::{Color, El, Shadow};
 
 use crate::color::over;
-use crate::recipe::{Layer, LayerKind, Live, Material, Recipe, State};
+use crate::recipe::{Layer, LayerKind, Live, Material, Recipe, States, resolve};
 
 /// One call on a Rune element.
 #[derive(Clone, Debug, PartialEq)]
@@ -125,65 +125,11 @@ pub fn apply_live(mut e: El, live: &Live) -> El {
     e
 }
 
-/// A live state pinned for a gallery or a test: `Live` is the real thing (Rune draws hover, press and focus as they happen).
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
-pub enum Look {
-    #[default]
-    Live,
-    Hover,
-    Pressed,
-    Focused,
-}
-
-impl Look {
-    pub const ALL: [Look; 4] = [Look::Live, Look::Hover, Look::Pressed, Look::Focused];
-
-    pub fn word(self) -> &'static str {
-        match self {
-            Look::Live => "Default",
-            Look::Hover => "Hover",
-            Look::Pressed => "Pressed",
-            Look::Focused => "Focused",
-        }
-    }
-
-    pub fn state(self) -> State {
-        match self {
-            Look::Live => State::Rest,
-            Look::Hover => State::Hover,
-            Look::Pressed => State::Pressed,
-            Look::Focused => State::Focused,
-        }
-    }
-}
-
-/// The recipe a control is drawn with: disabled wins; selected is the base the live states add to; a pinned look is that state's
-/// recipe (on a selected control, the selected recipe plus that state's wash, scale and ring).
-pub fn resolve(m: &Material, look: Look, disabled: bool, selected: bool) -> Recipe {
-    if disabled {
-        return m.disabled.clone();
-    }
-    let state = m.state(look.state());
-    if !selected {
-        return state.clone();
-    }
-    let mut r = m.selected.clone();
-    if let Some(w) = state.wash_of() {
-        r = r.wash(w);
-    }
-    if let Some(k) = state.scale_of() {
-        r = r.scale(k);
-    }
-    if let Some((w, o, c)) = state.ring_of() {
-        r = r.ring(w, o, c);
-    }
-    r
-}
-
-/// `e` painted as `m` in `look`: the recipe from [`resolve`], and (when live and enabled) Rune's live hover, press and focus.
-pub fn paint_material(e: El, m: &Material, look: Look, disabled: bool, selected: bool) -> El {
-    let e = paint(e, &resolve(m, look, disabled, selected));
-    if look == Look::Live && !disabled { apply_live(e, &m.live()) } else { e }
+/// `e` painted as `m` in `s`: the resolved recipe, and (when nothing is pinned and the control is live) Rune's live hover, press and
+/// keyboard focus ring.
+pub fn paint_state(e: El, m: &Material, s: States) -> El {
+    let e = paint(e, &resolve(m, s));
+    if s.live() && !s.pinned() { apply_live(e, &m.live()) } else { e }
 }
 
 #[cfg(test)]
@@ -223,13 +169,5 @@ mod tests {
         assert!(ops.contains(&Op::Opacity(0.25)));
         assert!(ops.contains(&Op::Scale(0.96)));
         assert_eq!(ops.last(), Some(&Op::Skipped(LayerKind::Grain)));
-    }
-
-    #[test]
-    fn a_selected_control_keeps_its_selected_look_under_a_pinned_state() {
-        let m = Material::new(Recipe::new().fill(Color::WHITE)).hover(|r| r.wash(Color::BLACK.alpha(0.1))).selected(Recipe::new().fill(Color::BLACK));
-        let r = resolve(&m, Look::Hover, false, true);
-        assert_eq!(r.kinds(), vec![LayerKind::Fill, LayerKind::Wash]);
-        assert_eq!(resolve(&m, Look::Hover, true, true), m.disabled, "disabled wins");
     }
 }
