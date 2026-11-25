@@ -334,6 +334,30 @@ A theme is one JSON file with a `light` mode and a `dark` mode, checked against 
   not switch menus; a press closes the open one first (the keyboard moves between them).
 - **Wrapping and textures:** no `text-wrap: balance`. Metal textures stop at 16,384 pixels, so headless pictures are at most 8,000 points tall at 2x.
 
+## Known Rune issue on macOS: "Application Not Responding" in the Dock
+
+At the pinned Rune rev (and still at upstream's tip on 2026-11-26), an app's Dock menu is often headed "Application Not Responding":
+the app's own Dock items and Quit are missing and Force Quit is offered, although the app is fine. Rune makes a symbol image on a
+short-lived launch thread before `NSApplication.shared`; AppKit registers a process with the Dock once, on whichever thread first
+makes one, so the Dock's link can end up tied to a thread that has exited. It is a race: about four launches in five.
+
+An app fixes it by doing one of these before `rune::run` / `run_windows`, and only when it opens a real window (not for a headless
+run):
+
+- Ask for a symbol image on the main thread first (keeps Rune's faster launch). With `objc2`:
+
+  ```rust
+  let name = objc2_foundation::NSString::from_str("info.circle");
+  let _: Option<objc2::rc::Retained<objc2::runtime::AnyObject>> = unsafe {
+      objc2::msg_send![objc2::class!(NSImage), imageWithSystemSymbolName: &*name, accessibilityDescription: None::<&objc2_foundation::NSString>]
+  };
+  ```
+
+- Or set `RUNE_LAUNCH_PLAIN=1` in the process before Rune starts (turns off all of Rune's launch helpers). The gallery app does this.
+
+Nothing reports the state to the app: the window server says it is responsive. Only the Dock menu shows it, so after a Rune bump,
+launch the real app and read its Dock menu.
+
 ## Develop
 
 ```sh

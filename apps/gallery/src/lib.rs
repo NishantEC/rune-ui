@@ -219,5 +219,17 @@ pub fn run() {
     let fonts = rune_ui_style::fonts::install(ui::FONTS);
     let spec = AppSpec { scenes: SCENES, fonts, min_size: Some((720.0, 480.0)), ..AppSpec::new("rune-ui gallery", (1320.0, 900.0), init, view) };
     let app = RuneApp::new(spec);
-    if HEADLESS.load(Ordering::Relaxed) { app.fit_content_height().run() } else { app.run() }
+    if HEADLESS.load(Ordering::Relaxed) {
+        app.fit_content_height().run()
+    } else {
+        // Rune at this rev makes a symbol image on a launch thread, and AppKit's once-per-process Dock registration can land on that
+        // thread: the Dock then heads the app's menu "Application Not Responding" (README, "Known Rune issue on macOS"). Rune's own
+        // switch keeps the launch on the main thread; this small tool does not need the faster launch.
+        // SAFETY: no other thread exists yet (nothing has been spawned before `run`), so nothing reads the environment concurrently.
+        #[cfg(target_os = "macos")]
+        unsafe {
+            std::env::set_var("RUNE_LAUNCH_PLAIN", "1");
+        }
+        app.run()
+    }
 }
