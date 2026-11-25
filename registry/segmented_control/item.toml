@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "segmented_control"
+title = "SegmentedControl"
+version = "0.8.0"
+type = "component"
+group = "form"
+description = "One of a few as a well track with a raised thumb that slides on an interruptible spring (a cut under Reduce Motion); one Tab stop, arrows choose."
+
+[requires]
+style = ">=0.8.0, <0.9.0"
+rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
+
+[dependencies]
+registry = ["base"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "segmented_control.rs"
+target = "src/ui/segmented_control.rs"
+sha256 = "ee8c1c5861cf90455f46d6ee63146683dbcc3181091a16cf9bba5e0aafa1c844"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/segmented_control.rs"
+role = "story"
+sha256 = "d4d369d77be490fc39cf117f7e4cd6b2603ceeec81dde134a0f18b7996627e96"

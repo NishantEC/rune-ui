@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "toolbar"
+title = "Toolbar"
+version = "0.8.0"
+type = "component"
+group = "actions"
+description = "Grouped controls in one row: one Tab stop, Left and Right rove, Home and End; what does not fit moves into a More menu."
+
+[requires]
+style = ">=0.8.0, <0.9.0"
+rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
+
+[dependencies]
+registry = ["base", "icons", "popup"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "toolbar.rs"
+target = "src/ui/toolbar.rs"
+sha256 = "79e0145e7ffc68c879060d2229b03564547f66d4fad49c2b7be3cd2059b9c696"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/toolbar.rs"
+role = "story"
+sha256 = "106c7a07df3a7901759b0257630dfc1c0b463830b431b5812ef596db57a6ac34"
