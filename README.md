@@ -2,7 +2,8 @@
 
 rune-ui does for Rune what Tailwind and shadcn/ui do for React. You get a style system, components that you copy into your app and then own, and themes stored as data. Rune is a GPU-rendered Rust UI framework.
 
-MIT licensed. It lives locally for now and has no remote. Rune is pinned to `bc05f817` (see `RUNE_REV`).
+MIT licensed. Rune is pinned to `53f6d36a` (a `dev` commit of 2026-11-25; see `RUNE_REV`). Rune has no releases, so every rune-ui
+release names the one Rune rev it was built and tested against, and an app uses that same rev.
 
 ## The layers
 
@@ -74,6 +75,28 @@ Release tags are annotated (`git tag -a vX.Y.Z`). Pin `rune-ui-style` and `rune-
 ```toml
 rune-ui-style = { git = "https://github.com/NishantEC/rune-ui", tag = "vX.Y.Z" }
 ```
+
+### Moving an app to a new Rune
+
+The app and rune-ui must build against the same Rune rev, with the same patch table. When a rune-ui release moves the pin (0.7.0
+moved it from `bc05f817` to `53f6d36a`):
+
+1. In the app's `Cargo.toml`, change the `rev =` on `rune` and `rune-kit` to the one in rune-ui's `RUNE_REV`.
+2. Replace the app's `[patch.crates-io]` table with rune-ui's (its root `Cargo.toml`), every line at the same rev. At `53f6d36a` it has
+   eight crates: `winit`, `sctk-adwaita`, `parley_engine`, `wgpu-hal`, `naga`, `accesskit_windows`, `accesskit_macos` and
+   `accesskit_atspi_common`. `rune-ui init` adds missing lines but never rewrites a line that is there, so edit the existing ones.
+3. Move `rune-ui-style` and `rune-ui-themes` to the new tag (`tag = "v0.7.0"`).
+4. Run `cargo build`. If Cargo warns that a patch "was not used in the crate graph" (or `Cargo.lock` lists it under
+   `[[patch.unused]]`), the lock picked a newer crates.io release than Rune's vendored copy; lock it back:
+   `cargo update -p naga@30.0.2 --precise 30.0.1`, and the same for `wgpu`, `wgpu-core`, `wgpu-types`, `wgpu-naga-bridge`,
+   `naga-types`, `wgpu-core-deps-apple` and `wgpu-core-deps-windows-linux-android` (30.0.1 is what Rune's own lock tests).
+5. Run `rune-ui update` to merge the registry's changes into your copies, then `rune-ui diff --check`, `cargo test` and a look at
+   the app.
+
+What changed for apps at `53f6d36a`, with no code change on rune-ui's side: inline code in Markdown (Response, the chat block) is now
+drawn in the system monospaced face (Rune's mono slot now defaults to `ui-monospace`; before it fell back to the body font), the
+streaming caret glyph comes from a different fallback font and sits shorter, and the soft shadow along Sheet and Drawer panel edges
+differs by a few levels. Everything else in the gallery draws pixel for pixel as it did.
 
 ## The gallery
 
@@ -251,8 +274,10 @@ A theme is one JSON file with a `light` mode and a `dark` mode, checked against 
 - **Animated focus ring:** the focus ring appears at once; it cannot fade or scale in.
 - **Spring timing:** press is a spring, not a fixed 100 ms ease.
 - **Sliding indicators:** the chosen segment or tab lands at once instead of sliding. Widths are not known when the view is built.
-- **Moving between open menus by pointer:** a Menubar or NavigationMenu menu sits over the shared popup's scrim, which takes the next
-  press, so pointing at another title does not switch menus; a press closes the open one first (the keyboard moves between them).
+- **Moving between open menus by pointer:** a Menubar or NavigationMenu menu is a modal (`El::modal`), and Rune blocks all pointer
+  input outside a modal, hover included (there is a `modal_wheel_outside` but nothing for pointer moves). Finding the title under the
+  pointer is no longer the problem (`El::data` plus `Tx::element_at_in`); the move never arrives. So pointing at another title does
+  not switch menus; a press closes the open one first (the keyboard moves between them).
 - **Paste outside a text field:** Rune hands a paste only to a text field or the view's root (`on_paste` is honoured there), so InputOTP
   does not take a pasted code at this rev.
 - **Wrapping and textures:** no `text-wrap: balance`. Metal textures stop at 16,384 pixels, so headless pictures are at most 8,000 points tall at 2x.
