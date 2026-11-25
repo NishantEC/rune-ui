@@ -550,3 +550,20 @@ fn a_chart_shows_a_tooltip_where_the_pointer_rests_and_follows_the_keys() {
     let fig = rt.elements().into_iter().find(|e| e.key.as_deref() == Some("chart-area-plot")).and_then(|e| e.label).unwrap_or_default();
     assert!(fig.contains("Jun: Revenue $2960"), "the figure's name lists its values: {fig}");
 }
+
+// ---- Item, InputGroup ----
+
+#[test]
+fn a_pressable_item_presses_and_an_input_group_takes_typing_beside_its_buttons() {
+    let mut rt = item("item");
+    press(&mut rt, "item-small");
+    assert_eq!(rt.state.g.presses, 1, "a pressable item runs its press");
+    let mut rt = item("input_group");
+    press(&mut rt, "group-send-input");
+    for ch in "hi".chars() {
+        key(&mut rt, Key::Text(ch.to_string()));
+    }
+    assert_eq!(rt.state.g.edit("group-send").text, "hi", "the field inside takes typing");
+    key(&mut rt, Key::Tab);
+    assert_eq!(focused(&rt).as_deref(), Some("group-send-go"), "Tab reaches the button inside the well");
+}

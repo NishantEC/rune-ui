@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "typography"
+title = "Typography"
+version = "0.5.1"
+type = "component"
+group = "display"
+description = "Headings one to four, paragraph, lead, large, small, muted, blockquote, inline code and a list over the type ramp."
+
+[requires]
+style = ">=0.5.1, <0.6.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "typography.rs"
+target = "src/ui/typography.rs"
+sha256 = "33ae34d5a0cc18293f1dd7cf8fdd6a5eca4f2e18e58b47408a544faecb2f0748"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/typography.rs"
+role = "story"
+sha256 = "3fe71cc5bb5e01d6481b9fa8e7bd87b13b579a212cfffa89f6aafef22fef594d"

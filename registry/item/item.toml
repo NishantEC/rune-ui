@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "item"
+title = "Item"
+version = "0.5.1"
+type = "component"
+group = "structure"
+description = "One thing in a list: media, a title over a description, actions; default, outline and muted; pressable."
+
+[requires]
+style = ">=0.5.1, <0.6.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = ["button"]
+
+[[files]]
+path = "item.rs"
+target = "src/ui/item.rs"
+sha256 = "a71506112ca532f693ead2c5bd41e40d6cd88f582d7d0a5e2696ddf3f18872d2"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/item.rs"
+role = "story"
+sha256 = "4d921495519516ee9c25554c87c6728ffdc4b80aaf6890e8f7bceb5daba1c17b"

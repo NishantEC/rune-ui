@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "aspect_ratio"
+title = "AspectRatio"
+version = "0.5.1"
+type = "component"
+group = "structure"
+description = "A box that keeps a width-to-height ratio, rounded and clipping what it holds."
+
+[requires]
+style = ">=0.5.1, <0.6.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "aspect_ratio.rs"
+target = "src/ui/aspect_ratio.rs"
+sha256 = "0150a63bab87bf6b320e2708110e860f749cd62b00c1abe3272b25bb5618e961"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/aspect_ratio.rs"
+role = "story"
+sha256 = "a750d747dd473b776d156e50b10511a247e00e0395328916b1ae8f786afa4de2"
