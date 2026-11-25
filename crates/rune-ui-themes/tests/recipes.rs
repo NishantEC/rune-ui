@@ -157,6 +157,7 @@ fn text_inks_keep_their_contrast_on_the_page_and_the_slab() {
             let got = contrast(tone.ink, over(t.c.page, tone.wash));
             assert!(got >= 4.5, "{}: {word}'s words on its wash: {got:.2}", t.name);
         }
+        assert!(contrast(t.c.on_danger, t.c.danger_solid) >= 4.5, "{}: a destructive button's words", t.name);
         assert!(contrast(t.c.focus, t.c.page) >= 3.0, "{}: the focus ring shows", t.name);
     }
 }

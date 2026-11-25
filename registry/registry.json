@@ -1,0 +1,16 @@
+{
+  "name": "rune-ui",
+  "version": "0.1.0",
+  "rune_rev": "bc05f817ed19488a10a6f1a928cc0521c1c70c75",
+  "base": ["base", "icons"],
+  "components": {
+    "button": { "version": "0.1.0", "files": ["button.rs"], "needs": [], "summary": "Primary (ink), secondary (raised), ghost and destructive; three sizes; icon, loading, selected, disabled." },
+    "text_field": { "version": "0.1.0", "files": ["text_field.rs"], "needs": [], "summary": "One-line field and search field on the well material; label, help, error, prefix, suffix, clear." },
+    "select": { "version": "0.1.0", "files": ["select.rs"], "needs": [], "summary": "One choice of a few: a well trigger over rune-kit's listbox behaviour, the list on the floating material." },
+    "switch": { "version": "0.1.0", "files": ["switch.rs"], "needs": [], "summary": "A well track that fills with ink when on, a floating thumb; with words the whole line is the control." },
+    "segmented": { "version": "0.1.0", "files": ["segmented.rs"], "needs": [], "summary": "A well track holding one raised segment; concentric radii; icons optional." },
+    "chip": { "version": "0.1.0", "files": ["chip.rs"], "needs": [], "summary": "Tags (quiet tint) and filter chips (raised, lifted; selected stays down); removable." },
+    "badge": { "version": "0.1.0", "files": ["badge.rs"], "needs": [], "summary": "Counts, dots and status pills: a meaning's wash, a dot and words." },
+    "card": { "version": "0.1.0", "files": ["card.rs"], "needs": [], "summary": "Slab and raised cards, rows split by inset hairlines, a section header, a divider." }
+  }
+}

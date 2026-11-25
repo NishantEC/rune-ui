@@ -43,6 +43,9 @@ pub struct ThemeData {
     pub success: ToneData,
     pub warning: ToneData,
     pub danger: ToneData,
+    /// The destructive button's colour and its words (solid, so the words keep 4.5:1).
+    pub danger_solid: &'static str,
+    pub on_danger: &'static str,
     /// How strong a meaning's wash is behind its words (0 to 1).
     pub tone_wash: f32,
 
@@ -99,6 +102,8 @@ pub struct Palette {
     pub success: Tone,
     pub warning: Tone,
     pub danger: Tone,
+    pub danger_solid: Color,
+    pub on_danger: Color,
 }
 
 /// Everything a component reads.
@@ -142,6 +147,8 @@ impl Theme {
             success: tone(d.success),
             warning: tone(d.warning),
             danger: tone(d.danger),
+            danger_solid: hex(d.danger_solid),
+            on_danger: hex(d.on_danger),
         };
         let shade = hex(d.shade);
         let elevation = Elevation::new(shade, d.elevation);
@@ -154,7 +161,7 @@ impl Theme {
             ink_bottom: hex(d.ink_bottom),
             ink_rim: hex(d.ink_rim),
             ink_edge: hex(d.ink_edge),
-            danger: c.danger.dot,
+            danger: c.danger_solid,
             well: hex(d.well),
             well_shadow: hex(d.well_shadow),
             well_blur: d.well_blur,
