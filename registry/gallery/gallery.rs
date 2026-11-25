@@ -53,11 +53,19 @@ pub struct StoryItem<S: 'static> {
     pub title: &'static str,
     pub group: &'static str,
     pub stories: Vec<Story<S>>,
+    /// Shown first in its group (a block that composes the others).
+    pub lead: bool,
 }
 
 impl<S: 'static> StoryItem<S> {
     pub fn new(name: &'static str, title: &'static str, group: &'static str) -> StoryItem<S> {
-        StoryItem { name, title, group, stories: Vec::new() }
+        StoryItem { name, title, group, stories: Vec::new(), lead: false }
+    }
+
+    /// Shows this item at the top of its group.
+    pub fn lead(mut self) -> Self {
+        self.lead = true;
+        self
     }
 
     pub fn story(mut self, name: &'static str, build: fn(&mut Ctx<S>) -> El) -> Self {
@@ -67,12 +75,13 @@ impl<S: 'static> StoryItem<S> {
 }
 
 /// The groups, in page order: (key, title, what the group shows).
-pub const GROUPS: [(&str, &str, &str); 5] = [
+pub const GROUPS: [(&str, &str, &str); 6] = [
     ("actions", "Actions", "Buttons and toggles: ink, raised, outline, ghost"),
     ("form", "Form", "Wells hold values; tracks hold a raised thumb"),
     ("overlays", "Menus and overlays", "The floating material: a smooth shadow stack with its hairline baked in"),
     ("structure", "Structure", "One surface divided into rows, not stacks of cards"),
     ("display", "Display", "Colour is state, at low alpha, never alone"),
+    ("agent", "Agent", "An agent at work: its words are the page; tool calls, reasoning and steps are quiet lines that fold"),
 ];
 
 /// The gallery's state. Keep one in your app's state and hand the page a way to reach it.
@@ -604,7 +613,8 @@ pub fn page<S: 'static>(json: &str, app_dark: bool, g: &GalleryState, access: Ac
     let mut body = col().key("gallery").w_full().padding(t.metrics.section - 16.0).gap(t.metrics.section - 16.0).child(head);
     let mut c = Ctx { g, t: &t, layer, access };
     for (key, title, what) in GROUPS {
-        let list: Vec<&StoryItem<S>> = items.iter().filter(|i| i.group == key && match &g.only { Some(o) => o == i.name, None => g.show == "all" || g.show == key }).collect();
+        let mut list: Vec<&StoryItem<S>> = items.iter().filter(|i| i.group == key && match &g.only { Some(o) => o == i.name, None => g.show == "all" || g.show == key }).collect();
+        list.sort_by_key(|i| !i.lead);
         if list.is_empty() {
             continue;
         }

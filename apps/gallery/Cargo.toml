@@ -16,7 +16,7 @@ path = "src/main.rs"
 [dependencies]
 # `tooling`: `--snap`, `--scene`, `--tree` in release builds too (debug builds always have them).
 rune = { workspace = true, features = ["tooling"] }
-rune-kit.workspace = true
+rune-kit = { workspace = true, features = ["markdown"] }
 rune-ui-style.workspace = true
 rune-ui-themes.workspace = true
 

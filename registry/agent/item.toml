@@ -1,0 +1,21 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "agent"
+title = "Agent"
+version = "0.6.0"
+type = "base"
+group = "base"
+description = "What the agent set shares: a step's status and its mark, the quiet fold line, an icon button that can copy, the chip face, the code slab, monospaced type, and words for durations, tokens and money."
+
+[requires]
+style = ">=0.6.0, <0.7.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+
+[[files]]
+path = "agent.rs"
+target = "src/ui/agent.rs"
+sha256 = "060cec35a9920c19e201d17ffb227b68d241a0a690a009a042c97d7fb379675a"

@@ -1,4 +1,4 @@
-//! rune-ui registry: icons 0.5.1. A small set of 16 point glyphs on one 1.5 stroke, drawn in `currentColor` so a control recolours
+//! rune-ui registry: icons 0.6.0. A small set of 16 point glyphs on one 1.5 stroke, drawn in `currentColor` so a control recolours
 //! them per state. Replace or extend with your app's own set. `rune-ui init` copies it.
 
 use rune::Icon;
@@ -41,3 +41,27 @@ glyph!(UNDERLINE, "underline", r#"<path d="M4.5 2.8v4.4a3.5 3.5 0 0 0 7 0V2.8M3.
 glyph!(TAG, "tag", r#"<path d="M3 3h4.6L13 8.4 8.4 13 3 7.6Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="5.8" cy="5.8" r="0.9" fill="currentColor"/>"#);
 glyph!(RING, "ring", r#"<circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.75"/>"#);
 glyph!(ARC, "arc", r#"<path d="M8 2.5A5.5 5.5 0 0 1 13.5 8" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>"#);
+
+// The agent set (0.6.0): sending, stopping, attaching, the message actions, tools, steps and sources.
+glyph!(ARROW_UP, "arrow-up", r#"<path d="M8 12.5V3.6M4.6 7 8 3.6 11.4 7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>"#);
+glyph!(ARROW_DOWN, "arrow-down", r#"<path d="M8 3.5v8.9M4.6 9 8 12.4 11.4 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>"#);
+glyph!(CHEVRON_UP, "chevron-up", r#"<path d="M4.5 9.6 8 6.1l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>"#);
+glyph!(STOP, "stop", r#"<rect x="4.6" y="4.6" width="6.8" height="6.8" rx="1.4" fill="currentColor"/>"#);
+glyph!(PAPERCLIP, "paperclip", r#"<path d="M11 5.4 6.4 10a1.2 1.2 0 0 0 1.7 1.7l4.5-4.5a2.6 2.6 0 0 0-3.7-3.7L4.4 8a4 4 0 0 0 5.7 5.7l2.9-2.9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>"#);
+glyph!(IMAGE, "image", r#"<rect x="2.6" y="3.2" width="10.8" height="9.6" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="6.1" cy="6.6" r="1.1" fill="currentColor"/><path d="M3.2 11.8 6.6 8.6l2.2 2 1.6-1.4 2.6 2.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>"#);
+glyph!(RETRY, "retry", r#"<path d="M12.5 8.2a4.5 4.5 0 1 1-1.5-3.6M12.3 2.9v2.6H9.7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>"#);
+glyph!(THUMB_UP, "thumb-up", r#"<path d="M5.6 7.1v5.7M5.6 7.1 7.9 3.3c.9 0 1.5.7 1.3 1.6L8.8 6.8h2.7c.8 0 1.4.8 1.2 1.6l-.9 3.4c-.2.6-.7 1-1.3 1H5.6M3.2 7.1h2.4v5.7H3.2z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>"#);
+glyph!(THUMB_DOWN, "thumb-down", r#"<path d="M5.6 8.9V3.2M5.6 8.9 7.9 12.7c.9 0 1.5-.7 1.3-1.6L8.8 9.2h2.7c.8 0 1.4-.8 1.2-1.6l-.9-3.4c-.2-.6-.7-1-1.3-1H5.6M3.2 8.9h2.4V3.2H3.2z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>"#);
+glyph!(TERMINAL, "terminal", r#"<rect x="2.4" y="3.2" width="11.2" height="9.6" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5 6.6 6.9 8 5 9.4M8.4 9.8h2.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>"#);
+glyph!(WRENCH, "wrench", r#"<path d="M10 2.9a3 3 0 0 0-3 3.8L3.4 10.3a1.25 1.25 0 0 0 1.8 1.8L8.8 8.5A3 3 0 0 0 12.6 5.5l-1.8 1.1-1.5-.4-.4-1.5z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>"#);
+glyph!(SPARKLE, "sparkle", r#"<path d="M8 2.6 9.3 6.2 12.9 7.5 9.3 8.8 8 12.4 6.7 8.8 3.1 7.5 6.7 6.2Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>"#);
+glyph!(CLOCK, "clock", r#"<circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3.2l2.1 1.3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>"#);
+glyph!(CIRCLE, "circle", r#"<circle cx="8" cy="8" r="5.4" fill="none" stroke="currentColor" stroke-width="1.5"/>"#);
+glyph!(CIRCLE_DOT, "circle-dot", r#"<circle cx="8" cy="8" r="5.4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2.2" fill="currentColor"/>"#);
+glyph!(CIRCLE_SLASH, "circle-slash", r#"<circle cx="8" cy="8" r="5.4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5.2 10.8 10.8 5.2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>"#);
+glyph!(LINK, "link", r#"<path d="M6.7 9.3 9.3 6.7M7.4 4.8l.9-.9a2.6 2.6 0 0 1 3.8 3.8l-.9.9M8.6 11.2l-.9.9a2.6 2.6 0 0 1-3.8-3.8l.9-.9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>"#);
+glyph!(RESTORE, "restore", r#"<path d="M5.4 4.2 3.2 6.4l2.2 2.2M3.4 6.4h5.8a3.3 3.3 0 0 1 0 6.6H7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>"#);
+glyph!(GLOBE, "globe", r#"<circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M2.6 8h10.8M8 2.4c1.5 1.6 2.2 3.6 2.2 5.6S9.5 12 8 13.6C6.5 12 5.8 10 5.8 8S6.5 4 8 2.4Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>"#);
+glyph!(SHIELD, "shield", r#"<path d="M8 2.6 12.6 4.4v3.4c0 2.8-2 4.8-4.6 5.6-2.6-.8-4.6-2.8-4.6-5.6V4.4Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>"#);
+glyph!(GRIP, "grip", r#"<circle cx="6" cy="4.5" r="1" fill="currentColor"/><circle cx="10" cy="4.5" r="1" fill="currentColor"/><circle cx="6" cy="8" r="1" fill="currentColor"/><circle cx="10" cy="8" r="1" fill="currentColor"/><circle cx="6" cy="11.5" r="1" fill="currentColor"/><circle cx="10" cy="11.5" r="1" fill="currentColor"/>"#);
+glyph!(FLAG, "flag", r#"<path d="M4 13.5V3M4 3.4h7.6l-1.6 2.8 1.6 2.8H4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>"#);
