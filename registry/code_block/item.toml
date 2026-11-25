@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "code_block"
+title = "CodeBlock"
+version = "0.6.0"
+type = "component"
+group = "agent"
+description = "Code on the slab: language, Copy, optional line numbers, sideways scroll, colour from Rune's built-in highlighter."
+
+[requires]
+style = ">=0.6.0, <0.7.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons", "agent"]
+cargo = ["rune", "rune-kit", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "code_block.rs"
+target = "src/ui/code_block.rs"
+sha256 = "1f8a7189c95c234964d5ded4ac97ff400ba2ff57c189697d73f747157ffb56cc"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/code_block.rs"
+role = "story"
+sha256 = "7b85ca70247c9f3d124a79867f78be86ab061eb90f7b20a06176e07b2e6bf494"

@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "tool"
+title = "Tool"
+version = "0.6.0"
+type = "component"
+group = "agent"
+description = "One tool call as one quiet line (status, name, duration) that folds open to its input and output."
+
+[requires]
+style = ">=0.6.0, <0.7.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons", "agent"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "tool.rs"
+target = "src/ui/tool.rs"
+sha256 = "8a91b9bdc205ec421565a37f473a8aa70be1226e7c63165eafb09478f46450db"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/tool.rs"
+role = "story"
+sha256 = "6ac1a969d978cc1f76de3e8bb9e924d510de5e8b35a15e0b85a0005896d9afa6"

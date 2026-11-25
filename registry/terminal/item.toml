@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "terminal"
+title = "Terminal"
+version = "0.6.0"
+type = "component"
+group = "agent"
+description = "A command and its output on the slab, with its running state, exit status and time."
+
+[requires]
+style = ">=0.6.0, <0.7.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons", "agent"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "terminal.rs"
+target = "src/ui/terminal.rs"
+sha256 = "0296059bbfef8409ee4889de2d75683b5a6b0a8c27baa9776fa6e562f3addcae"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/terminal.rs"
+role = "story"
+sha256 = "2e723646f8ab68f6a56caaed3cae906932d73c11584099bad6e790588034282d"

@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "shimmer"
+title = "Shimmer"
+version = "0.6.0"
+type = "component"
+group = "agent"
+description = "Signs of work: words with a soft sweeping band, and three dots that brighten in turn; still under Reduce Motion."
+
+[requires]
+style = ">=0.6.0, <0.7.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "shimmer.rs"
+target = "src/ui/shimmer.rs"
+sha256 = "8ee59b100896de38d64c1f5330b4f48cbe6c4417b4682d540eb32e19207c5fc8"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/shimmer.rs"
+role = "story"
+sha256 = "f369755c4df46323cb13b10fc7757e46a427fa459d1b51dde85c915c0ed6c01f"
