@@ -2,13 +2,13 @@
 schema = 1
 name = "prompt_input"
 title = "PromptInput"
-version = "0.6.0"
+version = "0.8.0"
 type = "component"
 group = "agent"
 description = "The composer: a growing text area, attachments, a toolbar, and Send that becomes Stop; Return, Shift+Return, Escape."
 
 [requires]
-style = ">=0.6.0, <0.8.0"
+style = ">=0.8.0, <0.9.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -20,11 +20,11 @@ stories = ["attachment", "model_selector"]
 [[files]]
 path = "prompt_input.rs"
 target = "src/ui/prompt_input.rs"
-sha256 = "7094c54ffd8e6311a3aa41194e39c007216989b71bb7190b82c34c17959d902d"
+sha256 = "9664541daf5cba9615eeb6aa5eafde520e4cbd2eead18edcd08f42200cba71d0"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/prompt_input.rs"
 role = "story"
-sha256 = "f7959c897c8b2dc66404594d5af5719fda004998ab523a1d3aba8f9608480a57"
+sha256 = "0abcafa84f76b9af0eae58401c4d7d06dc2967ee93eb53c1a5ad7cb883c45dc3"
