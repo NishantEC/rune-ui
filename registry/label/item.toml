@@ -2,7 +2,7 @@
 schema = 1
 name = "label"
 title = "Label"
-version = "0.5.0"
+version = "0.5.1"
 type = "component"
 group = "form"
 description = "A control's visible name, with an optional required mark."
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "label.rs"
 target = "src/ui/label.rs"
-sha256 = "20e339fcb6774448767d4f9b9632b580f5911a835ac8a861ea326ca7392aa0ce"
+sha256 = "84bb7a6fcc8dcf51d182b459bd082476964989b5017cdb9d5dc264b1168abc51"
 
 # Copied only once the gallery block is installed.
 [[files]]

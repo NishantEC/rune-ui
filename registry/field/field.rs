@@ -1,4 +1,4 @@
-//! rune-ui registry: field 0.5.0. Copied into your app by `rune-ui add field`; yours to change. Needs: label.
+//! rune-ui registry: field 0.5.1. Copied into your app by `rune-ui add field`; yours to change. Needs: label.
 //!
 //! A label, a control and its description laid out together; an error replaces the description, in the danger colour and announced
 //! politely. Give the control the same words with `.name(…)` and `.description(…)`/`.invalid(true)` so assistive technology hears them.
@@ -18,6 +18,7 @@ pub struct Field {
     description: Option<String>,
     error: Option<String>,
     required: bool,
+    optional: bool,
     disabled: bool,
     width: Option<f32>,
     control: Option<El>,
@@ -25,7 +26,7 @@ pub struct Field {
 
 impl Field {
     pub fn new(key: impl Into<String>, label: impl Into<String>) -> Field {
-        Field { key: key.into(), label: label.into(), description: None, error: None, required: false, disabled: false, width: None, control: None }
+        Field { key: key.into(), label: label.into(), description: None, error: None, required: false, optional: false, disabled: false, width: None, control: None }
     }
 
     pub fn description(mut self, d: impl Into<String>) -> Self {
@@ -41,6 +42,12 @@ impl Field {
 
     pub fn required(mut self) -> Self {
         self.required = true;
+        self
+    }
+
+    /// Marks the label "(optional)".
+    pub fn optional(mut self) -> Self {
+        self.optional = true;
         self
     }
 
@@ -63,6 +70,8 @@ impl Field {
         let mut label = Label::new(format!("{}-label", self.key), self.label).disabled(self.disabled);
         if self.required {
             label = label.required();
+        } else if self.optional {
+            label = label.optional();
         }
         let mut c = col().key(self.key.clone()).gap(t.metrics.label_gap).child(label.build(t));
         c = match self.width {

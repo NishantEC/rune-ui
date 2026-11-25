@@ -399,3 +399,36 @@ fn a_drawer_rises_against_the_bottom_traps_focus_and_closes_by_key_press_or_drag
     settle(&mut rt);
     assert!(rt.presented("drawer-demo-drawer").is_none(), "dragging the bar down closes it");
 }
+
+// ---- Form ----
+
+#[test]
+fn a_form_shows_its_messages_on_submit_and_succeeds_once_they_are_fixed() {
+    let mut rt = item("form");
+    let before = drawn(&rt, "form-demo-submit");
+    press(&mut rt, "form-demo-submit");
+    assert!(rt.presented("form-name-error").is_some() && rt.presented("form-email-error").is_some(), "the empty required fields say so");
+    assert!(rt.presented("form-team-error").is_none(), "the empty optional field does not");
+    let status = rt.elements().into_iter().find(|e| e.key.as_deref() == Some("form-demo-status")).expect("a status line");
+    assert_eq!((&*status.role, status.label.as_deref()), ("alert", Some("2 fields need attention")));
+    for (field, words) in [("form-name-input-input", "Asha"), ("form-email-input-input", "asha@example")] {
+        focus(&mut rt, field);
+        for ch in words.chars() {
+            key(&mut rt, Key::Text(ch.to_string()));
+        }
+    }
+    press(&mut rt, "form-demo-submit");
+    assert!(rt.presented("form-name-error").is_none(), "a fixed field clears");
+    let e = rt.elements().into_iter().find(|e| e.key.as_deref() == Some("form-email-error")).expect("email error");
+    assert!(e.text.as_deref().unwrap_or_default().contains("email address"), "a malformed address is named: {:?}", e.text);
+    focus(&mut rt, "form-email-input-input");
+    for ch in ".com".chars() {
+        key(&mut rt, Key::Text(ch.to_string()));
+    }
+    press(&mut rt, "form-demo-submit");
+    let status = rt.elements().into_iter().find(|e| e.key.as_deref() == Some("form-demo-status")).expect("a status line");
+    assert_eq!(status.role, "status", "success is a polite status");
+    let busy = rt.elements().into_iter().find(|e| e.key.as_deref() == Some("form-busy-submit")).expect("busy submit");
+    assert!(!busy.focusable, "a submitting form's button cannot be pressed again");
+    let _ = before;
+}
