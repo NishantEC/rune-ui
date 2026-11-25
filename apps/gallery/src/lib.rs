@@ -44,7 +44,7 @@ pub fn view(s: &App, cx: &mut Cx<App>) -> El {
 }
 
 /// Scenes that show an overlay open: (scene, item, overlay key).
-pub const OPEN_SCENES: [(&str, &str, &str); 15] = [
+pub const OPEN_SCENES: [(&str, &str, &str); 17] = [
     ("open-context-menu", "context_menu", "context-demo"),
     ("open-alert-dialog", "alert_dialog", "alert-demo"),
     ("open-toast", "toast", "toast-demo"),
@@ -60,6 +60,8 @@ pub const OPEN_SCENES: [(&str, &str, &str); 15] = [
     ("open-navigation-menu", "navigation_menu", "nav-demo-1"),
     ("open-hover-card", "hover_card", "hover-demo"),
     ("open-drawer", "drawer", "drawer-demo"),
+    ("open-chart-bar", "chart", "chart-bar"),
+    ("open-chart-donut", "chart", "chart-donut"),
 ];
 
 /// Sets up a scene by name: a group, `materials`, `all`, `item-<name>`, or one of [`OPEN_SCENES`].
@@ -120,7 +122,7 @@ macro_rules! scenes {
 /// A named scene and how it sets up the state.
 pub type Scene = (&'static str, fn(&mut App));
 
-pub const SCENES: &[Scene] = scenes!["actions", "form", "overlays", "structure", "display", "materials", "materials-round", "typography", "typography-geist", "typography-ibm-plex-sans", "typography-figtree", "typography-manrope", "typography-dm-sans", "typography-plus-jakarta-sans", "typography-jetbrains-mono", "form-geist", "actions-geist", "all", "actions-compact", "form-compact", "structure-compact", "tuned", "open-select", "open-combobox", "open-context-menu", "open-alert-dialog", "open-toast", "open-dropdown-menu", "open-popover", "open-dialog", "open-sheet", "open-command", "open-date-picker", "open-menubar", "open-navigation-menu", "open-hover-card", "open-drawer"];
+pub const SCENES: &[Scene] = scenes!["actions", "form", "overlays", "structure", "display", "materials", "materials-round", "typography", "typography-geist", "typography-ibm-plex-sans", "typography-figtree", "typography-manrope", "typography-dm-sans", "typography-plus-jakarta-sans", "typography-jetbrains-mono", "form-geist", "actions-geist", "all", "actions-compact", "form-compact", "structure-compact", "tuned", "open-select", "open-combobox", "open-context-menu", "open-alert-dialog", "open-toast", "open-dropdown-menu", "open-popover", "open-dialog", "open-sheet", "open-command", "open-date-picker", "open-menubar", "open-navigation-menu", "open-hover-card", "open-drawer", "open-chart-bar", "open-chart-donut"];
 
 static HEADLESS: AtomicBool = AtomicBool::new(false);
 

@@ -1,0 +1,1 @@
+pub const CHECKS: &[(&str, &str)] = &[("carousel-demo-viewport", "region"), ("carousel-demo-prev", "button"), ("carousel-demo-next", "button"), ("carousel-demo-dot-0", "button"), ("carousel-demo-slide-0", "group")];

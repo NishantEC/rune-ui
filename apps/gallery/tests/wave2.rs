@@ -477,3 +477,76 @@ fn a_data_table_sorts_selects_hides_columns_pages_and_keeps_its_header() {
     assert!(r2[1] < r[1] - 10.0, "the body scrolled: {r:?} -> {r2:?}");
     assert!((h2[1] - h[1]).abs() < 0.5, "the header stayed: {h:?} -> {h2:?}");
 }
+
+// ---- Carousel ----
+
+#[test]
+fn a_carousel_steps_by_arrows_dots_and_keys_and_keeps_its_place() {
+    let mut rt = item("carousel");
+    let before = layout(&rt);
+    let v = drawn(&rt, "carousel-demo-viewport");
+    press(&mut rt, "carousel-demo-next");
+    assert_eq!(rt.state.g.index("carousel", 0), 1, "Next");
+    let s1 = drawn(&rt, "carousel-demo-slide-1");
+    assert!((s1[0] - v[0]).abs() < 0.5, "the track slid slide 2 into the viewport: {s1:?} vs {v:?}");
+    press(&mut rt, "carousel-demo-dot-4");
+    assert_eq!(rt.state.g.index("carousel", 0), 4, "a dot");
+    let next = rt.elements().into_iter().find(|e| e.key.as_deref() == Some("carousel-demo-next")).expect("next");
+    assert!(!next.focusable, "Next is off on the last slide");
+    focus(&mut rt, "carousel-demo-viewport");
+    key(&mut rt, Key::Left);
+    assert_eq!(rt.state.g.index("carousel", 0), 3, "Left steps back");
+    key(&mut rt, Key::Home);
+    assert_eq!(rt.state.g.index("carousel", 0), 0, "Home");
+    focus(&mut rt, "carousel-loop-viewport");
+    key(&mut rt, Key::Right);
+    assert_eq!(rt.state.g.index("carousel-loop", 2), 0, "a looping carousel wraps");
+    let hidden = rt.elements().into_iter().find(|e| e.key.as_deref() == Some("carousel-demo-slide-2"));
+    assert!(hidden.is_none_or(|e| !e.focusable), "an off-screen slide takes no focus");
+    for (path, a) in layout(&rt) {
+        if path.contains("-track") || path.contains("-slide-") {
+            continue;
+        }
+        if let Some(b) = before.get(&path) {
+            assert!(a.iter().zip(b).all(|(x, y)| (x - y).abs() < 0.01), "stepping moved {path}");
+        }
+    }
+}
+
+// ---- Chart ----
+
+#[test]
+fn a_chart_shows_a_tooltip_where_the_pointer_rests_and_follows_the_keys() {
+    let mut rt = item("chart");
+    let before = layout(&rt);
+    let p = drawn(&rt, "chart-bar-plot");
+    rt.pointer_move(p[0] + p[2] * (3.5 / 6.0), p[1] + p[3] / 2.0);
+    settle(&mut rt);
+    assert_eq!(rt.state.g.choice("chart-bar", ""), "3", "the pointer picks April");
+    let tip = drawn(&rt, "chart-bar-tooltip");
+    let a = drawn(&rt, "chart-bar-anchor-3");
+    assert!(tip[0] >= a[0] && tip[0] - a[0] < 24.0, "the tooltip sits beside April: {tip:?} vs {a:?}");
+    let label = rt.elements().into_iter().find(|e| e.key.as_deref() == Some("chart-bar-tooltip")).and_then(|e| e.label).unwrap_or_default();
+    assert!(label.contains("Desktop 341") && label.contains("Mobile 202"), "it names each value: {label}");
+    unmoved(&before, &rt, "hovering a chart");
+    rt.pointer_move(W - 10.0, H - 10.0);
+    settle(&mut rt);
+    assert!(rt.presented("chart-bar-tooltip").is_none(), "it goes when the pointer leaves");
+    focus(&mut rt, "chart-line-plot");
+    key(&mut rt, Key::Right);
+    key(&mut rt, Key::Right);
+    assert_eq!(rt.state.g.choice("chart-line", ""), "1", "Right moves the highlight");
+    assert!(rt.presented("chart-line-tooltip").is_some());
+    key(&mut rt, Key::Escape);
+    assert!(rt.presented("chart-line-tooltip").is_none(), "Escape clears it");
+    // The donut picks the slice under the pointer: Free starts at the top and runs clockwise.
+    let d = drawn(&rt, "chart-donut-plot");
+    rt.pointer_move(d[0] + d[2] * 0.85, d[1] + d[3] * 0.5);
+    settle(&mut rt);
+    assert_eq!(rt.state.g.choice("chart-donut", ""), "0", "the right side of the ring is Free");
+    rt.pointer_move(d[0] + d[2] * 0.5, d[1] + d[3] * 0.5);
+    settle(&mut rt);
+    assert!(rt.presented("chart-donut-tooltip").is_none(), "the hole is no slice");
+    let fig = rt.elements().into_iter().find(|e| e.key.as_deref() == Some("chart-area-plot")).and_then(|e| e.label).unwrap_or_default();
+    assert!(fig.contains("Jun: Revenue $2960"), "the figure's name lists its values: {fig}");
+}

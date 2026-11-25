@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "carousel"
+title = "Carousel"
+version = "0.5.1"
+type = "component"
+group = "structure"
+description = "Slides one at a time in a rounded viewport with arrows and dots; Left, Right, Home and End; fixed size so nothing moves around it."
+
+[requires]
+style = ">=0.5.1, <0.6.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons", "button"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "carousel.rs"
+target = "src/ui/carousel.rs"
+sha256 = "2dc94fa802af3243f14aff518be03761c0854c191b21eb35d1bc5d3e93672934"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/carousel.rs"
+role = "story"
+sha256 = "afcd05f897000a64e7f9dba74b546ce177e10d7c7a05982a206633f41ed130d6"
