@@ -9,7 +9,7 @@ description = "A well track that fills with ink when on, holding a floating thum
 
 [requires]
 style = ">=0.5.0, <0.7.0"
-rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
 registry = ["base", "icons"]

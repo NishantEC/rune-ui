@@ -9,7 +9,7 @@ description = "A tool call asking permission: Allow once, Always allow or Deny b
 
 [requires]
 style = ">=0.6.0, <0.7.0"
-rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
 registry = ["base", "icons", "agent", "button"]

@@ -12,8 +12,8 @@ license = "MIT"
 repository = "https://github.com/NishantEC/rune-ui"
 
 [workspace.dependencies]
-rune = { git = "https://github.com/anomalyco/rune", rev = "bc05f817ed19488a10a6f1a928cc0521c1c70c75" }
-rune-kit = { git = "https://github.com/anomalyco/rune", rev = "bc05f817ed19488a10a6f1a928cc0521c1c70c75" }
+rune = { git = "https://github.com/anomalyco/rune", rev = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2" }
+rune-kit = { git = "https://github.com/anomalyco/rune", rev = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2" }
 rune-ui-style = { path = "crates/rune-ui-style" }
 rune-ui-themes = { path = "crates/rune-ui-themes" }
 serde_json = "1"
@@ -26,8 +26,11 @@ debug = "line-tables-only"
 
 # Cargo does not inherit a dependency's patches. This is the table Rune's README requires, at the same rev.
 [patch.crates-io]
-wgpu-hal = { git = "https://github.com/anomalyco/rune", rev = "bc05f817ed19488a10a6f1a928cc0521c1c70c75" }
-winit = { git = "https://github.com/anomalyco/rune", rev = "bc05f817ed19488a10a6f1a928cc0521c1c70c75" }
-parley_engine = { git = "https://github.com/anomalyco/rune", rev = "bc05f817ed19488a10a6f1a928cc0521c1c70c75" }
-accesskit_windows = { git = "https://github.com/anomalyco/rune", rev = "bc05f817ed19488a10a6f1a928cc0521c1c70c75" }
-accesskit_macos = { git = "https://github.com/anomalyco/rune", rev = "bc05f817ed19488a10a6f1a928cc0521c1c70c75" }
+winit = { git = "https://github.com/anomalyco/rune", rev = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2" }
+sctk-adwaita = { git = "https://github.com/anomalyco/rune", rev = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2" }
+parley_engine = { git = "https://github.com/anomalyco/rune", rev = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2" }
+wgpu-hal = { git = "https://github.com/anomalyco/rune", rev = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2" }
+naga = { git = "https://github.com/anomalyco/rune", rev = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2" }
+accesskit_windows = { git = "https://github.com/anomalyco/rune", rev = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2" }
+accesskit_macos = { git = "https://github.com/anomalyco/rune", rev = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2" }
+accesskit_atspi_common = { git = "https://github.com/anomalyco/rune", rev = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2" }

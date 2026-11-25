@@ -41,6 +41,27 @@ fn init_writes_dependencies_the_patch_table_and_the_base() {
     assert_eq!(std::fs::read_to_string(d.join("Cargo.toml")).unwrap(), manifest, "init twice changes nothing");
 }
 
+/// The table init writes is this workspace's own, at `RUNE_REV`: the crates Rune's README lists move when the pin moves.
+#[test]
+fn init_writes_the_same_patch_table_as_this_workspace() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let rev = std::fs::read_to_string(root.join("RUNE_REV")).unwrap().lines().next().unwrap().trim().to_owned();
+    let ours = std::fs::read_to_string(root.join("Cargo.toml")).unwrap();
+    let patches = |toml: &str| -> Vec<String> {
+        toml.lines().skip_while(|l| l.trim() != "[patch.crates-io]").skip(1).take_while(|l| !l.trim_start().starts_with('['))
+            .filter(|l| l.contains(&format!("rev = \"{rev}\""))).filter_map(|l| l.split_once('=').map(|(k, _)| k.trim().to_owned())).collect()
+    };
+    let want = patches(&ours);
+    assert!(want.len() >= 5, "the workspace pins Rune's patch table at RUNE_REV: {want:?}");
+    let d = app("init-patches");
+    ok(&d, &["init"]);
+    let mut got = patches(&std::fs::read_to_string(d.join("Cargo.toml")).unwrap());
+    let mut want = want;
+    got.sort();
+    want.sort();
+    assert_eq!(got, want, "init writes every patch the workspace has, at RUNE_REV");
+}
+
 #[test]
 fn add_dry_run_writes_nothing_and_add_records_what_it_copies() {
     let d = app("add");

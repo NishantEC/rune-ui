@@ -138,7 +138,8 @@ fn write(path: &Path, bytes: &[u8], dry: bool, what: &str) -> Result<(), String>
 
 // ---- init ----
 
-const PATCHES: [&str; 5] = ["wgpu-hal", "winit", "parley_engine", "accesskit_windows", "accesskit_macos"];
+/// Rune's `[patch.crates-io]` table, in the order its README lists it. Check Rune's root `Cargo.toml` when the pin moves.
+const PATCHES: [&str; 8] = ["winit", "sctk-adwaita", "parley_engine", "wgpu-hal", "naga", "accesskit_windows", "accesskit_macos", "accesskit_atspi_common"];
 
 fn source_dep(a: &Args, krate: &str) -> String {
     match (&a.git, &a.source) {
