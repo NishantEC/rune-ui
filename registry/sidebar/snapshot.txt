@@ -1,0 +1,7 @@
+item-sidebar group 0 0 1240 485
+sidebar navigation 0 62 240 400
+sidebar-home link 8 122 224 30
+sidebar-inbox link 8 153 224 30
+sidebar-calendar link 8 184 224 30
+sidebar-app link 8 255 224 30
+sidebar-docs link 8 286 224 30

@@ -18,7 +18,7 @@ cargo = ["rune", "rune-ui-style"]
 [[files]]
 path = "switch.rs"
 target = "src/ui/switch.rs"
-sha256 = "8f22d3bb4e3cc23e828dace5ffd4fa04f2d3dd134c02cd676947225712767758"
+sha256 = "db14a76ca0554cbcc74b7ff7d45fa132442e554e2a4ff714e34902ceac657c00"
 
 # Copied only once the gallery block is installed.
 [[files]]

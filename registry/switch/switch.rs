@@ -8,7 +8,7 @@
 //! Switch::new("sync", "Sync in the background", s.sync).on_toggle(|s: &mut App| s.sync = !s.sync).build(t)
 //! ```
 
-use rune::{Color, El, Shadow, el, row};
+use rune::{El, el, row};
 
 use super::base::{Delta, Material, Press, Recipe, State, Theme, hit_area, paint, paint_state, press, resolve, states, words};
 
@@ -62,7 +62,7 @@ impl<S: 'static> Switch<S> {
     fn track(&self, t: &Theme) -> El {
         let d = TRACK.1 - 2.0 * PAD;
         let disc = el().size(d, d).radius(d / 2.0);
-        let thumb = if self.on { paint(disc, &Recipe::new().fill(t.c.primary.fg).shadow(Shadow { y: 1.0, blur: 2.0, color: Color::BLACK.alpha(0.22), ..Shadow::default() })) } else { paint(disc, &t.mat.thumb.base) }.a11y_hidden();
+        let thumb = if self.on { paint(disc, &Recipe::new().fill(t.c.primary.fg).shadows(&t.elevation.xs)) } else { paint(disc, &t.mat.thumb.base) }.a11y_hidden();
         let m = if self.on { &t.mat.ink } else { &t.mat.well };
         let track = paint(row().size(TRACK.0, TRACK.1).padding(PAD).center_y().radius(TRACK.1 / 2.0), &resolve(m, Default::default()).shadow_none()).child(thumb).a11y_hidden();
         if self.on { track.justify_end() } else { track.justify_start() }

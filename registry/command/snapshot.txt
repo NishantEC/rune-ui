@@ -1,0 +1,17 @@
+item-command group 0 0 1240 383
+command-inline dialog 0 62 520 298
+command-inline-input textbox 42 74 462 21
+command-inline-list listbox 0 106 520 254
+command-inline-new option 6 141 508 36
+command-inline-new-keys note 460 149 44 20
+command-inline-inbox option 6 178 508 36
+command-inline-calendar option 6 215 508 36
+command-inline-profile option 6 281 508 36
+command-inline-profile-keys note 436 289 68 20
+command-inline-settings option 6 318 508 36
+command-inline-settings-keys note 460 326 44 20
+command-none dialog 544 62 360 120
+command-none-input textbox 586 74 302 21
+command-none-list listbox 544 106 360 76
+hit(command-open) button 928 57 158 40
+command-open button 928 62 158 30

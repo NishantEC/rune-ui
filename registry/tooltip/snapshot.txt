@@ -1,0 +1,5 @@
+item-tooltip group 0 0 1240 115
+tooltip-words tooltip 0 62 69 26
+tooltip-keys tooltip 93 62 72 26
+hit(tooltip-trigger) group 183 57 40 40
+tooltip-trigger button 188 62 30 30

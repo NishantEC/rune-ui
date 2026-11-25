@@ -1,0 +1,7 @@
+item-toast group 0 0 1240 149
+toast-plain status 0 62 360 64
+toast-undo status 384 62 360 64
+hit(toast-undo-action) button 641 69 51 40
+toast-undo-action button 641 76 51 26
+hit(toast-undo-close) button 697 69 40 40
+toast-undo-close button 704 76 26 26

@@ -1,0 +1,16 @@
+item-textarea group 0 0 1240 272
+textarea-rest group 0 62 260 70
+scroll group 10 70 240 54
+textarea-rest-input textbox 10 70 240 54
+textarea-focus group 284 62 260 70
+scroll group 294 70 240 54
+textarea-focus-input textbox 294 70 240 54
+textarea-empty group 568 62 260 52
+scroll group 578 70 240 36
+textarea-empty-input textbox 578 70 240 18
+textarea-invalid group 852 62 260 70
+scroll group 862 70 240 54
+textarea-invalid-input textbox 862 70 240 54
+textarea-disabled group 0 179 260 70
+scroll group 10 187 240 54
+textarea-disabled-input textbox 10 187 240 54

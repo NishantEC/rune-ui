@@ -1,0 +1,5 @@
+item-empty group 0 0 1240 294
+empty-tasks group 0 62 380 209
+hit(empty-new) button 140 204 100 40
+empty-new button 140 209 100 30
+empty-search group 404 62 380 163

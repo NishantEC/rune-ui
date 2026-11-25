@@ -1,0 +1,17 @@
+item-radio_group group 0 0 1240 205
+radio-level radiogroup 0 62 234 120
+radio-level-0 radio -4 62 238 35
+radio-level-1 radio -4 107 238 35
+radio-level-2 radio -4 152 238 30
+radio-pinned radiogroup 258 62 78 110
+radio-pinned-0 radio 254 62 82 30
+radio-pinned-1 radio 254 102 82 30
+radio-pinned-2 radio 254 142 82 30
+radio-row radiogroup 368 62 242 30
+radio-row-0 radio 364 62 65 30
+radio-row-1 radio 445 62 82 30
+radio-row-2 radio 543 62 67 30
+radio-disabled radiogroup 634 62 78 110
+radio-disabled-0 radio 630 62 82 30
+radio-disabled-1 radio 630 102 82 30
+radio-disabled-2 radio 630 142 82 30

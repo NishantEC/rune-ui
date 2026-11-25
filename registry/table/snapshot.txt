@@ -1,0 +1,7 @@
+item-table group 0 0 1240 281
+table table 0 62 560 196
+table-head row 0 62 560 36
+table-row-0 row 0 98 560 40
+table-row-1 row 0 138 560 40
+table-row-2 row 0 178 560 40
+table-row-3 row 0 218 560 40

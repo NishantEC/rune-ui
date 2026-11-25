@@ -1,0 +1,14 @@
+item-card group 0 0 1240 330
+card-slab group 0 62 440 245
+card-row-sync group 0 137 440 56
+hit(card-sync) button 386 145 40 40
+card-sync switch 388 154 36 22
+card-row-account group 0 194 440 56
+card-row-data group 0 251 440 56
+hit(card-manage) group 358 259 66 40
+card-manage button 358 266 66 26
+card-raised group 464 62 360 173
+hit(card-dismiss) group 671 184 72 40
+card-dismiss button 671 189 72 30
+hit(card-open) group 751 184 57 40
+card-open button 751 189 57 30

@@ -1,0 +1,9 @@
+item-accordion group 0 0 1240 253
+accordion group 0 62 420 168
+accordion-0 button 0 62 420 44
+accordion-0-content group 0 106 420 34
+accordion-1 button 0 141 420 44
+accordion-2 button 0 186 420 44
+accordion-pinned group 444 62 320 89
+accordion-pinned-0 button 444 62 320 44
+accordion-pinned-1 button 444 107 320 44

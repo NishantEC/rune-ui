@@ -1,0 +1,1 @@
+item-spinner group 0 0 1240 109

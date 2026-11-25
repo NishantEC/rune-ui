@@ -1,0 +1,14 @@
+item-tabs group 0 0 1240 153
+tabs-line tablist 0 62 420 34
+tabs-line-0 tab 0 62 91 34
+tabs-line-1 tab 107 62 78 34
+tabs-line-2 tab 201 62 62 34
+tabs-line-panel tabpanel 0 112 420 18
+tabs-pinned tablist 444 62 420 34
+tabs-pinned-0 tab 444 62 91 34
+tabs-pinned-1 tab 551 62 78 34
+tabs-pinned-2 tab 645 62 62 34
+tabs-contained tablist 888 62 265 30
+tabs-contained-0 tab 891 65 99 24
+tabs-contained-1 tab 992 65 86 24
+tabs-contained-2 tab 1080 65 70 24

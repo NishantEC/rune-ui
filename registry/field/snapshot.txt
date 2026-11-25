@@ -1,0 +1,17 @@
+item-field group 0 0 1240 136
+field-budget group 0 62 240 74
+field-budget-label group 0 62 240 16
+field-budget-input group 0 84 240 30
+field-budget-input-prefix text 10 90 8 18
+field-budget-input-input textbox 24 90 206 18
+field-budget-description text 0 120 240 16
+field-name group 264 62 240 74
+field-name-label group 264 62 240 16
+field-name-input group 264 84 240 30
+field-name-input-input textbox 274 90 220 18
+field-name-error text 264 120 240 16
+field-off group 528 62 240 74
+field-off-label group 528 62 240 16
+field-off-input group 528 84 240 30
+field-off-input-input textbox 538 90 220 18
+field-off-description text 528 120 240 16

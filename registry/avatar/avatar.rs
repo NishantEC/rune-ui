@@ -52,7 +52,8 @@ impl<'a> Avatar<'a> {
         let d = self.diameter();
         let base = row().key(self.key).role("img").label(self.name.clone()).size(d, d).center().radius(d / 2.0);
         match self.image {
-            Some(p) => base.pixels(p).box_shadow(Shadow { spread: 1.0, inset: true, color: if t.dark { rune::Color::WHITE.alpha(0.1) } else { rune::Color::BLACK.alpha(0.1) }, ..Shadow::default() }),
+            // An image's outline is pure black or white at 10%, never a tinted grey (it would read as dirt).
+            Some(p) => base.pixels(p).box_shadow(Shadow { spread: 1.0, inset: true, color: if t.dark { rune::Color::WHITE.alpha(0.1) } else { rune::Color::BLACK.alpha(0.1) }, ..Shadow::default() }), // guard: allow
             None => {
                 let style = tabular(weight(if d < 30.0 { t.ty.xs } else { t.ty.sm }, t.ty.medium));
                 paint(base, &Recipe::new().fill(t.c.surface.bg).fill(t.c.muted.bg)).child(text(initials(&self.name)).font(style).color(t.ink_muted()).a11y_hidden())

@@ -1,0 +1,5 @@
+item-combobox group 0 0 1240 115
+combobox-demo-trigger group 0 62 240 30
+combobox-demo-value-trigger combobox 0 62 240 28
+value group 0 67 206 18
+chevron icon 216 68 16 16

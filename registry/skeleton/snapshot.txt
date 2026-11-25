@@ -1,0 +1,10 @@
+item-skeleton group 0 0 1240 175
+skeleton-lines progressbar 0 62 240 46
+skeleton-lines-0 group 0 62 240 10
+skeleton-lines-1 group 0 80 240 10
+skeleton-lines-2 group 0 98 144 10
+skeleton-row progressbar 264 62 260 32
+skeleton-row-face group 264 62 32 32
+skeleton-row-a group 308 66 156 10
+skeleton-row-b group 308 82 91 8
+skeleton-block group 548 62 160 90

@@ -1,0 +1,15 @@
+item-dialog group 0 0 1240 285
+dialog-inplace-dialog dialog 0 62 440 200
+dialog-inplace-header group 20 82 362 64
+dialog-inplace-title heading 20 82 362 22
+hit(dialog-inplace-close) button 387 75 40 40
+dialog-inplace-close button 394 82 26 26
+dialog-inplace-name group 20 162 400 30
+dialog-inplace-name-input textbox 30 168 380 18
+dialog-inplace-footer group 20 208 400 34
+hit(dialog-inplace-cancel) button 290 207 67 40
+dialog-inplace-cancel button 290 212 67 30
+hit(dialog-inplace-save) group 366 207 54 40
+dialog-inplace-save button 366 212 54 30
+hit(dialog-open) button 464 57 86 40
+dialog-open button 464 62 86 30

@@ -1,0 +1,17 @@
+item-alert_dialog group 0 0 1240 221
+alert-confirm-dialog dialog 0 62 400 136
+alert-confirm-header group 20 82 360 46
+alert-confirm-title heading 20 82 360 22
+alert-confirm-footer group 20 144 360 34
+hit(alert-confirm-cancel) button 234 143 69 40
+alert-confirm-cancel button 234 148 69 30
+hit(alert-confirm-action) button 310 143 70 40
+alert-confirm-action button 310 148 70 30
+alert-destroy-dialog dialog 424 62 400 136
+alert-destroy-header group 444 82 360 46
+alert-destroy-title heading 444 82 360 22
+alert-destroy-footer group 444 144 360 34
+hit(alert-destroy-cancel) button 665 143 67 40
+alert-destroy-cancel button 665 148 67 30
+hit(alert-destroy-action) button 740 143 64 40
+alert-destroy-action button 740 148 64 30

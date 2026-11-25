@@ -18,7 +18,7 @@ cargo = ["rune", "rune-ui-style"]
 [[files]]
 path = "avatar.rs"
 target = "src/ui/avatar.rs"
-sha256 = "73f1d83533c7e1d36ffee9c95079ac0720dbc723bfd1e05d816219196cd07a4b"
+sha256 = "97de831ce2cd2db4a2a2a2a8dee661fc6468c5550fa0c88028fedace567bd601"
 
 # Copied only once the gallery block is installed.
 [[files]]

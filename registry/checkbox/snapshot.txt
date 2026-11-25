@@ -1,0 +1,10 @@
+item-checkbox group 0 0 1240 197
+check-off checkbox -4 62 159 30
+check-on checkbox 175 62 159 30
+check-mixed checkbox 354 62 159 30
+check-hover checkbox 533 62 159 30
+hit(check-focus) button 704 50 40 40
+check-focus checkbox 716 62 16 16
+check-invalid checkbox 824 62 159 30
+check-disabled checkbox 1003 62 159 30
+check-help checkbox -4 139 184 35

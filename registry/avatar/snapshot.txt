@@ -1,0 +1,8 @@
+item-avatar group 0 0 1240 125
+avatar-small img 0 62 24 24
+avatar-medium img 52 62 32 32
+avatar-large img 118 62 40 40
+avatar-group group 182 62 78 24
+avatar-group-0 img 182 62 24 24
+avatar-group-1 img 200 62 24 24
+avatar-group-2 img 218 62 24 24

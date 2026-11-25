@@ -1,0 +1,9 @@
+item-progress group 0 0 1240 113
+progress-bare progressbar 0 62 200 6
+progress-bare-track group 0 62 200 6
+progress-upload progressbar 224 62 220 28
+progress-upload-track group 224 84 220 6
+progress-budget progressbar 468 62 220 28
+progress-budget-track group 468 84 220 6
+progress-done progressbar 712 62 200 28
+progress-done-track group 712 84 200 6
