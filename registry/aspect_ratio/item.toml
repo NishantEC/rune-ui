@@ -8,7 +8,7 @@ group = "structure"
 description = "A box that keeps a width-to-height ratio, rounded and clipping what it holds."
 
 [requires]
-style = ">=0.5.1, <0.6.0"
+style = ">=0.5.1, <0.7.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]

@@ -8,7 +8,7 @@ group = "fonts"
 description = "A grotesque with engineered, slightly quirky details, at home in enterprise tools. Variable weight 100 to 700 and width 75 to 100 (drawn at 100). 'Plex' is a Reserved Font Name: ship the file unmodified."
 
 [requires]
-style = ">=0.5.0, <0.6.0"
+style = ">=0.5.0, <0.7.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]

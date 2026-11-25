@@ -8,7 +8,7 @@ group = "actions"
 description = "A two-state button: quiet until hovered, the selected wash when on."
 
 [requires]
-style = ">=0.5.0, <0.6.0"
+style = ">=0.5.0, <0.7.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
