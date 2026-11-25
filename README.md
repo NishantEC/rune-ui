@@ -66,6 +66,15 @@ Rune's own (`El::help`) and need no layer.
 
 The registry is embedded in the binary. `--registry <dir>` reads it from a folder instead.
 
+### Pinning a release
+
+Release tags are annotated (`git tag -a vX.Y.Z`). Pin `rune-ui-style` and `rune-ui-themes` to one with `tag = "vX.Y.Z"`, which is what
+`rune-ui init --git <url> --tag vX.Y.Z` writes:
+
+```toml
+rune-ui-style = { git = "https://github.com/NishantEC/rune-ui", tag = "vX.Y.Z" }
+```
+
 ## The gallery
 
 ```sh
@@ -94,7 +103,9 @@ The page has a **theme editor** on its right (about 300 points): light or dark, 
 (swatches or a hex), radius, corner style (continuous or round), font (Inter, system, serif, mono and every installed font item, each
 shown in its own face), type scale, density, shadow
 strength, and material texture (flat to tactile), with Reset, Copy theme and Export. Every control writes a key of the theme file the
-page is read from (`gallery::edit_theme`), so what you see is the tokens at work, and Export writes a theme file valid against the schema.
+page is read from (`gallery::edit_theme`), so what you see is the tokens at work. Every control starts from, and Reset returns to, the
+theme file's own values. Export hands a theme file valid against the schema to `GalleryState::on_export`, a callback the app supplies (the
+page never writes files; with no callback there is no Export button, and Copy theme stays).
 
 Stories register themselves. Each item's `stories.rs` is copied to `src/ui/stories/<name>.rs` once the gallery block is installed, and once everything the story shows is installed too. `rune-ui add` keeps `src/ui/stories/mod.rs` listing them. So a component you add appears on the page, and one you have not added does not. For Rune's own hover tooltips to match, also add `tooltip` and call `cx.help_look(ui::tooltip::look(&theme))` in your view.
 
