@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "skeleton"
+title = "Skeleton"
+version = "0.2.0"
+type = "component"
+group = "display"
+description = "The still shape of what is loading."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+
+[[files]]
+path = "skeleton.rs"
+target = "src/ui/skeleton.rs"
+sha256 = "530247992cfc3e865b01fe2f978da8ea45e0212ff77b5b93be4383e5d7ca8cc2"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/skeleton.rs"
+role = "story"
+sha256 = "920ff4eee69bbee16bf9a9bc3a5f9e10ce29f0018a6e2639a1dc5dcacbf80396"

@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "dialog"
+title = "Dialog"
+version = "0.2.0"
+type = "component"
+group = "overlays"
+description = "A modal panel over a scrim: focus trapped, Escape and a press outside close it."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons", "button"]
+cargo = ["rune", "rune-ui-style"]
+
+[[files]]
+path = "dialog.rs"
+target = "src/ui/dialog.rs"
+sha256 = "ec2251826cde7e80a36c1ecc848a9bf9ee5468c36d8b9f7cffcc2844b0300047"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/dialog.rs"
+role = "story"
+sha256 = "f40525aba6089fdf698943d3085d1b97864f4ac34e46baa1b6ac062025edda5a"

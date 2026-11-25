@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "radio_group"
+title = "RadioGroup"
+version = "0.2.0"
+type = "component"
+group = "form"
+description = "One of a few, shown: rings that fill with an ink dot."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+
+[[files]]
+path = "radio_group.rs"
+target = "src/ui/radio_group.rs"
+sha256 = "4ba8239051fe9decca5325538fb6482555b2db7d61320c874112bd7e7cbd5885"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/radio_group.rs"
+role = "story"
+sha256 = "303c29c157e6e685a8b02e4aa40fd35301731bf86b1a4ebd9f0b99f26a080f5d"

@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "label"
+title = "Label"
+version = "0.2.0"
+type = "component"
+group = "form"
+description = "A control's visible name, with an optional required mark."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+
+[[files]]
+path = "label.rs"
+target = "src/ui/label.rs"
+sha256 = "9a9ea6e5911b2c75259e5aac6b041147b525ab52bf882a93516c02020526ed5a"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/label.rs"
+role = "story"
+sha256 = "7772164e823bbd792c6f5cac64311526cd7adc851f9496ba45ed528cbc89b733"

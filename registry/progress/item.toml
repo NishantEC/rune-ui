@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "progress"
+title = "Progress"
+version = "0.2.0"
+type = "component"
+group = "display"
+description = "How far along: a well track with an ink fill, figures tabular."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+
+[[files]]
+path = "progress.rs"
+target = "src/ui/progress.rs"
+sha256 = "937f53b513e281e33a6bb1caa23bfaa5af6c12fb1f2a5bd7e504153162988046"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/progress.rs"
+role = "story"
+sha256 = "74acc166702449ecf0681410292217cf53c65983233927167567eb436e4f2962"

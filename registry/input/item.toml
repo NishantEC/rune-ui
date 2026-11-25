@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "input"
+title = "Input"
+version = "0.2.0"
+type = "component"
+group = "form"
+description = "A one-line text field on the well material, with prefix, suffix, clear and a search form."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+
+[[files]]
+path = "input.rs"
+target = "src/ui/input.rs"
+sha256 = "0ffc3b5dd258a24ef30d0c52e00ff7329f403a5395c972c872c754decaac70a3"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/input.rs"
+role = "story"
+sha256 = "92d1131fe4a08255b725f366de254897ee94d5144d512575d00a68c06c0ccc6d"

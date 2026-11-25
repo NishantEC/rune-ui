@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "sidebar"
+title = "Sidebar"
+version = "0.2.0"
+type = "component"
+group = "structure"
+description = "An app's side column: header, labelled groups of rows with icons and counts, footer."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+
+[[files]]
+path = "sidebar.rs"
+target = "src/ui/sidebar.rs"
+sha256 = "faa18c8f5e082ade8d7711a16c86c3f6872c0db968501a049d50f8fc3887072b"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/sidebar.rs"
+role = "story"
+sha256 = "1c5e85036ffb1ef2021827385db182d2809340fc8538be35888fe2fe2d8f2f54"

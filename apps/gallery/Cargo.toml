@@ -1,13 +1,16 @@
 [package]
-name = "rune-ui-gallery"
+name = "gallery"
 description = "Every rune-ui component in every state, light and dark; renders to PNGs headless (scripts/snap.sh)."
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 publish = false
 
+[lib]
+name = "gallery"
+
 [[bin]]
-name = "rune-ui-gallery"
+name = "gallery"
 path = "src/main.rs"
 
 [dependencies]

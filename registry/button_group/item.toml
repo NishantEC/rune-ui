@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "button_group"
+title = "ButtonGroup"
+version = "0.2.0"
+type = "component"
+group = "actions"
+description = "Related actions joined into one raised object divided by hairlines."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+
+[[files]]
+path = "button_group.rs"
+target = "src/ui/button_group.rs"
+sha256 = "514e8604fcaddb4e287aa431c6b06761ed2af74aa853bc332d8a3bbfcbb201c6"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/button_group.rs"
+role = "story"
+sha256 = "7688693167e0651903897ff4b46dda3128d502056babd62164a35cd16f62f11c"

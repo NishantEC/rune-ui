@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "popover"
+title = "Popover"
+version = "0.2.0"
+type = "component"
+group = "overlays"
+description = "A floating panel beside its trigger; a press outside or Escape closes it."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style", "rune-kit"]
+
+[[files]]
+path = "popover.rs"
+target = "src/ui/popover.rs"
+sha256 = "19d3fce9f386569c98ab4f4be043b29e1dbb54b157f776041911cf6c8d014547"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/popover.rs"
+role = "story"
+sha256 = "8fffb8738343dcc9df40c94981e793a77a6a4331e642514646ab4d792566b791"

@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "select"
+title = "Select"
+version = "0.2.0"
+type = "component"
+group = "form"
+description = "One choice of a few: a well trigger over rune-kit's listbox behaviour."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style", "rune-kit"]
+
+[[files]]
+path = "select.rs"
+target = "src/ui/select.rs"
+sha256 = "44565fc1a37c88cf35ad0efed54d005c21029535cda88798b58b6a110118cdc2"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/select.rs"
+role = "story"
+sha256 = "1b1b58dfb31190981506147cadc45779d7a9aa3881634a3678fa6d8d678c8481"

@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "avatar"
+title = "Avatar"
+version = "0.2.0"
+type = "component"
+group = "display"
+description = "A person as initials (or an image) in a circle; a stacked group."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+
+[[files]]
+path = "avatar.rs"
+target = "src/ui/avatar.rs"
+sha256 = "73f1d83533c7e1d36ffee9c95079ac0720dbc723bfd1e05d816219196cd07a4b"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/avatar.rs"
+role = "story"
+sha256 = "411b954e2ebf6e9a42e16558ae63c161da6962e39a36eb39831a73c9c9d4f3e9"

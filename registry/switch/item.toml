@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "switch"
+title = "Switch"
+version = "0.2.0"
+type = "component"
+group = "form"
+description = "A well track that fills with ink when on, holding a floating thumb."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+
+[[files]]
+path = "switch.rs"
+target = "src/ui/switch.rs"
+sha256 = "8f22d3bb4e3cc23e828dace5ffd4fa04f2d3dd134c02cd676947225712767758"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/switch.rs"
+role = "story"
+sha256 = "b896ef98a7d6998df4ab9238edf6155cdaf973bab85249533a74a0c28d0b6523"

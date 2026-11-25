@@ -1,0 +1,1 @@
+pub const CHECKS: &[(&str, &str)] = &[("button-default-rest", "button"), ("button-link-rest", "link"), ("button-icon-only", "button"), ("button-selected", "button"), ("button-default-loading", "button")];

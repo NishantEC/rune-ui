@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "tabs"
+title = "Tabs"
+version = "0.2.0"
+type = "component"
+group = "structure"
+description = "Views of one place: a line under the chosen tab, or a contained well."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+
+[[files]]
+path = "tabs.rs"
+target = "src/ui/tabs.rs"
+sha256 = "6c197ba7d98da240f94ea0245063ee0530c22b7acf61dd4ebda3ea65addbb6c9"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/tabs.rs"
+role = "story"
+sha256 = "370aada9ce0fafdf70d181600b8ae6075b641c51df448c66f4f1ba5ab9892ce2"

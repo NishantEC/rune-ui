@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "context_menu"
+title = "ContextMenu"
+version = "0.2.0"
+type = "component"
+group = "overlays"
+description = "A menu at the pointer on a right-click: rune-kit's context menu in our look."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style", "rune-kit"]
+
+[[files]]
+path = "context_menu.rs"
+target = "src/ui/context_menu.rs"
+sha256 = "4c5662e71890b34fd7b83afe40de2ccf5d923e2ee8403bba9e87c8d00b8dce9f"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/context_menu.rs"
+role = "story"
+sha256 = "26872345eaa5a64931e9885c2f7996eb47caeecb30bad922d1fb41f1c2eb7779"

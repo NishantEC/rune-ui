@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "toast"
+title = "Toast"
+version = "0.2.0"
+type = "component"
+group = "display"
+description = "A short message on the floating material, with an action; a region to stack them."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons", "button"]
+cargo = ["rune", "rune-ui-style"]
+
+[[files]]
+path = "toast.rs"
+target = "src/ui/toast.rs"
+sha256 = "e3fd477f813401f8b0ee9b89e3c92fd6c6c5e1a2e448feb44b06c21d011a7ade"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/toast.rs"
+role = "story"
+sha256 = "34d51b519e98802c1951d57c3661ac3ebe04b73119e5096000eab35aa6196200"

@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "alert"
+title = "Alert"
+version = "0.2.0"
+type = "component"
+group = "display"
+description = "A message in a meaning's wash: icon, title, description, an action."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+
+[[files]]
+path = "alert.rs"
+target = "src/ui/alert.rs"
+sha256 = "62ac58e8e1cae6ea9383b957fa8abbdf58d2efdc11fe109399b2f0544094c1e2"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/alert.rs"
+role = "story"
+sha256 = "65d40bd47aded78cef9c22663e3b9cb0dbb755e258e7d0f9d5c3339f156e82df"

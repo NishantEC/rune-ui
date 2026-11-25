@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "alert_dialog"
+title = "AlertDialog"
+version = "0.2.0"
+type = "component"
+group = "overlays"
+description = "A dialog that needs an answer: no dismissal by a press outside; a destructive form."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons", "button", "dialog"]
+cargo = ["rune", "rune-ui-style"]
+
+[[files]]
+path = "alert_dialog.rs"
+target = "src/ui/alert_dialog.rs"
+sha256 = "4062e5e64b4ec3f03fec953332aa318365b1e8fea05fc22d23186d81dd4585f2"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/alert_dialog.rs"
+role = "story"
+sha256 = "baec3a5a7a98f3c583eb2415c2a6164d1ca72aa6943aaf959599b517130aa742"

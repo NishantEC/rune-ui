@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "toggle"
+title = "Toggle"
+version = "0.2.0"
+type = "component"
+group = "actions"
+description = "A two-state button: quiet until hovered, the selected wash when on."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+
+[[files]]
+path = "toggle.rs"
+target = "src/ui/toggle.rs"
+sha256 = "bd5bd6988fbec4ad3a544cf5e48661133cddf5eb9ba3450b0650645048c158ed"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/toggle.rs"
+role = "story"
+sha256 = "51f900aa107545663af07fc58897c2a056db9dcaba949cdf10b042c1c7795983"

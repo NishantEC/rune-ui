@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "kbd"
+title = "Kbd"
+version = "0.2.0"
+type = "component"
+group = "display"
+description = "Keys as small raised caps."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+
+[[files]]
+path = "kbd.rs"
+target = "src/ui/kbd.rs"
+sha256 = "b34c32af7a56efc1dd6ef670cc270c8949d6f11bb300d5acd629c379d732c19e"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/kbd.rs"
+role = "story"
+sha256 = "9062deea3e0022405ee9f38f02119666f86a085c68d666a98d8547e7ae1ef728"

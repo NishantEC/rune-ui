@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "collapsible"
+title = "Collapsible"
+version = "0.2.0"
+type = "component"
+group = "structure"
+description = "One section that folds behind its trigger."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+
+[[files]]
+path = "collapsible.rs"
+target = "src/ui/collapsible.rs"
+sha256 = "bcdba29260c0f9b66f49127f75ac56787ba9ae5069718fb4e111fac752e2b434"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/collapsible.rs"
+role = "story"
+sha256 = "779f8147bfeb7b346899ae02bd5ecf9fe52fe8fbb49ecbb0e1d732886e4499eb"

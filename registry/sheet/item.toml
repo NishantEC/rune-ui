@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "sheet"
+title = "Sheet"
+version = "0.2.0"
+type = "component"
+group = "overlays"
+description = "A panel that slides in from an edge over a scrim."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+
+[[files]]
+path = "sheet.rs"
+target = "src/ui/sheet.rs"
+sha256 = "9a455f0a9db611f4e014c5d39cc7d5d458444e954753d9096687931357d41833"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/sheet.rs"
+role = "story"
+sha256 = "5f139a342401fa42073d9c46164233d8409e53e37fb79392179f8fa804c331b8"

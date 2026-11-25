@@ -1,0 +1,28 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "card"
+title = "Card"
+version = "0.2.0"
+type = "component"
+group = "structure"
+description = "A slab of rows split by inset hairlines, or a raised card; header, content, footer."
+
+[requires]
+style = ">=0.2.0, <0.3.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons", "separator"]
+cargo = ["rune", "rune-ui-style"]
+
+[[files]]
+path = "card.rs"
+target = "src/ui/card.rs"
+sha256 = "3a8cc64c1d4b3e150433a221503641e5f0fe326ce616c403660743174bb4636b"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/card.rs"
+role = "story"
+sha256 = "a2b03600cb24b5edc02e0cfbc96f824d5c6c448cf63a6e91ec87137a925bfcde"
