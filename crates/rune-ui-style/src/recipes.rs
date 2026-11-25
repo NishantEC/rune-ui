@@ -135,3 +135,12 @@ impl Tone {
         (tone.bg, tone.fg, tone.solid, tone.on_solid)
     }
 }
+
+/// A chart's series colours, in order: the accent, then the success, warning and danger solids, then the second ink. They follow the
+/// theme (the editor's accent moves the first) and repeat past five, a step fainter each time round.
+pub fn series(t: &Theme, i: usize) -> Color {
+    let c = &t.c;
+    let five = [c.accent.fg, c.success.solid, c.warning.solid, c.danger.solid, c.muted.fg];
+    let lap = (i / five.len()) as f32;
+    five[i % five.len()].alpha((1.0 - 0.3 * lap).max(0.4))
+}

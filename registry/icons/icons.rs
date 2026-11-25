@@ -1,4 +1,4 @@
-//! rune-ui registry: icons 0.5.0. A small set of 16 point glyphs on one 1.5 stroke, drawn in `currentColor` so a control recolours
+//! rune-ui registry: icons 0.5.1. A small set of 16 point glyphs on one 1.5 stroke, drawn in `currentColor` so a control recolours
 //! them per state. Replace or extend with your app's own set. `rune-ui init` copies it.
 
 use rune::Icon;
@@ -15,6 +15,7 @@ glyph!(MINUS, "minus", r#"<path d="M4 8h8" fill="none" stroke="currentColor" str
 glyph!(PLUS, "plus", r#"<path d="M8 3.5v9M3.5 8h9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>"#);
 glyph!(CHEVRON_DOWN, "chevron-down", r#"<path d="M4.5 6.4 8 9.9l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>"#);
 glyph!(CHEVRON_RIGHT, "chevron-right", r#"<path d="M6.4 4.5 9.9 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>"#);
+glyph!(CHEVRON_LEFT, "chevron-left", r#"<path d="M9.6 4.5 6.1 8l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>"#);
 glyph!(CHEVRON_UP_DOWN, "chevron-up-down", r#"<path d="M5.2 6.2 8 3.6l2.8 2.6M5.2 9.8 8 12.4l2.8-2.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>"#);
 glyph!(CLOSE, "close", r#"<path d="M4.8 4.8l6.4 6.4M11.2 4.8l-6.4 6.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>"#);
 glyph!(SEARCH, "search", r#"<circle cx="7.2" cy="7.2" r="4.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.4 10.4 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>"#);

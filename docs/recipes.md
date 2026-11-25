@@ -66,6 +66,7 @@ press washes, press scale and focus ring (`Material::live`) so they animate at R
 | `field(t)` | | root: well; label: input text; icon: third ink, danger when invalid |
 | `row(t)` | | row material; second ink, first when selected |
 | `check(t, on)` | | a well off, the ink on (no sink) |
+| `series(t, i)` | | a chart series colour: accent, success, warning, danger, second ink, then fainter laps |
 | `Tone::colors(t)` | Neutral, Info, Success, Warning, Danger | (wash, words, solid, words on solid) |
 
 Every component takes `.recipe(|parts| …)` (Button now; the others as they need it) to change its parts before painting.

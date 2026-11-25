@@ -1,0 +1,1 @@
+pub const CHECKS: &[(&str, &str)] = &[("calendar-grid", "grid"), ("calendar-day-2026-11-12", "gridcell"), ("calendar-day-2026-11-25", "gridcell"), ("calendar-caption", "button"), ("calendar-prev", "button"), ("calendar-next", "button"), ("calendar-picker-month-11", "gridcell"), ("calendar-limited-day-2026-11-28", "gridcell")];

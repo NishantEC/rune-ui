@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "date_picker"
+title = "DatePicker"
+version = "0.5.1"
+type = "component"
+group = "form"
+description = "A date in a well that opens a Calendar on the shared popup: one date or a range, focus on the chosen day, Escape and outside press close."
+
+[requires]
+style = ">=0.5.1, <0.6.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons", "calendar", "popup"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = ["calendar"]
+
+[[files]]
+path = "date_picker.rs"
+target = "src/ui/date_picker.rs"
+sha256 = "93d92c3805653d8d56a7c1b96ddff78c5bf29174d56db1f9a0882a4af8c115d3"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/date_picker.rs"
+role = "story"
+sha256 = "80731aa6a7650ae7bf430f56ba55a62e92442d329c2e09b8b8008992374c2233"

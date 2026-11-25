@@ -39,7 +39,7 @@ pub use color::{contrast, hex, lightness, mix, over};
 pub use materials::{MaterialColors, Materials};
 pub use paint::{Op, apply, apply_live, paint, paint_state, plan};
 pub use recipe::{Delta, Layer, LayerKind, Live, Material, Parts, Recipe, State, States, Tint, resolve};
-pub use recipes::{ButtonVariant, Size, Tone};
+pub use recipes::{ButtonVariant, Size, Tone, series};
 pub use scale::{COMFORTABLE, COMPACT, Controls, Elevation, MAX_CORNER_SHARE, Metrics, Motion, Radius, Space, TypeScale, comfort, smooth_stack, tabular, weight};
 pub use theme::{Palette, Theme, ThemeError};
 pub use tokens::{Base, CONTINUOUS_GAIN, Corners, Font, Mode, Role, ThemeFile};

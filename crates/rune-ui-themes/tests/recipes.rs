@@ -183,3 +183,18 @@ fn the_shipped_theme_loads_by_name() {
     assert!(rune_ui_themes::by_name("nope", false).is_none());
     assert_eq!(theme(false).name, "default");
 }
+
+#[test]
+fn chart_series_colours_follow_the_theme_and_stay_apart() {
+    for t in themes() {
+        let five: Vec<Color> = (0..5).map(|i| recipes::series(&t, i)).collect();
+        assert_eq!(five[0], t.c.accent.fg, "the first series is the accent");
+        for (i, a) in five.iter().enumerate() {
+            assert!(contrast(over(t.c.page.bg, *a), t.c.page.bg) >= 2.0, "{}: series {i} is too faint on the page", t.name);
+            for b in &five[i + 1..] {
+                assert_ne!(a, b, "{}: two series share a colour", t.name);
+            }
+        }
+        assert!(recipes::series(&t, 5).a < five[0].a, "a second lap is fainter");
+    }
+}
