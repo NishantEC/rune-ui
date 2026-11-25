@@ -27,6 +27,8 @@ pub struct Item {
     /// What the item's stories use besides the item (they are copied only when these are installed).
     pub story_needs: Vec<String>,
     pub cargo: Vec<String>,
+    /// Cargo features the item needs, as `crate/feature` (`rune-kit/markdown`); `add` turns them on in the app's Cargo.toml.
+    pub features: Vec<String>,
     pub files: Vec<ItemFile>,
     /// File name to bytes, for every file in the item's folder.
     pub contents: BTreeMap<String, Vec<u8>>,
@@ -70,6 +72,7 @@ pub fn parse_item(toml_src: &str, contents: BTreeMap<String, Vec<u8>>) -> Result
         needs: strings(deps.and_then(|d| d.get("registry"))),
         story_needs: strings(deps.and_then(|d| d.get("stories"))),
         cargo: strings(deps.and_then(|d| d.get("cargo"))),
+        features: strings(deps.and_then(|d| d.get("features"))),
         files,
         contents,
     })

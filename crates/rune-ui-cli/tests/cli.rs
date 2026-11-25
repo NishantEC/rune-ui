@@ -135,3 +135,18 @@ fn a_font_item_brings_inter_its_licence_and_a_fonts_list() {
     let m = std::fs::read_to_string(d.join("src/ui/mod.rs")).unwrap();
     assert!(m.contains("pub mod font_geist;") && m.contains("&[font_geist::FONT, font_inter::FONT]"), "{m}");
 }
+
+#[test]
+fn an_item_that_needs_a_cargo_feature_turns_it_on_once() {
+    let d = app("features");
+    ok(&d, &["init"]);
+    let out = ok(&d, &["add", "response", "--dry-run"]);
+    assert!(out.contains("rune-kit/markdown"), "a dry run names the feature: {out}");
+    assert!(!std::fs::read_to_string(d.join("Cargo.toml")).unwrap().contains("markdown"), "and writes nothing");
+    ok(&d, &["add", "response"]);
+    let manifest = std::fs::read_to_string(d.join("Cargo.toml")).unwrap();
+    let line = manifest.lines().find(|l| l.starts_with("rune-kit =")).unwrap();
+    assert!(line.contains("features = [\"markdown\"]") && line.ends_with('}'), "rune-kit gains the feature: {line}");
+    ok(&d, &["add", "response", "--force"]);
+    assert_eq!(std::fs::read_to_string(d.join("Cargo.toml")).unwrap(), manifest, "adding again changes nothing");
+}

@@ -80,7 +80,8 @@ Each item is a folder:
 
 ```
 registry/button/
-  item.toml      schema, name, version, group, requires (style range, Rune rev), dependencies, files with sha256
+  item.toml      schema, name, version, group, requires (style range, Rune rev), dependencies (registry items, crates, cargo
+                 features such as "rune-kit/markdown", which `rune-ui add` turns on), files with sha256
   button.rs      the source the CLI copies into your src/ui/
   stories.rs     the states the gallery shows (the gallery is generated from these)
   a11y.rs        the roles, names and states the accessibility test checks

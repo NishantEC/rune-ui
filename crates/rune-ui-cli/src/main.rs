@@ -284,9 +284,60 @@ fn copy(a: &Args, reg: &Registry, mut lock: Lock, names: &[String]) -> Result<()
     if !a.dry_run {
         std::fs::write(a.app.join(LOCK), lock.render()).map_err(|e| e.to_string())?;
     }
+    let features: BTreeSet<&String> = todo.iter().filter_map(|n| reg.items.get(n)).flat_map(|i| i.features.iter()).collect();
+    if !features.is_empty() {
+        let manifest = a.app.join("Cargo.toml");
+        let src = std::fs::read_to_string(&manifest).map_err(|e| format!("{}: {e}", manifest.display()))?;
+        let mut next = src.clone();
+        for f in &features {
+            let (krate, feature) = f.split_once('/').ok_or_else(|| format!("feature `{f}` is not `crate/feature`"))?;
+            next = ensure_feature(&next, krate, feature)?;
+        }
+        if next != src {
+            println!("  turns on {}", features.iter().map(|f| f.as_str()).collect::<Vec<_>>().join(", "));
+            write(&manifest, next.as_bytes(), a.dry_run, "update")?;
+        }
+    }
     let cargo: BTreeSet<&String> = todo.iter().filter_map(|n| reg.items.get(n)).flat_map(|i| i.cargo.iter()).collect();
     println!("{} {} file(s); needs crates: {}", if a.dry_run { "would write" } else { "wrote" }, writes.len(), cargo.into_iter().cloned().collect::<Vec<_>>().join(", "));
     Ok(())
+}
+
+/// Turns on `feature` of the dependency `krate` in `[dependencies]`: `krate = "1"` becomes a table, a table gains `features` or the
+/// feature joins its list. A dependency that is not there is an error (run `init` first).
+fn ensure_feature(toml: &str, krate: &str, feature: &str) -> Result<String, String> {
+    let mut out: Vec<String> = toml.lines().map(str::to_owned).collect();
+    let mut section = String::new();
+    let quoted = format!("{feature:?}");
+    for line in out.iter_mut() {
+        let trimmed = line.trim();
+        if trimmed.starts_with('[') {
+            section = trimmed.to_owned();
+            continue;
+        }
+        if section != "[dependencies]" || line.split_once('=').map(|(k, _)| k.trim()) != Some(krate) {
+            continue;
+        }
+        let (key, value) = line.split_once('=').map(|(k, v)| (k.to_owned(), v.trim().to_owned())).unwrap_or_default();
+        let value = if value.starts_with('{') { value } else { format!("{{ version = {value} }}") };
+        let next = if let Some(at) = value.find("features") {
+            let open = value[at..].find('[').map(|i| at + i).ok_or_else(|| format!("{krate}: features is not a list"))?;
+            let close = value[open..].find(']').map(|i| open + i).ok_or_else(|| format!("{krate}: features is not a list"))?;
+            if value[open..close].contains(&quoted) {
+                return Ok(toml.to_owned());
+            }
+            let inner = value[open + 1..close].trim();
+            format!("{}[{}{quoted}]{}", &value[..open], if inner.is_empty() { String::new() } else { format!("{inner}, ") }, &value[close + 1..])
+        } else {
+            let end = value.rfind('}').ok_or_else(|| format!("{krate}: not an inline table"))?;
+            format!("{}, features = [{quoted}] }}", value[..end].trim_end())
+        };
+        *line = format!("{}= {next}", key);
+        let mut s = out.join("\n");
+        s.push('\n');
+        return Ok(s);
+    }
+    Err(format!("`{krate}` is not in [dependencies] (run `rune-ui init`)"))
 }
 
 /// `src/ui/mod.rs` and `src/ui/stories/mod.rs`, from the lock: every installed item, and (with the gallery) every story.
