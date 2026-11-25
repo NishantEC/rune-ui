@@ -110,6 +110,17 @@ pub fn words(t: &Theme, label: &str, help: Option<&str>) -> El {
     c
 }
 
+/// The view's root: `content`, then every overlay (menus, select lists, popovers, dialogs, sheets, toasts, a command palette) over it.
+///
+/// **Mount exactly one, at the root of the view.** Components that open something push it into a `layer: &mut Vec<El>` instead of
+/// laying it out where they are; this is where the layer goes. Overlays here are out of the layout: they draw above every later sibling,
+/// escape clipping and scrolling ancestors, stay anchored to their triggers as the page scrolls, flip above a trigger near the window's
+/// bottom, and stay inside the window. Anywhere else (inside a scroll view, inside a row) they would be laid out in place and move the
+/// content around them.
+pub fn overlay_root(content: El, layer: Vec<El>) -> El {
+    rune_kit::root(content, layer)
+}
+
 /// States from the usual builder flags plus a pinned look.
 pub fn states(pinned: Option<State>, disabled: bool, selected: bool) -> States {
     let mut s = States { disabled, selected, ..States::default() };

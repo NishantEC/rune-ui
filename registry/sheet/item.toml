@@ -20,11 +20,11 @@ stories = ["button"]
 [[files]]
 path = "sheet.rs"
 target = "src/ui/sheet.rs"
-sha256 = "b516d5f9e0761f763445f1997be448a2e08144aca39df72fbe810f3193ba6c53"
+sha256 = "cf87748b98a221ffee124a6e5a1ddb7a0350ffafe8f52177827214361f666932"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/sheet.rs"
 role = "story"
-sha256 = "5f139a342401fa42073d9c46164233d8409e53e37fb79392179f8fa804c331b8"
+sha256 = "c2a23849b1e86666e989f22e91c03c97b991d3777735c0d46730b1bef1779064"

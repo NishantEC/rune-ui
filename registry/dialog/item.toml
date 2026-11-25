@@ -20,11 +20,11 @@ stories = ["button", "input"]
 [[files]]
 path = "dialog.rs"
 target = "src/ui/dialog.rs"
-sha256 = "64cc5c62fa20f5a1a30c651f7eb80f21b060c6ed806c908e81ad5f2706f75d8c"
+sha256 = "116221befe3e3a4726c64b903ab701b430620ccd4b3940c328a5c6dd25bcbca9"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/dialog.rs"
 role = "story"
-sha256 = "f40525aba6089fdf698943d3085d1b97864f4ac34e46baa1b6ac062025edda5a"
+sha256 = "16a53f2e0932b06086d47334460a66629e034849475084c4d7b31cbb7b737987"

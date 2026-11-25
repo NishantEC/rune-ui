@@ -8,7 +8,7 @@ include!(concat!(env!("OUT_DIR"), "/registry.rs"));
 
 use std::sync::atomic::{AtomicBool, Ordering};
 
-use rune::{App as RuneApp, AppSpec, Cx, El, col};
+use rune::{App as RuneApp, AppSpec, Cx, El, col, el};
 use rune_ui_style::ThemeFile;
 use ui::gallery::{GalleryState, StoryItem};
 
@@ -27,19 +27,28 @@ thread_local! {
     static ITEMS: Vec<StoryItem<App>> = ui::stories::all();
 }
 
-/// The view: the gallery page, scrolling in a window, whole in a picture.
+/// The view: the gallery page, scrolling in a window, whole in a picture; its overlays always at the root, over everything.
 pub fn view(s: &App, cx: &mut Cx<App>) -> El {
     let dark = cx.system_dark();
     let file = FILE.with(Clone::clone);
     let t = ui::gallery::theme_for(&file, dark, &s.g);
     // Rune's own hover tooltips, in the theme's look.
     cx.help_look(ui::tooltip::look(&t));
-    let page = ITEMS.with(|items| ui::gallery::page(&file, dark, &s.g, access, items));
-    if HEADLESS.load(Ordering::Relaxed) { page } else { col().key("scroll").w_full().h_full().fill(t.c.page.bg).clip_rounded(0.0).scroll(rune::ScrollSpec { stick_bottom: false }).child(page) }
+    let mut layer = Vec::new();
+    let page = ITEMS.with(|items| ui::gallery::page(&file, dark, &s.g, access, items, &mut layer));
+    if HEADLESS.load(Ordering::Relaxed) {
+        // A picture is as tall as its content (at least a window's height, so an open list has room); the overlays are still the root's.
+        el().key("canvas").w_full().min_h(840.0).fill(t.c.page.bg).child(page).children(layer)
+    } else {
+        ui::base::overlay_root(col().key("scroll").w_full().h_full().fill(t.c.page.bg).scroll(rune::ScrollSpec { stick_bottom: false }).child(page), layer)
+    }
 }
 
 /// Scenes that show an overlay open: (scene, item, overlay key).
-pub const OPEN_SCENES: [(&str, &str, &str); 7] = [
+pub const OPEN_SCENES: [(&str, &str, &str); 10] = [
+    ("open-context-menu", "context_menu", "context-demo"),
+    ("open-alert-dialog", "alert_dialog", "alert-demo"),
+    ("open-toast", "toast", "toast-demo"),
     ("open-select", "select", "select-demo"),
     ("open-combobox", "combobox", "combobox-demo"),
     ("open-dropdown-menu", "dropdown_menu", "dropdown-demo"),
@@ -54,6 +63,12 @@ pub fn apply_scene(s: &mut App, name: &str) {
     if let Some((_, item, key)) = OPEN_SCENES.iter().find(|(n, _, _)| *n == name) {
         s.g.only = Some((*item).to_owned());
         s.g.open = Some((*key).to_owned());
+        if *item == "context_menu" {
+            s.g.point = Some(rune::PointerPress { x: 260.0, y: 330.0 });
+        }
+        if *item == "toast" {
+            s.g.toasts = vec!["toast-demo".to_owned()];
+        }
         if *item == "combobox" {
             let _ = s.g.combo_mut(key).step(rune_kit::ComboboxEvent::Toggle { current: None });
         }
@@ -72,7 +87,7 @@ macro_rules! scenes {
 /// A named scene and how it sets up the state.
 pub type Scene = (&'static str, fn(&mut App));
 
-pub const SCENES: &[Scene] = scenes!["actions", "form", "overlays", "structure", "display", "materials", "all", "open-select", "open-combobox", "open-dropdown-menu", "open-popover", "open-dialog", "open-sheet", "open-command"];
+pub const SCENES: &[Scene] = scenes!["actions", "form", "overlays", "structure", "display", "materials", "all", "open-select", "open-combobox", "open-context-menu", "open-alert-dialog", "open-toast", "open-dropdown-menu", "open-popover", "open-dialog", "open-sheet", "open-command"];
 
 static HEADLESS: AtomicBool = AtomicBool::new(false);
 

@@ -17,5 +17,5 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> rune::El {
     let st = g.combos.get("combobox-demo").unwrap_or(&blank);
     let current = g.choice("combobox", "placeholder-docs");
     let combo = Combobox::<S>::new("combobox-demo", "Repository", st, options(), move |s: &mut S| acc(s).combos.entry("combobox-demo".to_owned()).or_default()).current(Some(&current)).on_choose(move |s: &mut S, id: &str| acc(s).choose("combobox", id)).build(t, c.layer);
-    rune::col().child(specs(t, vec![spec(t, "Rest (open in the open-combobox scene)", combo)])).child(rune::el().h(if st.is_open() { 240.0 } else { 0.0 }))
+    specs(t, vec![spec(t, "Rest (press it: the list floats over the page)", combo)])
 }

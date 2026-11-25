@@ -85,7 +85,7 @@ impl<S: 'static> Popover<S> {
         let trigger = row().key(anchor.clone()).children(self.trigger.take()).expanded(self.open);
         if self.open {
             let close = self.close.clone();
-            let mut panel = self.panel(t);
+            let mut panel = self.panel(t).focus_return(&anchor);
             if let Some(f) = close.clone() {
                 let g = f.clone();
                 panel = panel.modal(true, move |s: &mut S| g(s));

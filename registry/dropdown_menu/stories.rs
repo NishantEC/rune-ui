@@ -26,5 +26,5 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> rune::El {
         .item(DropdownMenuItem::new("Billing").disabled(true))
         .danger_item(DropdownMenuItem::new("Sign out"))
         .build(t, c.layer);
-    rune::col().child(specs(t, vec![spec(t, "Trigger (open in the open-dropdown-menu scene)", menu)])).child(rune::el().h(if open { 220.0 } else { 0.0 }))
+    specs(t, vec![spec(t, "Trigger (press it: the menu floats over the page)", menu)])
 }

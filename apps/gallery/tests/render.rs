@@ -57,7 +57,7 @@ fn rect(tree: &serde_json::Value, key: &str) -> [f32; 4] {
 fn materials_read_in_the_right_direction_on_screen() {
     let png = out().join("actions-light.png");
     let tree = out().join("actions-light.json");
-    let snap = Command::new(BIN).args(["--snap", png.to_str().unwrap(), "--scene", "actions", "--theme", "light", "--size", "1320x4000", "--scale", "1", "--crop", "gallery-page"]).output().unwrap();
+    let snap = Command::new(BIN).args(["--snap", png.to_str().unwrap(), "--scene", "actions", "--theme", "light", "--size", "1320x4000", "--scale", "1", "--crop", "canvas"]).output().unwrap();
     assert!(snap.status.success(), "{}", String::from_utf8_lossy(&snap.stderr));
     let dump = Command::new(BIN).args(["--tree", tree.to_str().unwrap(), "--scene", "actions", "--theme", "light", "--size", "1320x4000"]).output().unwrap();
     assert!(dump.status.success());

@@ -25,7 +25,7 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> rune::El {
     let mut inplace = dialog(c, "dialog-inplace");
     let panel = inplace.panel(t);
     let open = c.g.is_open("dialog-demo");
-    dialog(c, "dialog-demo").open(open).build(t, c.layer);
+    dialog(c, "dialog-demo").open(open).return_focus("dialog-open").build(t, c.layer);
     let trigger = Button::<S>::new("dialog-open", "Rename…").variant(ButtonVariant::Secondary).on_press(move |s: &mut S| acc(s).toggle_open("dialog-demo")).build(t);
-    specs(t, vec![spec(t, "Panel", rune::col().w(440.0).child(panel)), spec(t, "Trigger (open in the open-dialog scene)", trigger)])
+    specs(t, vec![spec(t, "Panel", rune::col().w(440.0).child(panel)), spec(t, "Trigger (press it: the dialog opens over a scrim)", trigger)])
 }

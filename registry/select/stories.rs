@@ -31,5 +31,5 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> rune::El {
         spec(t, "Invalid", mk("select-invalid").invalid(true).build(t, c.layer)),
         spec(t, "Disabled", mk("select-disabled").disabled(true).build(t, c.layer)),
     ];
-    rune::col().child(specs(t, items)).child(rune::el().h(if g.open.is_some() { 120.0 } else { 0.0 }))
+    specs(t, items)
 }

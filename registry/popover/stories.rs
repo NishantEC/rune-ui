@@ -31,5 +31,5 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> rune::El {
         live = live.child(b);
     }
     let live = live.build(t, c.layer);
-    rune::col().child(specs(t, vec![spec(t, "Panel", inplace.panel(t)), spec(t, "Trigger (open in the open-popover scene)", live)])).child(rune::el().h(if open { 120.0 } else { 0.0 }))
+    specs(t, vec![spec(t, "Panel", inplace.panel(t)), spec(t, "Trigger (press it: the panel floats beside it)", live)])
 }

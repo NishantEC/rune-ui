@@ -13,7 +13,9 @@
 //! ```ignore
 //! struct App { gallery: ui::gallery::GalleryState, /* … */ }
 //! // in the view, where the page goes:
-//! ui::gallery::page(&theme_file, cx.system_dark(), &s.gallery, |s: &mut App| &mut s.gallery, &ui::stories::all())
+//! let mut layer = Vec::new();
+//! let page = ui::gallery::page(&theme_file, cx.system_dark(), &s.gallery, |s: &mut App| &mut s.gallery, &ui::stories::all(), &mut layer);
+//! ui::base::overlay_root(scrolling(page), layer) // at the view's root: overlays float above, anchored, out of the layout
 //! ```
 
 use rune::{El, TextEdit, col, el, row, text};
@@ -79,6 +81,10 @@ pub struct GalleryState {
     pub compact: bool,
     /// The overlay open now (a menu, a dialog, a select's list).
     pub open: Option<String>,
+    /// Where a secondary press opened the context menu.
+    pub point: Option<rune::PointerPress>,
+    /// Toasts showing now (their keys).
+    pub toasts: Vec<String>,
     pub presses: u32,
     pub flags: HashMap<String, bool>,
     pub values: HashMap<String, f32>,
@@ -90,7 +96,7 @@ pub struct GalleryState {
 
 impl Default for GalleryState {
     fn default() -> Self {
-        let mut s = GalleryState { show: "actions".to_owned(), only: None, dark: None, compact: false, open: None, presses: 0, flags: HashMap::new(), values: HashMap::new(), choices: HashMap::new(), edits: HashMap::new(), combos: HashMap::new(), empty: TextEdit::new("") };
+        let mut s = GalleryState { show: "actions".to_owned(), only: None, dark: None, compact: false, open: None, point: None, toasts: Vec::new(), presses: 0, flags: HashMap::new(), values: HashMap::new(), choices: HashMap::new(), edits: HashMap::new(), combos: HashMap::new(), empty: TextEdit::new("") };
         for (k, v) in [("name", "Placeholder project"), ("budget", "12.50"), ("query", "theme"), ("secret", "sample-pass"), ("command-miss", "zzz"), ("notes", "A few words about the placeholder project, long enough to wrap onto a second line.")] {
             s.edits.insert(k.to_owned(), TextEdit::new(v));
         }
@@ -252,9 +258,12 @@ pub fn item_block<S: 'static>(c: &mut Ctx<S>, item: &StoryItem<S>) -> El {
 
 /// The page: the header with its controls, then the chosen group's components (or the materials sheet), and the overlays of whatever is
 /// open, laid over the page.
-pub fn page<S: 'static>(file: &ThemeFile, app_dark: bool, g: &GalleryState, access: Access<S>, items: &[StoryItem<S>]) -> El {
+///
+/// Overlays (menus, select lists, popovers, dialogs, sheets, toasts) are pushed into `layer`, never laid out inside the page: the app
+/// mounts them at its root, after its content, with `base::overlay_root(content, layer)` (that is, `rune_kit::root`). Only there do they
+/// float over everything, stay anchored to their triggers through scrolling, and leave the page's layout alone.
+pub fn page<S: 'static>(file: &ThemeFile, app_dark: bool, g: &GalleryState, access: Access<S>, items: &[StoryItem<S>], layer: &mut Vec<El>) -> El {
     let t = theme_for(file, app_dark, g);
-    let mut layer = Vec::new();
     let mut tabs = row().key("gallery-groups").role("tablist").label("Groups").gap(t.space.at(1.0)).flex_wrap();
     let mut shown: Vec<(&str, &str)> = GROUPS.iter().filter(|(k, _, _)| items.iter().any(|i| i.group == *k)).map(|(k, n, _)| (*k, *n)).collect();
     shown.push(("materials", "Materials"));
@@ -272,7 +281,7 @@ pub fn page<S: 'static>(file: &ThemeFile, app_dark: bool, g: &GalleryState, acce
     let controls = row().gap(t.space.at(1.0)).child(pill::<S>(&t, "gallery-light".to_owned(), "Light", !dark, move |s: &mut S| access(s).dark = Some(false))).child(pill::<S>(&t, "gallery-dark".to_owned(), "Dark", dark, move |s: &mut S| access(s).dark = Some(true))).child(el().w(t.space.at(3.0))).child(pill::<S>(&t, "gallery-comfortable".to_owned(), "Comfortable", !g.compact, move |s: &mut S| access(s).compact = false)).child(pill::<S>(&t, "gallery-compact".to_owned(), "Compact", g.compact, move |s: &mut S| access(s).compact = true));
     let head = col().w_full().gap(t.space.at(3.0)).child(row().w_full().items_end().gap(t.space.at(3.0)).child(text("Components").font(t.ty.xxl).color(t.ink()).role("heading").level(1)).child(text(format!("{} theme · {} · {} components", t.name, if dark { "dark" } else { "light" }, items.len())).font(t.ty.base).color(t.ink_muted())).child(rune::spacer()).child(controls)).child(tabs);
     let mut body = col().key("gallery").w_full().padding(t.space.at(10.0)).gap(t.space.at(10.0)).child(head);
-    let mut c = Ctx { g, t: &t, layer: &mut layer, access };
+    let mut c = Ctx { g, t: &t, layer, access };
     for (key, title, what) in GROUPS {
         let list: Vec<&StoryItem<S>> = items.iter().filter(|i| i.group == key && match &g.only { Some(o) => o == i.name, None => g.show == "all" || g.show == key }).collect();
         if list.is_empty() {
@@ -287,5 +296,5 @@ pub fn page<S: 'static>(file: &ThemeFile, app_dark: bool, g: &GalleryState, acce
     if g.only.is_none() && (g.show == "materials" || g.show == "all") {
         body = body.child(col().key("group-materials").w_full().gap(t.space.at(6.0)).child(text("Materials").font(t.ty.xl).color(t.ink()).role("heading").level(2)).child(materials(&t)));
     }
-    el().key("gallery-page").w_full().fill(t.c.page.bg).child(col().w_full().child(body)).children(layer)
+    col().key("gallery-page").w_full().fill(t.c.page.bg).child(body)
 }

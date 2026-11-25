@@ -13,9 +13,9 @@ rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
 registry = ["icons"]
-cargo = ["rune", "rune-ui-style"]
+cargo = ["rune", "rune-ui-style", "rune-kit"]
 
 [[files]]
 path = "base.rs"
 target = "src/ui/base.rs"
-sha256 = "f279eb886d97315c9c689d6ee16d7c34690df67bd050e7ef3826d7f89d7e0069"
+sha256 = "8f3c7151d340f5fa7a0b3069bfbede5ce29e0e98c1a828b4999dc8c0869bb29b"

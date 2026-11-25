@@ -20,11 +20,11 @@ stories = []
 [[files]]
 path = "alert_dialog.rs"
 target = "src/ui/alert_dialog.rs"
-sha256 = "f6039168a49bee5d5315f925b60ae1963cbffde927b20f66e5e8d8daba4ecb4e"
+sha256 = "bb70af44e1b0f14464d467aa957c8309ebaed09ae3bd91838f9a1ac36cecd1e4"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/alert_dialog.rs"
 role = "story"
-sha256 = "baec3a5a7a98f3c583eb2415c2a6164d1ca72aa6943aaf959599b517130aa742"
+sha256 = "c2a1b6025492c0240db3d0f04017ec8c8e63c560d045037ac228ec636105fc42"

@@ -27,12 +27,13 @@ pub struct Dialog<S: 'static> {
     width: f32,
     open: bool,
     outside: bool,
+    return_to: Option<String>,
     close: Option<Press<S>>,
 }
 
 impl<S: 'static> Dialog<S> {
     pub fn new(key: impl Into<String>, title: impl Into<String>) -> Dialog<S> {
-        Dialog { key: key.into(), title: title.into(), description: None, body: Vec::new(), footer: Vec::new(), width: 440.0, open: false, outside: true, close: None }
+        Dialog { key: key.into(), title: title.into(), description: None, body: Vec::new(), footer: Vec::new(), width: 440.0, open: false, outside: true, return_to: None, close: None }
     }
 
     pub fn description(mut self, d: impl Into<String>) -> Self {
@@ -64,6 +65,12 @@ impl<S: 'static> Dialog<S> {
     /// Whether a press outside closes it (on by default; `AlertDialog` turns it off).
     pub fn click_outside(mut self, on: bool) -> Self {
         self.outside = on;
+        self
+    }
+
+    /// The key of what opened it: focus goes back there when it closes.
+    pub fn return_focus(mut self, key: impl Into<String>) -> Self {
+        self.return_to = Some(key.into());
         self
     }
 
@@ -103,7 +110,11 @@ impl<S: 'static> Dialog<S> {
         let key = self.key.clone();
         let close = self.close.clone();
         let outside = self.outside;
+        let return_to = self.return_to.clone();
         let mut panel = self.panel(t);
+        if let Some(k) = return_to {
+            panel = panel.focus_return(k);
+        }
         if let Some(f) = close {
             panel = panel.modal(outside, move |s: &mut S| f(s));
         }

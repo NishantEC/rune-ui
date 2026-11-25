@@ -20,7 +20,7 @@ if [ ${#scenes[@]} -eq 0 ]; then
   scenes=($("$bin" --list-scenes | grep -v '^all$'))
 fi
 snap() { # name theme [env]
-  "$bin" --snap "$out/$1-$2.png" --scene "${3:-$1}" --theme "$2" --size 1320x8000 --scale "${RUNE_UI_SCALE:-2}" --crop gallery-page >/dev/null 2>&1
+  "$bin" --snap "$out/$1-$2.png" --scene "${3:-$1}" --theme "$2" --size 1320x8000 --scale "${RUNE_UI_SCALE:-2}" --crop canvas >/dev/null 2>&1
 }
 for scene in "${scenes[@]}"; do
   for theme in light dark; do snap "$scene" "$theme"; done
@@ -28,7 +28,7 @@ for scene in "${scenes[@]}"; do
 done
 for item in ${RUNE_UI_ITEMS:-}; do
   for theme in light dark; do
-    RUNE_UI_ITEM="$item" "$bin" --snap "$out/item-$item-$theme.png" --scene actions --theme "$theme" --size 1320x8000 --scale "${RUNE_UI_SCALE:-2}" --crop gallery-page >/dev/null 2>&1
+    RUNE_UI_ITEM="$item" "$bin" --snap "$out/item-$item-$theme.png" --scene actions --theme "$theme" --size 1320x8000 --scale "${RUNE_UI_SCALE:-2}" --crop canvas >/dev/null 2>&1
   done
   echo "item-$item"
 done

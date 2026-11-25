@@ -34,12 +34,13 @@ pub struct Sheet<S: 'static> {
     side: Side,
     size: f32,
     open: bool,
+    return_to: Option<String>,
     close: Option<Press<S>>,
 }
 
 impl<S: 'static> Sheet<S> {
     pub fn new(key: impl Into<String>, title: impl Into<String>) -> Sheet<S> {
-        Sheet { key: key.into(), title: title.into(), description: None, body: Vec::new(), side: Side::Right, size: 380.0, open: false, close: None }
+        Sheet { key: key.into(), title: title.into(), description: None, body: Vec::new(), side: Side::Right, size: 380.0, open: false, return_to: None, close: None }
     }
 
     pub fn description(mut self, d: impl Into<String>) -> Self {
@@ -65,6 +66,12 @@ impl<S: 'static> Sheet<S> {
 
     pub fn open(mut self, open: bool) -> Self {
         self.open = open;
+        self
+    }
+
+    /// The key of what opened it: focus goes back there when it closes.
+    pub fn return_focus(mut self, key: impl Into<String>) -> Self {
+        self.return_to = Some(key.into());
         self
     }
 
@@ -105,7 +112,11 @@ impl<S: 'static> Sheet<S> {
         let key = self.key.clone();
         let close = self.close.clone();
         let side = self.side;
+        let return_to = self.return_to.clone();
         let mut panel = self.panel(t);
+        if let Some(k) = return_to {
+            panel = panel.focus_return(k);
+        }
         if let Some(f) = close {
             panel = panel.modal(true, move |s: &mut S| f(s));
         }

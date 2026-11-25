@@ -176,13 +176,13 @@ impl<'a, S: 'static> Command<'a, S> {
         paint(p, &t.mat.floating.base).child(search).child(list)
     }
 
-    /// Mounts the palette as a modal near the top of the window while `open`.
-    pub fn dialog(self, t: &Theme, open: bool, close: impl Fn(&mut S) + 'static, layer: &mut Vec<El>) {
+    /// Mounts the palette as a modal near the top of the window while `open`; focus goes back to `return_to` when it closes.
+    pub fn dialog(self, t: &Theme, open: bool, return_to: &str, close: impl Fn(&mut S) + 'static, layer: &mut Vec<El>) {
         if !open {
             return;
         }
         let key = self.key.clone();
-        let panel = self.build(t).modal(true, close);
+        let panel = self.build(t).focus_return(return_to).modal(true, close);
         layer.push(el().key(format!("{key}-scrim")).absolute(0.0, 0.0).w_full().h_full().fill(t.c.page.fg.alpha(if t.dark { 0.45 } else { 0.12 })).a11y_hidden());
         layer.push(col().key(format!("{key}-layer")).absolute(0.0, 0.0).w_full().h_full().pt(t.space.at(24.0)).items_center().child(panel));
     }

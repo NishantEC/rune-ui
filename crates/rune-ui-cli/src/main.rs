@@ -96,6 +96,10 @@ fn main() -> ExitCode {
 
 fn run() -> Result<ExitCode, String> {
     let a = parse_args()?;
+    // Rehashing must not need a registry whose hashes already match.
+    if a.cmd.first().map(String::as_str) == Some("registry") && a.cmd.get(1).map(String::as_str) == Some("hash") {
+        return hash(&a).map(|_| ExitCode::SUCCESS);
+    }
     let reg = match &a.registry {
         Some(d) => Registry::from_dir(d)?,
         None => Registry::embedded()?,
@@ -106,7 +110,6 @@ fn run() -> Result<ExitCode, String> {
         Some("list") => list(&a, &reg).map(|_| ExitCode::SUCCESS),
         Some("diff") => diff(&a, &reg, &a.cmd[1..]),
         Some("update") => update(&a, &reg, &a.cmd[1..]),
-        Some("registry") if a.cmd.get(1).map(String::as_str) == Some("hash") => hash(&a).map(|_| ExitCode::SUCCESS),
         _ => {
             println!("{HELP}");
             Ok(ExitCode::SUCCESS)

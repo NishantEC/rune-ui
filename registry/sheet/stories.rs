@@ -22,6 +22,6 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> rune::El {
     let mut inplace = sheet(c, "sheet-inplace").size(320.0);
     let panel = rune::col().h(260.0).child(inplace.panel(t));
     let open = c.g.is_open("sheet-demo");
-    sheet(c, "sheet-demo").open(open).build(t, c.layer);
-    specs(t, vec![spec(t, "Panel", panel), spec(t, "Trigger (open in the open-sheet scene)", Button::<S>::new("sheet-open", "Details").variant(ButtonVariant::Secondary).on_press(move |s: &mut S| acc(s).toggle_open("sheet-demo")).build(t))])
+    sheet(c, "sheet-demo").open(open).return_focus("sheet-open").build(t, c.layer);
+    specs(t, vec![spec(t, "Panel", panel), spec(t, "Trigger (press it: the sheet slides over a scrim)", Button::<S>::new("sheet-open", "Details").variant(ButtonVariant::Secondary).on_press(move |s: &mut S| acc(s).toggle_open("sheet-demo")).build(t))])
 }

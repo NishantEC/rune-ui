@@ -32,6 +32,27 @@ let t = rune_ui_themes::theme(cx.system_dark());
 ui::button::Button::new("save", "Save").on_press(|s: &mut App| s.save()).build(&t)
 ```
 
+### What an app must mount: one overlay host at the root
+
+Anything that opens over the page (Select, Combobox, DropdownMenu, ContextMenu, Popover, Command, Dialog, AlertDialog, Sheet, Toast)
+does not lay itself out where it is built. It pushes its surface into a `layer: &mut Vec<El>` that the view collects, and the view mounts
+that layer **once, at its root, after the content**:
+
+```rust
+fn view(s: &App, cx: &mut Cx<App>) -> El {
+    let mut layer = Vec::new();
+    let content = col().key("scroll").w_full().h_full().scroll(rune::ScrollSpec { stick_bottom: false })
+        .child(page(s, &t, &mut layer));           // components get `&mut layer`
+    ui::base::overlay_root(content, layer)          // = rune_kit::root: overlays over everything
+}
+```
+
+Mounted there, overlays are out of the layout: they never move or scroll what is under them, they stay anchored to their trigger as the
+page scrolls, flip above a trigger near the window's bottom, stay inside the window, close on Escape and on a press outside, and give
+focus back to their trigger. Dialogs, alert dialogs, sheets and the command palette add a scrim and trap focus (`El::modal`); give them
+`.return_focus(trigger_key)`. Mounted anywhere else (inside the scroll view, inside a row) they would be laid out in place. Tooltips are
+Rune's own (`El::help`) and need no layer.
+
 ### The CLI
 
 | Command | What it does |
@@ -64,7 +85,8 @@ struct App { gallery: ui::gallery::GalleryState, /* ... */ }
 
 // where the page goes (Neko: its Components route, `neko-rune --open components`, ⌘K → Developer)
 let file = rune_ui_style::ThemeFile::parse(rune_ui_themes::DEFAULT).unwrap(); // or your own theme file
-ui::gallery::page(&file, cx.system_dark(), &s.gallery, |s: &mut App| &mut s.gallery, &ui::stories::all())
+let page = ui::gallery::page(&file, cx.system_dark(), &s.gallery, |s: &mut App| &mut s.gallery, &ui::stories::all(), &mut layer);
+// …inside your scroll view; `layer` goes to the root's overlay host (above)
 ```
 
 Stories register themselves. Each item's `stories.rs` is copied to `src/ui/stories/<name>.rs` once the gallery block is installed, and once everything the story shows is installed too. `rune-ui add` keeps `src/ui/stories/mod.rs` listing them. So a component you add appears on the page, and one you have not added does not. For Rune's own hover tooltips to match, also add `tooltip` and call `cx.help_look(ui::tooltip::look(&theme))` in your view.

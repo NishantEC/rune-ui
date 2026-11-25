@@ -25,13 +25,14 @@ pub struct AlertDialog<S: 'static> {
     description: Option<String>,
     destructive: bool,
     open: bool,
+    return_to: Option<String>,
     cancel: Answer<S>,
     action: Answer<S>,
 }
 
 impl<S: 'static> AlertDialog<S> {
     pub fn new(key: impl Into<String>, title: impl Into<String>) -> AlertDialog<S> {
-        AlertDialog { key: key.into(), title: title.into(), description: None, destructive: false, open: false, cancel: None, action: None }
+        AlertDialog { key: key.into(), title: title.into(), description: None, destructive: false, open: false, return_to: None, cancel: None, action: None }
     }
 
     pub fn description(mut self, d: impl Into<String>) -> Self {
@@ -50,6 +51,12 @@ impl<S: 'static> AlertDialog<S> {
         self
     }
 
+    /// The key of what opened it: focus goes back there when it closes.
+    pub fn return_focus(mut self, key: impl Into<String>) -> Self {
+        self.return_to = Some(key.into());
+        self
+    }
+
     /// The safe answer (also what Escape does).
     pub fn cancel(mut self, words: impl Into<String>, f: impl Fn(&mut S) + 'static) -> Self {
         self.cancel = Some((words.into(), Rc::new(f)));
@@ -64,6 +71,9 @@ impl<S: 'static> AlertDialog<S> {
     fn dialog(self, t: &Theme) -> Dialog<S> {
         let mut buttons = Vec::new();
         let mut d = Dialog::<S>::new(self.key.clone(), self.title).width(400.0).click_outside(false).open(self.open);
+        if let Some(k) = self.return_to {
+            d = d.return_focus(k);
+        }
         if let Some(desc) = self.description {
             d = d.description(desc);
         }
