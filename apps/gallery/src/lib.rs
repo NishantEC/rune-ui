@@ -27,13 +27,14 @@ thread_local! {
 
 /// The view: the gallery page, scrolling in a window, whole in a picture; its overlays always at the root, over everything.
 pub fn view(s: &App, cx: &mut Cx<App>) -> El {
-    let dark = cx.system_dark();
+    // Light or dark, and Reduce Motion, from the system: the page writes Reduce Motion into its theme (`Theme::reduced_motion`).
+    let app = ui::gallery::Appearance::of(cx.system_dark(), cx.is_reduced_motion());
     let json = rune_ui_themes::DEFAULT;
-    let t = ui::gallery::theme_for(json, dark, &s.g);
+    let t = ui::gallery::theme_for(json, app, &s.g);
     // Rune's own hover tooltips, in the theme's look.
     cx.help_look(ui::tooltip::look(&t));
     let mut layer = Vec::new();
-    let page = ITEMS.with(|items| ui::gallery::page(json, dark, &s.g, access, items, &mut layer));
+    let page = ITEMS.with(|items| ui::gallery::page(json, app, &s.g, access, items, &mut layer));
     if HEADLESS.load(Ordering::Relaxed) {
         // A picture is as tall as its content (at least a window's height, so an open list has room); the overlays are still the root's.
         el().key("canvas").w_full().min_h(840.0).fill(t.c.page.bg).child(page).children(layer)
@@ -117,6 +118,10 @@ pub fn apply_scene(s: &mut App, name: &str) {
         }
         return;
     }
+    if let Some(scene) = WAVE3_SCENES.iter().find(|n| **n == name) {
+        wave3_scene(s, scene);
+        return;
+    }
     if let Some((_, item, key)) = OPEN_SCENES.iter().find(|(n, _, _)| *n == name) {
         s.g.only = Some((*item).to_owned());
         s.g.open = Some((*key).to_owned());
@@ -133,6 +138,43 @@ pub fn apply_scene(s: &mut App, name: &str) {
     }
 }
 
+/// Wave 3's open states, for headless pictures.
+pub const WAVE3_SCENES: [&str; 6] = ["open-toolbar-more", "open-prompt-mention", "open-prompt-command", "open-stack-trace", "open-tree", "segmented-moved"];
+
+fn wave3_scene(s: &mut App, name: &str) {
+    match name {
+        "open-toolbar-more" => {
+            s.g.only = Some("toolbar".to_owned());
+            s.g.slot_mut::<ui::toolbar::ToolbarState>("toolbar-narrow").more_open = true;
+        }
+        "open-prompt-mention" | "open-prompt-command" => {
+            s.g.only = Some("prompt_input".to_owned());
+            let words = if name == "open-prompt-mention" { "Ask @" } else { "/re" };
+            let e = s.g.edit_mut("prompt-menu");
+            *e = rune::TextEdit::new(words);
+            e.focused = true;
+        }
+        "open-stack-trace" => {
+            s.g.only = Some("stack_trace".to_owned());
+            s.g.flags.insert("trace-libs".to_owned(), true);
+        }
+        "open-tree" => {
+            s.g.only = Some("tree".to_owned());
+            let st = s.g.slot_mut::<ui::tree::TreeState>("tree-demo");
+            for id in ["plans", "launch", "people", "archive"] {
+                st.expanded.insert(id.to_owned());
+            }
+            st.selected.insert("checklist".to_owned());
+            st.cursor = Some("checklist".to_owned());
+        }
+        _ => {
+            s.g.only = Some("segmented_control".to_owned());
+            s.g.choose("seg-demo", "2");
+            s.g.choose("seg-view", "3");
+        }
+    }
+}
+
 macro_rules! scenes {
     ($($n:literal),* $(,)?) => { &[$(($n, |s: &mut App| apply_scene(s, $n))),*] };
 }
@@ -141,7 +183,7 @@ macro_rules! scenes {
 /// A named scene and how it sets up the state.
 pub type Scene = (&'static str, fn(&mut App));
 
-pub const SCENES: &[Scene] = scenes!["actions", "form", "overlays", "structure", "display", "materials", "materials-round", "typography", "typography-geist", "typography-ibm-plex-sans", "typography-figtree", "typography-manrope", "typography-dm-sans", "typography-plus-jakarta-sans", "typography-jetbrains-mono", "form-geist", "actions-geist", "all", "actions-compact", "form-compact", "structure-compact", "overlays-compact", "display-compact", "form-round", "structure-round", "tuned", "open-select", "open-combobox", "open-context-menu", "open-alert-dialog", "open-toast", "open-dropdown-menu", "open-popover", "open-dialog", "open-sheet", "open-command", "open-date-picker", "open-menubar", "open-navigation-menu", "open-hover-card", "open-drawer", "open-chart-bar", "open-chart-donut", "agent", "agent-compact", "agent-round", "agent-geist", "agent-serif", "chat-open", "chat-streaming", "open-model-selector", "open-context", "open-inline-citation", "open-prompt-model"];
+pub const SCENES: &[Scene] = scenes!["actions", "form", "overlays", "structure", "display", "materials", "materials-round", "typography", "typography-geist", "typography-ibm-plex-sans", "typography-figtree", "typography-manrope", "typography-dm-sans", "typography-plus-jakarta-sans", "typography-jetbrains-mono", "form-geist", "actions-geist", "all", "actions-compact", "form-compact", "structure-compact", "overlays-compact", "display-compact", "form-round", "structure-round", "tuned", "open-select", "open-combobox", "open-context-menu", "open-alert-dialog", "open-toast", "open-dropdown-menu", "open-popover", "open-dialog", "open-sheet", "open-command", "open-date-picker", "open-menubar", "open-navigation-menu", "open-hover-card", "open-drawer", "open-chart-bar", "open-chart-donut", "agent", "agent-compact", "agent-round", "agent-geist", "agent-serif", "chat-open", "chat-streaming", "open-model-selector", "open-context", "open-inline-citation", "open-prompt-model", "open-toolbar-more", "open-prompt-mention", "open-prompt-command", "open-stack-trace", "open-tree", "segmented-moved", "open-tree-compact", "segmented-moved-round", "open-stack-trace-geist", "open-toolbar-more-compact"];
 
 static HEADLESS: AtomicBool = AtomicBool::new(false);
 
