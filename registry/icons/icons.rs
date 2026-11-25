@@ -1,4 +1,4 @@
-//! rune-ui registry: icons 0.6.0. A small set of 16 point glyphs on one 1.5 stroke, drawn in `currentColor` so a control recolours
+//! rune-ui registry: icons 0.8.0 A small set of 16 point glyphs on one 1.5 stroke, drawn in `currentColor` so a control recolours
 //! them per state. Replace or extend with your app's own set. `rune-ui init` copies it.
 
 use rune::Icon;
@@ -65,3 +65,11 @@ glyph!(GLOBE, "globe", r#"<circle cx="8" cy="8" r="5.6" fill="none" stroke="curr
 glyph!(SHIELD, "shield", r#"<path d="M8 2.6 12.6 4.4v3.4c0 2.8-2 4.8-4.6 5.6-2.6-.8-4.6-2.8-4.6-5.6V4.4Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>"#);
 glyph!(GRIP, "grip", r#"<circle cx="6" cy="4.5" r="1" fill="currentColor"/><circle cx="10" cy="4.5" r="1" fill="currentColor"/><circle cx="6" cy="8" r="1" fill="currentColor"/><circle cx="10" cy="8" r="1" fill="currentColor"/><circle cx="6" cy="11.5" r="1" fill="currentColor"/><circle cx="10" cy="11.5" r="1" fill="currentColor"/>"#);
 glyph!(FLAG, "flag", r#"<path d="M4 13.5V3M4 3.4h7.6l-1.6 2.8 1.6 2.8H4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>"#);
+glyph!(FOLDER_OPEN, "folder-open", r#"<path d="M2.5 11.8V4.5c0-.8.7-1.5 1.5-1.5h2.4L8 4.8h3.5c.8 0 1.5.7 1.5 1.5v.9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2.6 12.6 4.4 7.9c.2-.5.6-.8 1.1-.8h8c.5 0 .9.5.7 1l-1.5 3.9c-.2.5-.6.8-1.1.8H3.2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>"#);
+glyph!(FILE_CODE, "file-code", r#"<path d="M4 2.5h5l3 3v8H4Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M6.9 8.2 5.8 9.4l1.1 1.2M9.1 8.2l1.1 1.2-1.1 1.2" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>"#);
+glyph!(FILE_TEXT, "file-text", r#"<path d="M4 2.5h5l3 3v8H4Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 8.4h4M6 10.8h2.6" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>"#);
+glyph!(FILE_CONFIG, "file-config", r#"<path d="M4 2.5h5l3 3v8H4Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="8" cy="9.6" r="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/>"#);
+glyph!(COMMIT, "commit", r#"<circle cx="8" cy="8" r="2.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M2 8h3.4M10.6 8H14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>"#);
+glyph!(AT, "at", r#"<circle cx="8" cy="8" r="2.4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.4 6v2.6c0 1 .7 1.7 1.6 1.7s1.6-.9 1.6-2.3a5.6 5.6 0 1 0-2.2 4.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>"#);
+glyph!(SLASH, "slash", r#"<rect x="2.6" y="2.6" width="10.8" height="10.8" rx="2.4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9.6 5 6.4 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>"#);
+glyph!(BUG, "bug", r#"<rect x="5" y="5" width="6" height="8" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6.3 5.2 5.4 3.4M9.7 5.2l.9-1.8M5 8.4H2.8M13.2 8.4H11M5.2 11.2l-1.8 1M10.8 11.2l1.8 1M8 8v4.6" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>"#);

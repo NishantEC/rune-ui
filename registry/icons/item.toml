@@ -2,13 +2,13 @@
 schema = 1
 name = "icons"
 title = "Icons"
-version = "0.6.0"
+version = "0.8.0"
 type = "base"
 group = "base"
 description = "A small 16 point icon set on one 1.5 stroke, drawn in currentColor."
 
 [requires]
-style = ">=0.6.0, <0.8.0"
+style = ">=0.6.0, <0.9.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -18,4 +18,4 @@ cargo = ["rune"]
 [[files]]
 path = "icons.rs"
 target = "src/ui/icons.rs"
-sha256 = "616177c4d87848a1609e60e64b1936e992e7fe5d3dbea4f457f9c27da9439820"
+sha256 = "82fffd9c9ca5b7cbbc30440a72a68f4399e2a961642c82fe738bbab27fef4d7f"
