@@ -1,0 +1,4 @@
+bc05f817ed19488a10a6f1a928cc0521c1c70c75
+# The Rune revision (a `dev` commit of https://github.com/anomalyco/rune) every crate here builds against. Line 1 is the pin.
+# It is the same rev, with the same [patch.crates-io] table, as the first app that uses rune-ui, so one build of Rune serves both.
+# Change it on every `rev =` line in Cargo.toml at once, then run `cargo build`, `cargo test` and `cargo clippy` before committing.

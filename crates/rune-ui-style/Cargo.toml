@@ -1,0 +1,14 @@
+[package]
+name = "rune-ui-style"
+description = "rune-ui layer 2: tokens, scales, colour roles, material recipes as data, and the painter that turns a recipe into Rune layers."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+rune.workspace = true
+# Layer 1 (behaviour): menus and selects keep rune-kit's keys, focus and dismissal; `Theme::kit` hands it our tokens.
+rune-kit.workspace = true
+
+[lints]
+workspace = true

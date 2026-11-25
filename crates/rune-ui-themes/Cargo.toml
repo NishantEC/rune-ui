@@ -1,0 +1,15 @@
+[package]
+name = "rune-ui-themes"
+description = "rune-ui layer 4: themes as data (light and dark)."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+rune-ui-style.workspace = true
+
+[dev-dependencies]
+rune.workspace = true
+
+[lints]
+workspace = true

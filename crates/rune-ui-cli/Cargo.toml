@@ -1,0 +1,16 @@
+[package]
+name = "rune-ui-cli"
+description = "rune-ui's CLI: `rune-ui init | add <component...> | list` copies registry sources into an app's src/ui/ and records their versions."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "rune-ui"
+path = "src/main.rs"
+
+[dependencies]
+serde_json.workspace = true
+
+[lints]
+workspace = true

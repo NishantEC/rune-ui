@@ -1,0 +1,25 @@
+[package]
+name = "rune-ui-gallery"
+description = "Every rune-ui component in every state, light and dark; renders to PNGs headless (scripts/snap.sh)."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[[bin]]
+name = "rune-ui-gallery"
+path = "src/main.rs"
+
+[dependencies]
+# `tooling`: `--snap`, `--scene`, `--tree` in release builds too (debug builds always have them).
+rune = { workspace = true, features = ["tooling"] }
+rune-kit.workspace = true
+rune-ui-style.workspace = true
+rune-ui-themes.workspace = true
+
+[dev-dependencies]
+png = "0.17"
+serde_json.workspace = true
+
+[lints]
+workspace = true
