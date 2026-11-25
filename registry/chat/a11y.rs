@@ -1,0 +1,1 @@
+pub const CHECKS: &[(&str, &str)] = &[("chat-conversation-scroll", "log"), ("chat-m2", "article"), ("chat-read-trigger", "button"), ("chat-permission", "alertdialog"), ("chat-composer-input", "textbox"), ("chat-model-trigger", "combobox")];

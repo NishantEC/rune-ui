@@ -1,0 +1,32 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "chat"
+title = "Chat"
+version = "0.6.0"
+type = "block"
+group = "agent"
+description = "A full agent screen made of the agent set: a conversation with messages, reasoning, tools, a permission request and the composer."
+
+[requires]
+style = ">=0.6.0, <0.7.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons", "agent", "conversation", "message", "response", "reasoning", "tool", "confirmation", "prompt_input", "model_selector", "actions", "chain_of_thought", "attachment"]
+cargo = ["rune", "rune-kit", "rune-ui-style"]
+# Cargo features the item needs; `rune-ui add` turns them on in the app's Cargo.toml.
+features = ["rune-kit/markdown"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "chat.rs"
+target = "src/ui/chat.rs"
+sha256 = "95bb648c6aa6b4348756420ecd30cdf3855550f974e1f67e87da429186815c2b"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/chat.rs"
+role = "story"
+sha256 = "9268c15fa87902d78d0a096c56a8e7058a5ac23d23d61df664f6c8328c14011c"

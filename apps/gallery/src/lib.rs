@@ -44,7 +44,7 @@ pub fn view(s: &App, cx: &mut Cx<App>) -> El {
 }
 
 /// Scenes that show an overlay open: (scene, item, overlay key).
-pub const OPEN_SCENES: [(&str, &str, &str); 17] = [
+pub const OPEN_SCENES: [(&str, &str, &str); 21] = [
     ("open-context-menu", "context_menu", "context-demo"),
     ("open-alert-dialog", "alert_dialog", "alert-demo"),
     ("open-toast", "toast", "toast-demo"),
@@ -62,6 +62,10 @@ pub const OPEN_SCENES: [(&str, &str, &str); 17] = [
     ("open-drawer", "drawer", "drawer-demo"),
     ("open-chart-bar", "chart", "chart-bar"),
     ("open-chart-donut", "chart", "chart-donut"),
+    ("open-model-selector", "model_selector", "model-demo"),
+    ("open-context", "context", "context-demo"),
+    ("open-inline-citation", "inline_citation", "cite-demo"),
+    ("open-prompt-model", "prompt_input", "prompt-model"),
 ];
 
 /// Sets up a scene by name: a group, `materials`, `all`, `item-<name>`, or one of [`OPEN_SCENES`].
@@ -98,6 +102,21 @@ pub fn apply_scene(s: &mut App, name: &str) {
         s.g.show = "actions".to_owned();
         return;
     }
+    if name == "chat-open" || name == "chat-streaming" {
+        // The chat block with its folds open and the model selector open, or with an answer arriving.
+        s.g.only = Some("chat".to_owned());
+        let c = s.g.slot_mut::<ui::chat::ChatState>("chat");
+        if name == "chat-open" {
+            for k in ["chat-thinking", "chat-time", "chat-steps"] {
+                c.flip(k);
+            }
+            c.picking = true;
+        } else {
+            c.draft = rune::TextEdit::new("And the test suite?");
+            c.send();
+        }
+        return;
+    }
     if let Some((_, item, key)) = OPEN_SCENES.iter().find(|(n, _, _)| *n == name) {
         s.g.only = Some((*item).to_owned());
         s.g.open = Some((*key).to_owned());
@@ -122,7 +141,7 @@ macro_rules! scenes {
 /// A named scene and how it sets up the state.
 pub type Scene = (&'static str, fn(&mut App));
 
-pub const SCENES: &[Scene] = scenes!["actions", "form", "overlays", "structure", "display", "materials", "materials-round", "typography", "typography-geist", "typography-ibm-plex-sans", "typography-figtree", "typography-manrope", "typography-dm-sans", "typography-plus-jakarta-sans", "typography-jetbrains-mono", "form-geist", "actions-geist", "all", "actions-compact", "form-compact", "structure-compact", "overlays-compact", "display-compact", "form-round", "structure-round", "tuned", "open-select", "open-combobox", "open-context-menu", "open-alert-dialog", "open-toast", "open-dropdown-menu", "open-popover", "open-dialog", "open-sheet", "open-command", "open-date-picker", "open-menubar", "open-navigation-menu", "open-hover-card", "open-drawer", "open-chart-bar", "open-chart-donut"];
+pub const SCENES: &[Scene] = scenes!["actions", "form", "overlays", "structure", "display", "materials", "materials-round", "typography", "typography-geist", "typography-ibm-plex-sans", "typography-figtree", "typography-manrope", "typography-dm-sans", "typography-plus-jakarta-sans", "typography-jetbrains-mono", "form-geist", "actions-geist", "all", "actions-compact", "form-compact", "structure-compact", "overlays-compact", "display-compact", "form-round", "structure-round", "tuned", "open-select", "open-combobox", "open-context-menu", "open-alert-dialog", "open-toast", "open-dropdown-menu", "open-popover", "open-dialog", "open-sheet", "open-command", "open-date-picker", "open-menubar", "open-navigation-menu", "open-hover-card", "open-drawer", "open-chart-bar", "open-chart-donut", "agent", "agent-compact", "agent-round", "agent-geist", "agent-serif", "chat-open", "chat-streaming", "open-model-selector", "open-context", "open-inline-citation", "open-prompt-model"];
 
 static HEADLESS: AtomicBool = AtomicBool::new(false);
 
