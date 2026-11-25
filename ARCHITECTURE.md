@@ -63,7 +63,8 @@ A recipe is typed data, never code paths in a component:
   A disabled control shows no focus ring, invalid ring or open look.
 - **One painter** (`paint`): `plan(recipe)` lists the Rune calls (`Op`), `apply` makes them. Live hover, press and focus are handed
   to Rune (`apply_live`) so they animate at Rune's rate; a gallery pins them instead.
-- **Escape hatches**: every component takes `.recipe(|parts| …)` to change its parts before painting.
+- **Escape hatches**: a component takes `.recipe(|parts| …)` to change its parts before painting (Button does today; others add it
+  as they need it), and every component file is yours once copied.
 
 ## Components (the registry)
 
@@ -85,6 +86,10 @@ registry/button/
   a11y.rs        the roles, names and states the accessibility test checks
   snapshot.txt   the layout snapshot (keys, roles, rects) the snapshot test compares
 ```
+
+Stories are copied too (to `src/ui/stories/<name>.rs`), but only once the `gallery` block is installed and everything a story shows is
+installed; `rune-ui add` keeps `src/ui/stories/mod.rs` listing them, so the gallery page shows exactly the components an app has. The
+gallery block (`registry/gallery/`) is the page; `apps/gallery` is a window around it, generated from the registry by its `build.rs`.
 
 Two items writing the same path is an error. Versions are semver; a change to a file changes its sha256, and the registry test fails
 until `item.toml` is updated (`rune-ui registry hash`).
