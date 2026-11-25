@@ -87,6 +87,26 @@ pub enum Corners {
     Round,
 }
 
+/// How much larger the radius ladder is drawn with continuous corners than with round ones.
+///
+/// Rune draws Apple's continuous curve (`El::continuous_corners`): at the same radius it leaves each edge 1.53 times further from the
+/// corner but meets the diagonal at almost the same point, so it never strays more than 0.4 points from a circular arc on a 240 by 160
+/// card with a 28 point radius (about 0.1 point on a button). The two styles could not be told apart. Continuous corners are drawn a
+/// quarter larger instead, as designers pair them with iOS: the curve now eases in over 1.9 times the nominal radius and its apex sits
+/// further in, 2.7 points from the circular arc on that card and 0.8 on a button. Concentric nesting holds because every step of the
+/// ladder grows by the same factor.
+pub const CONTINUOUS_GAIN: f32 = 1.25;
+
+impl Corners {
+    /// What the radius ladder is multiplied by in this style ([`CONTINUOUS_GAIN`] or 1).
+    pub const fn gain(self) -> f32 {
+        match self {
+            Corners::Continuous => CONTINUOUS_GAIN,
+            Corners::Round => 1.0,
+        }
+    }
+}
+
 /// The type family.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum Font {

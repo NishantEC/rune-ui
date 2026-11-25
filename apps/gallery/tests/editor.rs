@@ -14,9 +14,10 @@ fn with(f: impl FnOnce(&mut Editor)) -> Theme {
 
 #[test]
 fn radius_changes_the_ladder_and_every_rounded_control() {
-    let (a, b) = (with(|_| {}), with(|e| e.radius = Some(14.0)));
+    let (a, b) = (with(|e| e.corners = Corners::Round), with(|e| { e.radius = Some(14.0); e.corners = Corners::Round }));
     assert_eq!(a.radius.md, 8.0);
     assert_eq!(b.radius.md, 14.0);
+    assert_eq!((a.base_radius, b.base_radius), (8.0, 14.0));
     assert!(b.radius.lg > a.radius.lg && b.radius.xl > a.radius.xl);
 }
 
@@ -58,4 +59,17 @@ fn what_the_editor_exports_is_a_valid_theme_file() {
     let json = edit_theme(JSON, &g).to_string();
     let f = ThemeFile::parse(&json).unwrap_or_else(|e| panic!("{e:?}"));
     assert_eq!((f.base.radius, f.base.corners, f.base.density), (12.0, Corners::Round, rune_ui_style::COMPACT));
+}
+
+#[test]
+fn continuous_corners_draw_the_whole_ladder_larger_and_keep_it_concentric() {
+    let (round, cont) = (with(|e| e.corners = Corners::Round), with(|e| e.corners = Corners::Continuous));
+    assert_eq!(cont.base_radius, round.base_radius, "the knob is the same number");
+    assert_eq!(cont.radius.md, round.radius.md * rune_ui_style::CONTINUOUS_GAIN);
+    for (c, r) in [(cont.radius.sm, round.radius.sm), (cont.radius.lg, round.radius.lg), (cont.radius.xl, round.radius.xl), (cont.radius.xxl, round.radius.xxl)] {
+        assert!(c > r, "every step grows ({c} vs {r})");
+    }
+    // Nesting still steps down by the inset, and a control's corner still stays under its share of the height.
+    assert!(rune_ui_style::Radius::inner(cont.radius.lg, 4.0) < cont.radius.lg);
+    assert!(rune_ui_style::Radius::fit(cont.radius.lg, cont.control.sm) <= cont.control.sm * rune_ui_style::MAX_CORNER_SHARE);
 }

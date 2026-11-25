@@ -47,8 +47,11 @@ pub struct Palette {
 pub struct Theme {
     pub name: String,
     pub dark: bool,
-    /// How rounded corners are drawn (`base::Shape::shape` applies it to every rounded surface).
+    /// How rounded corners are drawn (`base::Shape::round_as` applies it to every rounded surface). Continuous corners draw the
+    /// ladder [`crate::tokens::CONTINUOUS_GAIN`] times larger, so `radius` already includes it.
     pub corners: Corners,
+    /// The theme file's `base.radius`, before the corner style's gain: what an editor shows.
+    pub base_radius: f32,
     pub font: Font,
     pub c: Palette,
     pub space: Space,
@@ -110,7 +113,8 @@ impl Theme {
         let elevation = Elevation::new(shade, m.number("elevation"));
         let motion = Motion::DEFAULT;
         let control = Controls::from_density(f.base.density, m.state("disabled"));
-        let radius = Radius::from_base(f.base.radius);
+        // Continuous corners are drawn on a larger ladder, or they would look the same as round ones (`CONTINUOUS_GAIN`).
+        let radius = Radius::from_base(f.base.radius * f.base.corners.gain());
         let space = Space { unit: f.base.spacing };
         let family = match f.base.font {
             Font::Inter => rune::Family::Sans,
@@ -147,7 +151,7 @@ impl Theme {
             texture: m.number("texture"),
         };
         let mat = Materials::derive(&colors, &elevation, &motion, &control);
-        let mut t = Theme { name: f.name.clone(), dark, corners: f.base.corners, font: f.base.font, c, space, ty, radius, elevation, motion, control, metrics, mat, kit: rune_kit::Kit::neutral(dark) };
+        let mut t = Theme { name: f.name.clone(), dark, corners: f.base.corners, base_radius: f.base.radius, font: f.base.font, c, space, ty, radius, elevation, motion, control, metrics, mat, kit: rune_kit::Kit::neutral(dark) };
         t.kit = t.build_kit();
         t
     }

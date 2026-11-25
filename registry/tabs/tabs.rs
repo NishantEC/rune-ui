@@ -1,4 +1,4 @@
-//! rune-ui registry: tabs 0.4.0. Copied into your app by `rune-ui add tabs`; yours to change.
+//! rune-ui registry: tabs 0.4.1. Copied into your app by `rune-ui add tabs`; yours to change.
 //!
 //! Views of one place. **Line**: words over a hairline, the chosen tab in the first ink with a 2 point ink line under it. **Contained**:
 //! a well track holding the chosen tab raised (like a toggle group). A tab may lead with an icon and end with a count. Left and Right
@@ -106,7 +106,7 @@ impl<S: 'static> Tabs<S> {
             }
             let mut cell = if line {
                 let face = paint_state(face.h(h).px(t.space.at(1.5)).radius(t.radius.sm).round_as(t), &t.mat.row, States { focus_visible: false, ..st });
-                let bar = el().w_full().h(2.0).radius(1.0).round_as(t).fill(if on { t.c.primary.bg } else { Color::TRANSPARENT }).a11y_hidden();
+                let bar = el().w_full().h(2.0).radius(1.0).fill(if on { t.c.primary.bg } else { Color::TRANSPARENT }).a11y_hidden();
                 let mut c = col().gap(t.space.at(0.5)).child(face).child(bar);
                 if st.focus_visible {
                     c = paint(c, &t.mat.ghost.state(State::FocusVisible));

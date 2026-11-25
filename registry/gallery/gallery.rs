@@ -1,4 +1,4 @@
-//! rune-ui registry: gallery 0.4.0 (a block). Copied into your app by `rune-ui add gallery`; yours to change.
+//! rune-ui registry: gallery 0.4.1 (a block). Copied into your app by `rune-ui add gallery`; yours to change.
 //!
 //! A page that shows every component your app has added, in every state: group tabs, each component's stories (its variants × states),
 //! a light/dark switch and a density switch, and a materials sheet that builds each recipe one layer at a time. It is made from the
@@ -216,9 +216,40 @@ fn layers(t: &Theme, name: &str, m: &Material, w: f32, h: f32, r: f32) -> El {
     labelled(t, name, specs(t, items))
 }
 
+/// `e` rounded at `r` in a corner style, whatever the theme's: the corner specimen compares the two.
+fn shaped(e: El, corners: Corners, r: f32) -> El {
+    let e = e.radius(r);
+    if corners == Corners::Continuous { e.continuous_corners() } else { e }
+}
+
+/// The corner style, judged side by side: a large tile round and continuous at the same nominal radius (continuous drawn on its
+/// larger ladder, as the theme draws it), the continuous curve without that gain (why it is there), both outlines laid over each other,
+/// and a tile and a button in this theme's own style.
+pub fn corner_shapes(t: &Theme) -> El {
+    const W: f32 = 240.0;
+    const H: f32 = 160.0;
+    const R: f32 = 28.0;
+    let ink = t.c.primary.bg;
+    let tile = |corners: Corners, r: f32| shaped(el().size(W, H), corners, r).fill(ink).a11y_hidden();
+    let outline = |corners: Corners, r: f32, color| shaped(el().absolute(0.0, 0.0).size(W, H), corners, r).border(1.5, color);
+    let overlaid = el().size(W, H).a11y_hidden().child(outline(Corners::Round, R, t.c.danger.solid)).child(outline(Corners::Continuous, R * rune_ui_style::CONTINUOUS_GAIN, ink));
+    let themed = paint(el().key("corner-theme").role("img").label("A tile in this theme's corner style").size(W, H).radius(t.radius.xxl).round_as(t), &Recipe::new().fill(ink));
+    let button_r = rune_ui_style::Radius::fit(t.radius.md, t.control.md);
+    let button = paint(el().key("corner-theme-button").role("img").label("A button in this theme's corner style").size(120.0, t.control.md).radius(button_r).round_as(t), &Recipe::new().fill(ink));
+    let gain = rune_ui_style::CONTINUOUS_GAIN;
+    specs(t, vec![
+        spec(t, &format!("Round, {R:.0}"), tile(Corners::Round, R)),
+        spec(t, &format!("Continuous, {R:.0} (drawn at {:.0}, {gain}x)", R * gain), tile(Corners::Continuous, R * gain)),
+        spec(t, &format!("Continuous at {R:.0} without the gain: within 0.4 pt of round"), tile(Corners::Continuous, R)),
+        spec(t, "Both outlines: round in red, continuous in ink", overlaid),
+        spec(t, &format!("This theme: {}, xxl ({:.1})", if t.corners == Corners::Continuous { "continuous" } else { "round" }, t.radius.xxl), themed),
+        spec(t, &format!("A button: md ({button_r:.1})"), button),
+    ])
+}
+
 /// The materials sheet.
 pub fn materials(t: &Theme) -> El {
-    let mut c = col().key("materials").w_full().gap(t.space.at(6.0));
+    let mut c = col().key("materials").w_full().gap(t.space.at(6.0)).child(labelled(t, "corner shape", corner_shapes(t)));
     for (name, m) in t.mat.all() {
         let (w, h, r) = match name {
             "floating" | "slab" => (120.0, 64.0, t.radius.xl),
@@ -347,7 +378,7 @@ fn choices<S: 'static>(t: &Theme, key: &str, words: &[&str], at: usize, access: 
 /// A value in a range: a well track, an ink fill, a thumb; drag or press anywhere on it.
 fn slider<S: 'static>(t: &Theme, key: &str, value: f32, min: f32, max: f32, words: String, access: Access<S>, set: fn(&mut GalleryState, f32)) -> El {
     let frac = ((value - min) / (max - min)).clamp(0.0, 1.0);
-    let track = paint(row().w_full().h(6.0).radius(3.0).round_as(t), &t.mat.well.base).child(paint(el().w_frac(frac).h(6.0).radius(3.0), &Recipe::new().fill(t.c.primary.bg)));
+    let track = paint(row().w_full().h(6.0).radius(3.0), &t.mat.well.base).child(paint(el().w_frac(frac).h(6.0).radius(3.0), &Recipe::new().fill(t.c.primary.bg)));
     let thumb = row().absolute(0.0, 2.0).w_full().h(16.0).child(el().w_frac(frac).h(16.0)).child(paint(el().size(16.0, 16.0).radius(8.0).ml(-16.0 * frac), &t.mat.thumb.base));
     let bar = col().key(key.to_owned()).role("slider").label(key.to_owned()).range_value(f64::from(value), f64::from(min), f64::from(max)).focusable(true).grow(1.0).h(20.0).justify_center().child(track).child(thumb).on_drag(move |s: &mut S, d: &mut rune::Drag, _: &mut rune::Tx| {
         set(access(s), min + (d.x / d.w.max(1.0)).clamp(0.0, 1.0) * (max - min));
@@ -405,7 +436,7 @@ pub fn editor_panel<S: 'static>(t: &Theme, json: &str, app_dark: bool, g: &Galle
         .child(field(t, "Light or dark", choices::<S>(t, "editor-mode", &["Light", "Dark"], usize::from(dark), access, |g, i| g.dark = Some(i == 1))))
         .child(field(t, "Base neutral", choices::<S>(t, "editor-neutral", &neutral_names, e.neutral, access, |g, i| g.editor.neutral = i)))
         .child(field(t, "Accent", col().w_full().gap(t.space.at(2.0)).child(swatches).child(hex_field)))
-        .child(field(t, "Radius", slider::<S>(t, "editor-radius", t.radius.md, 0.0, 16.0, format!("{:.0}", t.radius.md), access, |g, v| g.editor.radius = Some(v.round()))))
+        .child(field(t, "Radius", slider::<S>(t, "editor-radius", t.base_radius, 0.0, 16.0, format!("{:.0}", t.base_radius), access, |g, v| g.editor.radius = Some(v.round()))))
         .child(field(t, "Corners", choices::<S>(t, "editor-corners", &["Continuous", "Round"], usize::from(e.corners == Corners::Round), access, |g, i| g.editor.corners = if i == 0 { Corners::Continuous } else { Corners::Round })))
         .child(field(t, "Font", choices::<S>(t, "editor-font", &["Inter", "System", "Serif", "Mono"], e.font as usize, access, |g, i| g.editor.font = [Font::Inter, Font::System, Font::Serif, Font::Mono][i])))
         .child(field(t, "Type scale", slider::<S>(t, "editor-type", e.type_scale, 0.85, 1.25, format!("{:.2}", e.type_scale), access, |g, v| g.editor.type_scale = (v * 20.0).round() / 20.0)))

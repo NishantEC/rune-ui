@@ -67,6 +67,14 @@ pub fn apply_scene(s: &mut App, name: &str) {
         }
         None => name,
     };
+    // `<scene>-round`: the same scene with round corners instead of continuous ones.
+    let name = match name.strip_suffix("-round") {
+        Some(n) => {
+            s.g.editor.corners = rune_ui_style::Corners::Round;
+            n
+        }
+        None => name,
+    };
     if name == "tuned" {
         // The editor at work: another neutral, a teal accent, a larger round radius, a flatter material, stronger shadows.
         s.g.editor = ui::gallery::Editor { neutral: 4, accent: Some(ui::gallery::ACCENTS[2].to_owned()), radius: Some(12.0), corners: rune_ui_style::Corners::Round, texture: 0.4, shadow: 1.6, ..Default::default() };
@@ -97,7 +105,7 @@ macro_rules! scenes {
 /// A named scene and how it sets up the state.
 pub type Scene = (&'static str, fn(&mut App));
 
-pub const SCENES: &[Scene] = scenes!["actions", "form", "overlays", "structure", "display", "materials", "all", "actions-compact", "form-compact", "structure-compact", "tuned", "open-select", "open-combobox", "open-context-menu", "open-alert-dialog", "open-toast", "open-dropdown-menu", "open-popover", "open-dialog", "open-sheet", "open-command"];
+pub const SCENES: &[Scene] = scenes!["actions", "form", "overlays", "structure", "display", "materials", "materials-round", "all", "actions-compact", "form-compact", "structure-compact", "tuned", "open-select", "open-combobox", "open-context-menu", "open-alert-dialog", "open-toast", "open-dropdown-menu", "open-popover", "open-dialog", "open-sheet", "open-command"];
 
 static HEADLESS: AtomicBool = AtomicBool::new(false);
 

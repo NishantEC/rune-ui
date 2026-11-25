@@ -2,7 +2,7 @@
 schema = 1
 name = "badge"
 title = "Badge"
-version = "0.4.0"
+version = "0.4.1"
 type = "component"
 group = "display"
 description = "A small label: default, secondary, outline, destructive or a meaning, with an optional dot or count."
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "badge.rs"
 target = "src/ui/badge.rs"
-sha256 = "a2c2419a36c3b7195c68561b919747c8faaeb35465d015d2b5b608797c9a6ecc"
+sha256 = "9e665337e95afd59f30b7f54a66742b6464012fc55d578f9189c175e9bf0d99d"
 
 # Copied only once the gallery block is installed.
 [[files]]

@@ -2,7 +2,7 @@
 schema = 1
 name = "input"
 title = "Input"
-version = "0.4.0"
+version = "0.4.1"
 type = "component"
 group = "form"
 description = "A one-line text field on the well material, with prefix, suffix, clear and a search form."
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "input.rs"
 target = "src/ui/input.rs"
-sha256 = "8857dfe3c5c02a731a2934f22ef95fc07b9ad35fb9ca1edd4799641bb959388b"
+sha256 = "b2faab976d9b07f42c2ae35e50469d2d494fc9af89dc00a13e3fb71071d65f3d"
 
 # Copied only once the gallery block is installed.
 [[files]]

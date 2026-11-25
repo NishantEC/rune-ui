@@ -1,4 +1,4 @@
-//! rune-ui registry: base 0.4.0. What every component shares: the press type, size metrics, the 40 point hit area, a glyph, the
+//! rune-ui registry: base 0.4.1. What every component shares: the press type, size metrics, the 40 point hit area, a glyph, the
 //! spinner, the words beside a control, and `paint` re-exported from the style layer. `rune-ui init` copies it; yours to change.
 
 use std::rc::Rc;
@@ -77,7 +77,8 @@ impl SizeExt for Size {
 
 /// The theme's corner style on a rounded surface: Apple's continuous curve or a plain arc (`base.corners` in the theme file). Rune
 /// draws the fill, border, focus ring (outline) and clip in that shape; drop and inner shadows keep circular corners (indistinguishable
-/// at these blurs).
+/// at these blurs). Use it with radii from `t.radius` (continuous corners draw that ladder larger, `CONTINUOUS_GAIN`); leave circles,
+/// dots, thumbs and pills without it, since a continuous curve turns a circle into a squircle.
 pub trait Shape {
     fn round_as(self, t: &Theme) -> El;
 }

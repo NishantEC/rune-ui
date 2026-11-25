@@ -34,6 +34,12 @@ Radii come from a ladder built on one knob. Nested shapes are concentric: an inn
 under about four tenths of a control's height, or the continuous corner stops reading as a rounded rectangle; true pills and circles
 stay round.
 
+Corners come in two styles (`base.corners`). Round is a circular arc. Continuous is Apple's curve, which eases into the straight edges;
+Rune draws it so close to a circular arc at the same radius (within 0.4 points on a 28 point corner) that the two cannot be told apart, so
+continuous corners draw the whole ladder 1.25 times larger (`CONTINUOUS_GAIN`), as designers pair them on iOS. Every step grows by the
+same factor, so nesting stays concentric. Circles, dots, thumbs and pills are drawn round in both styles. The Materials tab's "corner
+shape" row shows the two side by side.
+
 ## 6. Colour is state, at low alpha
 
 A meaning is a wash at low alpha behind words in its own readable ink, with a small dot; never colour alone. The primary action is

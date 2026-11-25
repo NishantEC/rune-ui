@@ -72,3 +72,40 @@ fn materials_read_in_the_right_direction_on_screen() {
     assert!(ink < page / 3.0, "the ink button is dark on the light page ({ink} vs {page})");
     let _ = w;
 }
+
+/// Renders `scene` in the light theme at 2x and dumps its tree; returns the picture and the tree.
+fn picture(scene: &str) -> (Image, serde_json::Value) {
+    let png = out().join(format!("{scene}-light-2x.png"));
+    let tree = out().join(format!("{scene}-light-2x.json"));
+    let snap = Command::new(BIN).args(["--snap", png.to_str().unwrap(), "--scene", scene, "--theme", "light", "--size", "1320x8000", "--scale", "2", "--crop", "canvas"]).output().unwrap();
+    assert!(snap.status.success(), "{}", String::from_utf8_lossy(&snap.stderr));
+    let dump = Command::new(BIN).args(["--tree", tree.to_str().unwrap(), "--scene", scene, "--theme", "light", "--size", "1320x8000"]).output().unwrap();
+    assert!(dump.status.success());
+    (read(&png), serde_json::from_str(&std::fs::read_to_string(&tree).unwrap()).unwrap())
+}
+
+/// Pixels (at 2x) inside `key`'s rect whose luma differs by more than 24 between the two pictures.
+fn differing(a: &(Image, serde_json::Value), b: &(Image, serde_json::Value), key: &str) -> usize {
+    let r = rect(&a.1, key);
+    assert_eq!(r, rect(&b.1, key), "{key} sits in the same place in both");
+    let mut n = 0;
+    for y in (r[1] * 2.0) as usize..((r[1] + r[3]) * 2.0) as usize {
+        for x in (r[0] * 2.0) as usize..((r[0] + r[2]) * 2.0) as usize {
+            if (a.0.luma(x as f32, y as f32) - b.0.luma(x as f32, y as f32)).abs() > 24.0 {
+                n += 1;
+            }
+        }
+    }
+    n
+}
+
+#[test]
+fn continuous_and_round_corners_draw_different_pixels() {
+    let (cont, round) = (picture("materials"), picture("materials-round"));
+    let tile = differing(&cont, &round, "corner-theme");
+    let button = differing(&cont, &round, "corner-theme-button");
+    eprintln!("corner pixels that differ at 2x: tile {tile}, button {button}");
+    // A 240 by 160 tile (xxl radius) and a 120 by 36 button: the corner style must show in each corner, not only in a few edge pixels.
+    assert!(tile > 400, "the large tile looks the same in both corner styles ({tile} pixels differ)");
+    assert!(button > 40, "the button looks the same in both corner styles ({button} pixels differ)");
+}

@@ -2,7 +2,7 @@
 schema = 1
 name = "gallery"
 title = "Gallery"
-version = "0.4.0"
+version = "0.4.1"
 type = "block"
 group = "blocks"
 description = "A page showing every installed component's stories: group tabs, variants by states, light/dark and density switches, a materials sheet."
@@ -18,4 +18,4 @@ cargo = ["rune", "rune-ui-style", "rune-kit"]
 [[files]]
 path = "gallery.rs"
 target = "src/ui/gallery.rs"
-sha256 = "af7b4f7f038eb981d3084db8c6680be54ab538ef8d0cde65a48a99435aa6594d"
+sha256 = "c8c9c99c4fcaf35a7193a69dab43efd1f9076bb9b0b515fedaa4e1e249ca8400"

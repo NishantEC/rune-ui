@@ -1,4 +1,4 @@
-//! rune-ui registry: input 0.4.0. Copied into your app by `rune-ui add input`; yours to change.
+//! rune-ui registry: input 0.4.1. Copied into your app by `rune-ui add input`; yours to change.
 //!
 //! One line of text on the **well** material: a tint pressed into the page with a soft shadow inside its top edge, no outline at rest.
 //! Focus rings the well (the editor inside has focus, so it is the well's `focus_within` ring); invalid rings it in the danger colour.
@@ -189,7 +189,7 @@ impl<'a, S: 'static> Input<'a, S> {
         well = well.child(input);
         if self.clear && !self.edit.text.is_empty() && !self.disabled {
             let access = self.access.clone();
-            let x = row().key(format!("{}-clear", self.key)).role("button").label("Clear").help("Clear").focusable(true).size(18.0, 18.0).center().radius(9.0).round_as(t).hover(t.c.hover).focus_ring(t.control.ring, t.control.ring_offset, t.c.ring).on_press(move |s: &mut S| access(s).clear()).child(glyph(&icons::CLOSE, t.control.icon_sm, side_ink));
+            let x = row().key(format!("{}-clear", self.key)).role("button").label("Clear").help("Clear").focusable(true).size(18.0, 18.0).center().radius(9.0).hover(t.c.hover).focus_ring(t.control.ring, t.control.ring_offset, t.c.ring).on_press(move |s: &mut S| access(s).clear()).child(glyph(&icons::CLOSE, t.control.icon_sm, side_ink));
             well = well.child(x);
         } else if let Some(sfx) = &self.suffix {
             well = well.child(self.side(t, format!("{}-suffix", self.key), sfx, side_ink));

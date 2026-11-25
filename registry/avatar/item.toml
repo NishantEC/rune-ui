@@ -2,7 +2,7 @@
 schema = 1
 name = "avatar"
 title = "Avatar"
-version = "0.4.0"
+version = "0.4.1"
 type = "component"
 group = "display"
 description = "A person as initials (or an image) in a circle; a stacked group."
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "avatar.rs"
 target = "src/ui/avatar.rs"
-sha256 = "ea1f0b796dfca085914501b019c276260caee332c2a6b06865791042bef3e216"
+sha256 = "cc49d49802f0314150622f819512e0f68acf85db0a4facd0f580ec9689cd7d1e"
 
 # Copied only once the gallery block is installed.
 [[files]]

@@ -2,7 +2,7 @@
 schema = 1
 name = "skeleton"
 title = "Skeleton"
-version = "0.4.0"
+version = "0.4.1"
 type = "component"
 group = "display"
 description = "The still shape of what is loading."
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "skeleton.rs"
 target = "src/ui/skeleton.rs"
-sha256 = "abbd5795c663f8064ad8edee6575df7139d4c2754d5be33f5b6d6755c3c07183"
+sha256 = "48a16a3d598a4e53c325fd3ba217034bbe7e1131f6d08b472007595f4f089087"
 
 # Copied only once the gallery block is installed.
 [[files]]
