@@ -1,4 +1,4 @@
-//! rune-ui registry: dropdown_menu 0.5.0. Copied into your app by `rune-ui add dropdown_menu`; yours to change. Needs: popup.
+//! rune-ui registry: dropdown_menu 0.6.0. Copied into your app by `rune-ui add dropdown_menu`; yours to change. Needs: popup.
 //!
 //! A menu under its trigger: rune-ui's popup with role `menu`. It shares the trigger's left edge with a 4 point gap, flips above near
 //! the window's bottom and stays in the window; rows highlight under the pointer and the keys; groups have quiet labels and separators;
@@ -14,7 +14,7 @@
 use rune::{El, Side, row};
 
 use super::base::{Press, Theme, press};
-use super::popup::{Entry, Popup, Row, mount};
+use super::popup::{Entry, Popup, Row, Mount, mount};
 
 /// A menu row (see `popup::Row`): `new(label)`, `.icon`, `.shortcut`, `.checked`, `.disabled`, `.danger`, `.on_select`.
 pub type DropdownMenuItem<S> = Row<S>;
@@ -89,7 +89,7 @@ impl<S: 'static> DropdownMenu<S> {
             popup.min_w = self.min_w;
             popup.entries = self.entries;
             let surface = popup.surface(t, close.clone());
-            mount(t, layer, &self.key, surface, &anchor, Side::Bottom, &anchor, close);
+            mount(t, layer, surface, Mount { key: &self.key, anchor: &anchor, side: Side::Bottom, return_to: &anchor }, close);
         }
         trigger
     }

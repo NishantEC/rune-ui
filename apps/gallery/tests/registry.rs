@@ -68,3 +68,82 @@ fn components_read_tokens_only() {
         }
     }
 }
+
+/// Every `.rs` file of every item (sources and stories).
+fn sources() -> Vec<(String, String)> {
+    let mut v = Vec::new();
+    for (name, _) in items() {
+        for e in std::fs::read_dir(root().join(&name)).unwrap() {
+            let p = e.unwrap().path();
+            if p.extension().is_some_and(|x| x == "rs") {
+                v.push((format!("{name}/{}", p.file_name().unwrap().to_string_lossy()), std::fs::read_to_string(&p).unwrap()));
+            }
+        }
+    }
+    v
+}
+
+/// The parameters of each `fn` in `src` (top-level commas between its parentheses, `self` included), with its name.
+fn arities(src: &str) -> Vec<(String, usize)> {
+    let mut out = Vec::new();
+    let b = src.as_bytes();
+    let mut at = 0;
+    while let Some(off) = src[at..].find("fn ") {
+        let start = at + off;
+        at = start + 3;
+        if start > 0 && (b[start - 1].is_ascii_alphanumeric() || b[start - 1] == b'_') {
+            continue;
+        }
+        let name: String = src[at..].chars().take_while(|c| c.is_alphanumeric() || *c == '_').collect();
+        if name.is_empty() {
+            continue;
+        }
+        // Skip generics (`<...>`, nesting) to the opening parenthesis.
+        let mut i = at + name.len();
+        let mut angle = 0i32;
+        while i < b.len() {
+            match b[i] {
+                b'<' => angle += 1,
+                b'>' if i > 0 && b[i - 1] != b'-' && b[i - 1] != b'=' => angle -= 1,
+                b'(' if angle == 0 => break,
+                b'{' | b';' => break,
+                _ => {}
+            }
+            i += 1;
+        }
+        if i >= b.len() || b[i] != b'(' {
+            continue;
+        }
+        let (mut depth, mut commas, mut any) = (0i32, 0usize, false);
+        let mut j = i + 1;
+        while j < b.len() {
+            match b[j] {
+                b'(' | b'[' | b'{' | b'<' => depth += 1,
+                b'>' if b[j - 1] == b'-' || b[j - 1] == b'=' => {}
+                b')' | b']' | b'}' | b'>' if depth > 0 => depth -= 1,
+                b')' => break,
+                b',' if depth == 0 => commas += 1,
+                c if !c.is_ascii_whitespace() => any = true,
+                _ => {}
+            }
+            j += 1;
+        }
+        let trailing = src[i + 1..j].trim_end().ends_with(',');
+        out.push((name, if any { commas + 1 - usize::from(trailing) } else { 0 }));
+    }
+    out
+}
+
+#[test]
+fn no_item_needs_a_workspace_lint_allowance() {
+    // A copied item lands in an app with clippy's defaults: it may not lean on rune-ui's own lint table, nor allow lints itself.
+    let manifest = std::fs::read_to_string(root().join("../Cargo.toml")).unwrap();
+    let table = manifest.split("[workspace.lints.clippy]").nth(1).unwrap_or_default().split("\n[").next().unwrap_or_default();
+    assert!(!table.contains("allow"), "the workspace allows a lint the copies would trip in an app: {table}");
+    for (file, src) in sources() {
+        assert!(!src.contains("#[allow(") && !src.contains("#![allow("), "{file}: allows a lint");
+        for (name, n) in arities(&src) {
+            assert!(n <= 7, "{file}: `fn {name}` takes {n} arguments; clippy's too_many_arguments stops at 7 (take a struct)");
+        }
+    }
+}

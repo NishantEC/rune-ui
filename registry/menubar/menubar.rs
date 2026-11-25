@@ -1,4 +1,4 @@
-//! rune-ui registry: menubar 0.5.1. Copied into your app by `rune-ui add menubar`; yours to change. Needs: popup.
+//! rune-ui registry: menubar 0.6.0. Copied into your app by `rune-ui add menubar`; yours to change. Needs: popup.
 //!
 //! A row of menus (File, Edit, View) on a quiet slab, each opening rune-ui's popup list under its title: the **floating** material,
 //! rows with icons, shortcuts, checks, separators and labels, a highlight that follows the pointer and the keys.
@@ -21,7 +21,7 @@ use rune::{El, Key, KeyEvent, Side, Tx, col, row, text};
 use rune_ui_style::{Radius, weight};
 
 use super::base::{Shape, States, Theme, paint, paint_state, press};
-use super::popup::{Entry, INSET, Popup, Row, mount};
+use super::popup::{Entry, INSET, Popup, Row, Mount, mount};
 
 /// One menu: its title and its entries.
 pub struct Menu<S: 'static> {
@@ -182,7 +182,7 @@ impl<S: 'static> Menubar<S> {
                 true
             });
             let trigger = Self::trigger_key(&k, i);
-            mount(t, layer, &pk, holder, &trigger, Side::Bottom, &trigger, close);
+            mount(t, layer, holder, Mount { key: &pk, anchor: &trigger, side: Side::Bottom, return_to: &trigger }, close);
         }
         bar
     }

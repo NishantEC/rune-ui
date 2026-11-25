@@ -1,4 +1,4 @@
-//! rune-ui registry: select 0.5.0. Copied into your app by `rune-ui add select`; yours to change. Needs: popup.
+//! rune-ui registry: select 0.6.0. Copied into your app by `rune-ui add select`; yours to change. Needs: popup.
 //!
 //! One choice of a few. The trigger is a **well** (it holds a value) with the choice and a chevron that turns while open; the list is
 //! rune-ui's popup (the **floating** material) under the trigger, sharing its left edge and at least its width, flipping above near the
@@ -15,7 +15,7 @@ use rune::{El, Side, row, text};
 
 use super::base::{Pick, Press, Shape, Size, SizeExt, State, Theme, glyph, paint, press, recipes, resolve, states};
 use super::icons;
-use super::popup::{Entry, Popup, Row, mount};
+use super::popup::{Entry, Popup, Row, Mount, mount};
 
 pub struct Select<'a, S: 'static> {
     key: String,
@@ -146,7 +146,7 @@ impl<'a, S: 'static> Select<'a, S> {
                 popup.entries.push(Entry::Row(r));
             }
             let surface = popup.surface(t, close.clone());
-            mount(t, layer, &self.key, surface, &anchor, Side::Bottom, &anchor, close);
+            mount(t, layer, surface, Mount { key: &self.key, anchor: &anchor, side: Side::Bottom, return_to: &anchor }, close);
         }
         row().key(self.key).child(trigger)
     }

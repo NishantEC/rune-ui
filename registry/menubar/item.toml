@@ -2,13 +2,13 @@
 schema = 1
 name = "menubar"
 title = "Menubar"
-version = "0.5.1"
+version = "0.6.0"
 type = "component"
 group = "overlays"
 description = "A row of menus on the shared popup: Left/Right between titles and between open menus, Down/Return to open, Escape back to the title."
 
 [requires]
-style = ">=0.5.1, <0.6.0"
+style = ">=0.5.1, <0.7.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "menubar.rs"
 target = "src/ui/menubar.rs"
-sha256 = "d5e1700176d57fb6aa9e6909414a3c20a7437a31fcf0d2a8fe0ab9150070ba8b"
+sha256 = "219fb6adb2b1eb61e6bbaf477eb6167be707a5fdeae4566c7667d92200b5f7b8"
 
 # Copied only once the gallery block is installed.
 [[files]]

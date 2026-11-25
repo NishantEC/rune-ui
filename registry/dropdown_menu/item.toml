@@ -2,13 +2,13 @@
 schema = 1
 name = "dropdown_menu"
 title = "DropdownMenu"
-version = "0.5.0"
+version = "0.6.0"
 type = "component"
 group = "overlays"
 description = "A menu under its trigger: rune-kit's menu behaviour on the floating material."
 
 [requires]
-style = ">=0.5.0, <0.6.0"
+style = ">=0.5.0, <0.7.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = ["button"]
 [[files]]
 path = "dropdown_menu.rs"
 target = "src/ui/dropdown_menu.rs"
-sha256 = "4ed30e56926c8789b122a2ada7e1d23e1ed9b25805de55e40586fad8220ea2ec"
+sha256 = "94b7cb4ea7aa7864a52de4e9abf460a397703d97dddb837e260964d3765073b5"
 
 # Copied only once the gallery block is installed.
 [[files]]

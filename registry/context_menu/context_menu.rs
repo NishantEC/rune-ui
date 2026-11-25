@@ -1,4 +1,4 @@
-//! rune-ui registry: context_menu 0.5.0. Copied into your app by `rune-ui add context_menu`; yours to change. Needs: popup.
+//! rune-ui registry: context_menu 0.6.0. Copied into your app by `rune-ui add context_menu`; yours to change. Needs: popup.
 //!
 //! A menu where the pointer pressed with the secondary button: rune-ui's popup with role `menu`, opening at that point, flipping to stay
 //! in the window, closing on Escape, Tab, a press outside or a choice, focus going back to the area. Store the point from
@@ -11,7 +11,7 @@
 use rune::{El, PointerPress, Side, row};
 
 use super::base::{Press, Theme, press};
-use super::popup::{Entry, Popup, Row, mount, point_anchor};
+use super::popup::{Entry, Popup, Row, Mount, mount, point_anchor};
 
 /// A menu row (see `popup::Row`).
 pub type ContextMenuItem<S> = Row<S>;
@@ -67,7 +67,7 @@ impl<S: 'static> ContextMenu<S> {
             popup.min_w = 200.0;
             popup.entries = self.entries;
             let surface = popup.surface(t, close.clone());
-            mount(t, layer, &self.key, surface, &anchor, Side::Bottom, &area_key, close);
+            mount(t, layer, surface, Mount { key: &self.key, anchor: &anchor, side: Side::Bottom, return_to: &area_key }, close);
         }
         area
     }

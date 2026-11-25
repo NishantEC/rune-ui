@@ -1,4 +1,4 @@
-//! rune-ui registry: date_picker 0.5.1. Copied into your app by `rune-ui add date_picker`; yours to change. Needs: calendar, popup.
+//! rune-ui registry: date_picker 0.6.0. Copied into your app by `rune-ui add date_picker`; yours to change. Needs: calendar, popup.
 //!
 //! A date in a field. The trigger is a **well** (it holds a value) with a calendar glyph and the date, or a quiet placeholder; pressing
 //! it opens a Calendar on the **floating** material under it through the shared popup host (anchored at the trigger's left edge,
@@ -18,7 +18,7 @@ use rune::{El, Side, Tx, col, row, text};
 use super::base::{Press, Shape, Size, SizeExt, State, Theme, glyph, paint, press, recipes, resolve, states};
 use super::calendar::{Calendar, Date, Disabled, OnDate, range_pick, range_words};
 use super::icons;
-use super::popup::mount;
+use super::popup::{Mount, mount};
 
 pub type OnRange<S> = Rc<dyn Fn(&mut S, Option<Date>, Option<Date>)>;
 
@@ -218,7 +218,7 @@ impl<S: 'static> DatePicker<S> {
                 _ => cal,
             };
             let surface = paint(col().key(format!("{}-content", self.key)).role("dialog").label(self.name.clone()).padding(t.metrics.pad_sm).radius(t.radius.xl).round_as(t), &t.mat.floating.base).child(cal.build(t));
-            mount(t, layer, &self.key, surface, &anchor, Side::Bottom, &anchor, close);
+            mount(t, layer, surface, Mount { key: &self.key, anchor: &anchor, side: Side::Bottom, return_to: &anchor }, close);
         }
         row().key(self.key).child(trigger)
     }

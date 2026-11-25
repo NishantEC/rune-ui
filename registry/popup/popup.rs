@@ -1,4 +1,4 @@
-//! rune-ui registry: popup 0.5.0. The floating list that Select, DropdownMenu and ContextMenu open (and Combobox's rows): drawn by
+//! rune-ui registry: popup 0.6.0. The floating list that Select, DropdownMenu and ContextMenu open (and Combobox's rows): drawn by
 //! rune-ui on Rune's core behaviour, not rune-kit's list. `rune-ui add` brings it with them.
 //!
 //! * **Placement**: anchored under its trigger with a 4 point gap, sharing the trigger's left edge and at least its width; it flips
@@ -210,16 +210,27 @@ impl<S: 'static> Popup<S> {
     }
 }
 
-/// Mounts `surface` into `layer` beside the element keyed `anchor` (on `side`, aligned to its start), with the scrim that closes it on
-/// a press outside, a modal that closes it on Escape, focus going back to `return_to`, and the open and close motion.
-pub fn mount<S: 'static>(t: &Theme, layer: &mut Vec<El>, key: &str, surface: El, anchor: &str, side: Side, return_to: &str, close: Press<S>) {
+/// Where a floating surface goes and what it gives focus back to: the arguments of [`mount`].
+pub struct Mount<'a> {
+    /// The surface's key (its scrim is keyed `<key>-scrim`).
+    pub key: &'a str,
+    /// The element it opens beside.
+    pub anchor: &'a str,
+    pub side: Side,
+    /// What takes focus when it closes.
+    pub return_to: &'a str,
+}
+
+/// Mounts `surface` into `layer` beside the element keyed `at.anchor` (on `at.side`, aligned to its start), with the scrim that closes
+/// it on a press outside, a modal that closes it on Escape, focus going back to `at.return_to`, and the open and close motion.
+pub fn mount<S: 'static>(t: &Theme, layer: &mut Vec<El>, surface: El, at: Mount, close: Press<S>) {
     let outside = close.clone();
-    let modal = surface.focus_return(return_to).modal(true, move |s: &mut S| close(s));
-    layer.push(rune_kit::scrim(format!("{key}-scrim"), move |s: &mut S| outside(s)));
-    let from = Vec2 { x: 0.0, y: if side == Side::Top { 1.0 } else { 0.0 } };
+    let modal = surface.focus_return(at.return_to).modal(true, move |s: &mut S| close(s));
+    layer.push(rune_kit::scrim(format!("{}-scrim", at.key), move |s: &mut S| outside(s)));
+    let from = Vec2 { x: 0.0, y: if at.side == Side::Top { 1.0 } else { 0.0 } };
     let motion = Transition::scale_anchor(0.97, from).springs(SpringPair::new(Spring::new(0.14, 0.0), Spring::new(0.09, 0.0)));
     let gap = t.space.at(1.0);
-    layer.push(modal.anchored_fit(anchor, side, Align::Start, gap).transition(motion));
+    layer.push(modal.anchored_fit(at.anchor, at.side, Align::Start, gap).transition(motion));
 }
 
 /// A one-point anchor at a window point (a context menu opens where the pointer pressed); mount it before the surface.

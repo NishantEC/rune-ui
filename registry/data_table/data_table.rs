@@ -1,4 +1,4 @@
-//! rune-ui registry: data_table 0.5.1. Copied into your app by `rune-ui add data_table`; yours to change.
+//! rune-ui registry: data_table 0.6.0. Copied into your app by `rune-ui add data_table`; yours to change.
 //! Needs: table, checkbox, pagination, popup, button.
 //!
 //! Table's look (a slab of rows split by hairlines under a quiet header, figures right in tabular figures) with what a data table
@@ -26,7 +26,7 @@ use super::button::Button;
 use super::checkbox::Checkbox;
 use super::icons;
 use super::pagination::Pagination;
-use super::popup::{Entry, Popup, Row, mount};
+use super::popup::{Entry, Popup, Row, Mount, mount};
 use super::table::Column;
 
 /// What the table remembers between frames.
@@ -171,7 +171,7 @@ impl<S: 'static> DataTable<S> {
             }
             let surface = popup.surface(t, close.clone());
             let anchor = format!("{trigger}-anchor");
-            mount(t, layer, &trigger, surface, &anchor, Side::Bottom, &trigger, close);
+            mount(t, layer, surface, Mount { key: &trigger, anchor: &anchor, side: Side::Bottom, return_to: &trigger }, close);
         }
 
         // The header: the page's checkbox, then each shown column, sortable.

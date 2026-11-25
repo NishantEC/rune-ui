@@ -2,13 +2,13 @@
 schema = 1
 name = "navigation_menu"
 title = "NavigationMenu"
-version = "0.5.1"
+version = "0.6.0"
 type = "component"
 group = "overlays"
 description = "A site navigation bar: links and titles that open panels of links on the shared popup; arrows across titles and panels, Escape back."
 
 [requires]
-style = ">=0.5.1, <0.6.0"
+style = ">=0.5.1, <0.7.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "navigation_menu.rs"
 target = "src/ui/navigation_menu.rs"
-sha256 = "a2a7fc0891f62d75d9973a2f276b3f71fc342853b895e4aaedc9ec61dc860115"
+sha256 = "324cd3484e14badf2dc99e9a1b37151942e5f28dca7cd996ea15ad17f09d12ac"
 
 # Copied only once the gallery block is installed.
 [[files]]

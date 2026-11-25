@@ -1,4 +1,4 @@
-//! rune-ui registry: navigation_menu 0.5.1. Copied into your app by `rune-ui add navigation_menu`; yours to change. Needs: popup.
+//! rune-ui registry: navigation_menu 0.6.0. Copied into your app by `rune-ui add navigation_menu`; yours to change. Needs: popup.
 //!
 //! A site's top navigation: plain links and titles that open a panel of links (a title over a line of description, in one or two
 //! columns) on the **floating** material under the title, through the shared popup host. Titles are quiet until hovered; the open
@@ -20,7 +20,7 @@ use rune_ui_style::{Radius, weight};
 
 use super::base::{Press, Shape, States, Theme, glyph, paint, paint_state, press};
 use super::icons;
-use super::popup::{INSET, mount};
+use super::popup::{INSET, Mount, mount};
 
 /// A link in a panel.
 pub struct NavLink<S: 'static> {
@@ -194,7 +194,7 @@ impl<S: 'static> NavigationMenu<S> {
                 true
             });
             let trigger = Self::item_key(&k, i);
-            mount(t, layer, &format!("{k}-{i}"), surface, &trigger, Side::Bottom, &trigger, close);
+            mount(t, layer, surface, Mount { key: &format!("{k}-{i}"), anchor: &trigger, side: Side::Bottom, return_to: &trigger }, close);
         }
         bar
     }

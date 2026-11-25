@@ -1,4 +1,4 @@
-//! rune-ui registry: combobox 0.5.0. Copied into your app by `rune-ui add combobox`; yours to change. Needs: popup.
+//! rune-ui registry: combobox 0.6.0. Copied into your app by `rune-ui add combobox`; yours to change. Needs: popup.
 //!
 //! One choice of many, with a search (shadcn's combobox: a popover holding a command list). The trigger is one **well**, like a select's.
 //! Open, it shows rune-ui's popup under the trigger, at least its width: a search line over the matching rows, "No results" when
@@ -16,7 +16,7 @@ use rune::{El, Key, KeyEvent, Side, TextEdit, Tx, col, el, row, text};
 
 use super::base::{Choose, Pick, Press, Shape, Theme, glyph, paint, press, recipes, resolve};
 use super::icons;
-use super::popup::{INSET, Row, mount, paint_row};
+use super::popup::{INSET, Row, Mount, mount, paint_row};
 
 /// One option: an id and its words.
 #[derive(Clone, Debug)]
@@ -190,7 +190,7 @@ impl<'a, S: 'static> Combobox<'a, S> {
             let body = col().w_full().max_h(280.0).shrink().min_h(0.0).padding(INSET).child(rune_kit::popover::fit_scroll(rows));
             let surface = col().key(format!("{}-content", self.key)).shrink().min_h(0.0).min_w(self.width).max_w(self.width.max(360.0)).radius(t.radius.lg).round_as(t);
             let surface = paint(surface, &t.mat.floating.base).child(search).child(el().w_full().h(1.0).fill(t.c.line).a11y_hidden()).child(body);
-            mount(t, layer, &self.key, surface, &anchor, Side::Bottom, &anchor, close);
+            mount(t, layer, surface, Mount { key: &self.key, anchor: &anchor, side: Side::Bottom, return_to: &anchor }, close);
         }
         row().key(self.key).child(trigger)
     }

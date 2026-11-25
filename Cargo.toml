@@ -19,7 +19,6 @@ rune-ui-themes = { path = "crates/rune-ui-themes" }
 serde_json = "1"
 
 [workspace.lints.clippy]
-too_many_arguments = "allow"
 
 # Full debug info for Rune made test builds huge; line tables keep backtraces.
 [profile.dev]

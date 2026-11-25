@@ -2,13 +2,13 @@
 schema = 1
 name = "select"
 title = "Select"
-version = "0.5.0"
+version = "0.6.0"
 type = "component"
 group = "form"
 description = "One choice of a few: a well trigger over rune-kit's listbox behaviour."
 
 [requires]
-style = ">=0.5.0, <0.6.0"
+style = ">=0.5.0, <0.7.0"
 rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "select.rs"
 target = "src/ui/select.rs"
-sha256 = "18a54d2f4dc6ce4b6e4553460a4463702148876d408bd8a0727da8ecefee98e7"
+sha256 = "1bb06200d8eaf55351631b742ac58d141e730b593329cc046663ac3611a19ed3"
 
 # Copied only once the gallery block is installed.
 [[files]]
