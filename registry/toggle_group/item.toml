@@ -14,6 +14,8 @@ rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
 [dependencies]
 registry = ["base", "icons"]
 cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
 
 [[files]]
 path = "toggle_group.rs"

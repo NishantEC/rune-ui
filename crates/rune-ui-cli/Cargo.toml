@@ -1,6 +1,6 @@
 [package]
 name = "rune-ui-cli"
-description = "rune-ui's CLI: `rune-ui init | add <component...> | list` copies registry sources into an app's src/ui/ and records their versions."
+description = "rune-ui's CLI: init, add, list, diff, update and registry hash. Copies registry sources into an app's src/ui/ and records versions and hashes in rune-ui.lock."
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -10,7 +10,10 @@ name = "rune-ui"
 path = "src/main.rs"
 
 [dependencies]
-serde_json.workspace = true
+# item.toml and rune-ui.lock (MIT OR Apache-2.0).
+toml = "0.8"
+# File hashes in item.toml and the lock (MIT OR Apache-2.0).
+sha2 = "0.10"
 
 [lints]
 workspace = true
