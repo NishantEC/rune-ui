@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "chart.rs"
 target = "src/ui/chart.rs"
-sha256 = "d388b5417c78b46f83a1aec417d8246b969ca90a86c1633cfc4d3425b5473e63"
+sha256 = "77045142da8cabb5306151a1b511726e6ad0667b5a5939b2ff33bfe310d55f00"
 
 # Copied only once the gallery block is installed.
 [[files]]

@@ -410,7 +410,7 @@ fn a_form_shows_its_messages_on_submit_and_succeeds_once_they_are_fixed() {
     assert!(rt.presented("form-name-error").is_some() && rt.presented("form-email-error").is_some(), "the empty required fields say so");
     assert!(rt.presented("form-team-error").is_none(), "the empty optional field does not");
     let status = rt.elements().into_iter().find(|e| e.key.as_deref() == Some("form-demo-status")).expect("a status line");
-    assert_eq!((&*status.role, status.label.as_deref()), ("alert", Some("2 fields need attention")));
+    assert_eq!((status.role, status.label.as_deref()), ("alert", Some("2 fields need attention")));
     for (field, words) in [("form-name-input-input", "Asha"), ("form-email-input-input", "asha@example")] {
         focus(&mut rt, field);
         for ch in words.chars() {

@@ -110,7 +110,18 @@ Stories register themselves. Each item's `stories.rs` is copied to `src/ui/stori
 | Blocks | Gallery |
 | Fonts | Inter, Geist, Manrope, DM Sans, Figtree, Plus Jakarta Sans, IBM Plex Sans, Geist Mono, JetBrains Mono |
 
-Wave 2 will add Calendar, DatePicker, Carousel, Chart, Menubar, NavigationMenu, Pagination, Resizable, HoverCard, InputOTP, DataTable, Drawer and Form.
+## Components (wave 2)
+
+| Group | Items |
+| --- | --- |
+| Form | Calendar, DatePicker, InputOTP, Form, InputGroup |
+| Menus and overlays | Menubar, NavigationMenu, HoverCard, Drawer |
+| Structure | DataTable, Pagination, Resizable, Carousel, AspectRatio, Item |
+| Display | Chart (line, bar, area, donut), Typography |
+
+Wave 2 added `recipes::series` (chart colours from the theme's roles), Label and Field's optional mark, `sheet::mount` (Sheet and
+Drawer share it) and `GalleryState::slot` (a component's own state type in the gallery). Their behaviour is tested in the live path
+(`apps/gallery/tests/wave2.rs`: real presses, pointer moves, drags and keys).
 
 ## Fonts
 
@@ -162,6 +173,10 @@ A theme is one JSON file with a `light` mode and a `dark` mode, checked against 
 - **Animated focus ring:** the focus ring appears at once; it cannot fade or scale in.
 - **Spring timing:** press is a spring, not a fixed 100 ms ease.
 - **Sliding indicators:** the chosen segment or tab lands at once instead of sliding. Widths are not known when the view is built.
+- **Moving between open menus by pointer:** a Menubar or NavigationMenu menu sits over the shared popup's scrim, which takes the next
+  press, so pointing at another title does not switch menus; a press closes the open one first (the keyboard moves between them).
+- **Paste outside a text field:** Rune hands a paste only to a text field or the view's root (`on_paste` is honoured there), so InputOTP
+  does not take a pasted code at this rev.
 - **Wrapping and textures:** no `text-wrap: balance`. Metal textures stop at 16,384 pixels, so headless pictures are at most 8,000 points tall at 2x.
 
 ## Develop
