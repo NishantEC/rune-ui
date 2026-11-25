@@ -432,3 +432,48 @@ fn a_form_shows_its_messages_on_submit_and_succeeds_once_they_are_fixed() {
     assert!(!busy.focusable, "a submitting form's button cannot be pressed again");
     let _ = before;
 }
+
+// ---- DataTable ----
+
+fn table_state(rt: &Runtime<App>) -> gallery::ui::data_table::DataTableState {
+    rt.state.g.slot("data-table")
+}
+
+#[test]
+fn a_data_table_sorts_selects_hides_columns_pages_and_keeps_its_header() {
+    let mut rt = item("data_table");
+    press(&mut rt, "data-table-head-0");
+    assert_eq!(table_state(&rt).sort, Some((0, true)), "a header sorts ascending");
+    assert!(rt.presented("data-table-row-0").is_some(), "\"Add a retry…\" leads the page");
+    press(&mut rt, "data-table-head-0");
+    assert_eq!(table_state(&rt).sort, Some((0, false)), "then descending");
+    press(&mut rt, "data-table-head-0");
+    assert_eq!(table_state(&rt).sort, None, "then the data's order");
+    assert_eq!(table_state(&rt).selected, [1, 3].into(), "sorting keeps the selection");
+    press(&mut rt, "data-table-check-0");
+    assert!(table_state(&rt).selected.contains(&0), "a row's box selects it");
+    press(&mut rt, "data-table-select-all");
+    assert_eq!(table_state(&rt).selected, [0, 1, 2, 3, 4].into(), "the header box selects the page");
+    press(&mut rt, "data-table-select-all");
+    assert!(table_state(&rt).selected.is_empty(), "and clears it");
+    // Columns.
+    press(&mut rt, "data-table-columns");
+    assert!(rt.presented("data-table-columns-content").is_some(), "the Columns menu opens");
+    key(&mut rt, Key::Down);
+    key(&mut rt, Key::Down);
+    key(&mut rt, Key::Enter);
+    assert!(table_state(&rt).hidden.contains(&1) && rt.presented("data-table-head-1").is_none(), "Status hides");
+    assert!(rt.presented("data-table-columns-content").is_none(), "the menu closes after a choice");
+    assert_eq!(focused(&rt).as_deref(), Some("data-table-columns"), "and focus is back on Columns");
+    // Pages.
+    press(&mut rt, "data-table-pages-next");
+    assert_eq!(table_state(&rt).page, 1);
+    assert!(rt.presented("data-table-row-5").is_some() && rt.presented("data-table-row-0").is_none(), "page two shows the next rows");
+    // The header stays while the body scrolls.
+    let (h, r) = (drawn(&rt, "data-table-head"), drawn(&rt, "data-table-row-5"));
+    rt.wheel(h[0] + 100.0, r[1] + 10.0, -60.0);
+    settle(&mut rt);
+    let (h2, r2) = (drawn(&rt, "data-table-head"), drawn(&rt, "data-table-row-5"));
+    assert!(r2[1] < r[1] - 10.0, "the body scrolled: {r:?} -> {r2:?}");
+    assert!((h2[1] - h[1]).abs() < 0.5, "the header stayed: {h:?} -> {h2:?}");
+}

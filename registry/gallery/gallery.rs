@@ -1,4 +1,4 @@
-//! rune-ui registry: gallery 0.5.0 (a block). Copied into your app by `rune-ui add gallery`; yours to change.
+//! rune-ui registry: gallery 0.5.1 (a block). Copied into your app by `rune-ui add gallery`; yours to change.
 //!
 //! A page that shows every component your app has added, in every state: group tabs, each component's stories (its variants × states),
 //! a light/dark switch and a density switch, and a materials sheet that builds each recipe one layer at a time. It is made from the
@@ -98,12 +98,14 @@ pub struct GalleryState {
     pub values: HashMap<String, f32>,
     pub choices: HashMap<String, String>,
     pub edits: HashMap<String, TextEdit>,
+    /// A component's own state type (a data table's sort and selection), by key: [`GalleryState::slot`].
+    pub slots: HashMap<String, Box<dyn std::any::Any>>,
     empty: TextEdit,
 }
 
 impl Default for GalleryState {
     fn default() -> Self {
-        let mut s = GalleryState { show: "actions".to_owned(), only: None, dark: None, compact: false, editor: Editor::default(), scroll: true, exported: None, open: None, point: None, toasts: Vec::new(), presses: 0, flags: HashMap::new(), values: HashMap::new(), choices: HashMap::new(), edits: HashMap::new(), empty: TextEdit::new("") };
+        let mut s = GalleryState { show: "actions".to_owned(), only: None, dark: None, compact: false, editor: Editor::default(), scroll: true, exported: None, open: None, point: None, toasts: Vec::new(), presses: 0, flags: HashMap::new(), values: HashMap::new(), choices: HashMap::new(), edits: HashMap::new(), slots: HashMap::new(), empty: TextEdit::new("") };
         for (k, v) in [("name", "Placeholder project"), ("budget", "12.50"), ("query", "theme"), ("secret", "sample-pass"), ("command-miss", "zzz"), ("notes", "A few words about the placeholder project, long enough to wrap onto a second line.")] {
             s.edits.insert(k.to_owned(), TextEdit::new(v));
         }
@@ -143,6 +145,18 @@ impl GalleryState {
     }
     pub fn edit_mut(&mut self, k: &str) -> &mut TextEdit {
         self.edits.entry(k.to_owned()).or_insert_with(|| TextEdit::new(""))
+    }
+    /// A copy of the state kept under `k` (its default until something is kept).
+    pub fn slot<T: std::any::Any + Clone + Default>(&self, k: &str) -> T {
+        self.slots.get(k).and_then(|b| b.downcast_ref::<T>()).cloned().unwrap_or_default()
+    }
+    /// The state kept under `k`, made on first use.
+    pub fn slot_mut<T: std::any::Any + Default>(&mut self, k: &str) -> &mut T {
+        let b = self.slots.entry(k.to_owned()).or_insert_with(|| Box::new(T::default()));
+        if !b.is::<T>() {
+            *b = Box::new(T::default());
+        }
+        b.downcast_mut::<T>().expect("a slot of this type")
     }
     pub fn is_open(&self, k: &str) -> bool {
         self.open.as_deref() == Some(k)

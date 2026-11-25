@@ -1,0 +1,1 @@
+pub const CHECKS: &[(&str, &str)] = &[("data-table", "table"), ("data-table-head", "row"), ("data-table-head-0", "columnheader"), ("data-table-select-all", "checkbox"), ("data-table-check-1", "checkbox"), ("data-table-row-1", "row"), ("data-table-columns", "button"), ("data-empty-empty", "row")];

@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "data_table"
+title = "DataTable"
+version = "0.5.1"
+type = "component"
+group = "structure"
+description = "Table with sortable headers, row checkboxes, a Columns menu, pages, a sticky header over a scrolling body, loading and empty states."
+
+[requires]
+style = ">=0.5.1, <0.6.0"
+rune = "bc05f817ed19488a10a6f1a928cc0521c1c70c75"
+
+[dependencies]
+registry = ["base", "icons", "table", "checkbox", "pagination", "popup", "button"]
+cargo = ["rune", "rune-ui-style", "rune-kit"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "data_table.rs"
+target = "src/ui/data_table.rs"
+sha256 = "276a63c499104c8bbee7dd30beb4a67391306356a3be1b7f7af325e8eadc659b"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/data_table.rs"
+role = "story"
+sha256 = "9476c8bdd52da0d45b2030d060814e2a31c38f727b095d374b8198a5bdd3bd80"
