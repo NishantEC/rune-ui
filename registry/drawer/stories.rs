@@ -3,7 +3,7 @@ use rune_ui_style::{ButtonVariant, Size, tabular, weight};
 
 use super::super::button::Button;
 use super::super::drawer::Drawer;
-use super::super::gallery::{Ctx, StoryItem, spec, specs};
+use super::super::gallery::{Ctx, StoryItem, spec, spec_wide, specs};
 use super::super::icons;
 
 pub fn item<S: 'static>() -> StoryItem<S> {
@@ -29,8 +29,8 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> El {
     let (t, acc) = (c.t, c.access);
     let k = "drawer-demo".to_owned();
     let mut inplace = drawer(c, "drawer-inplace");
-    let panel = col().w(520.0).child(inplace.panel(t));
+    let panel = col().w_full().child(inplace.panel(t));
     let open = c.g.is_open("drawer-demo");
     drawer(c, "drawer-demo").open(open).return_focus("drawer-open").on_close(move |s: &mut S| acc(s).close(&k)).build(t, c.layer);
-    specs(t, vec![spec(t, "Panel", panel), spec(t, "Trigger (press it: the drawer rises over a scrim)", Button::<S>::new("drawer-open", "Open drawer").variant(ButtonVariant::Secondary).on_press(move |s: &mut S| acc(s).toggle_open("drawer-demo")).build(t))])
+    specs(t, vec![spec_wide(t, "Panel", 520.0, panel), spec(t, "Trigger (press it: the drawer rises over a scrim)", Button::<S>::new("drawer-open", "Open drawer").variant(ButtonVariant::Secondary).on_press(move |s: &mut S| acc(s).toggle_open("drawer-demo")).build(t))])
 }

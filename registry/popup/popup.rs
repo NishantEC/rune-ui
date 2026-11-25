@@ -1,4 +1,4 @@
-//! rune-ui registry: popup 0.6.0. The floating list that Select, DropdownMenu and ContextMenu open (and Combobox's rows): drawn by
+//! rune-ui registry: popup 0.8.0 The floating list that Select, DropdownMenu and ContextMenu open (and Combobox's rows): drawn by
 //! rune-ui on Rune's core behaviour, not rune-kit's list. `rune-ui add` brings it with them.
 //!
 //! * **Placement**: anchored under its trigger with a 4 point gap, sharing the trigger's left edge and at least its width; it flips
@@ -10,7 +10,8 @@
 //! * **Keys**: Up and Down move and wrap, Home and End jump (`El::focus_group` on a listbox or menu), Return and Space choose, a typed
 //!   letter jumps to the next row starting with it, Escape closes (`El::modal`) and Tab closes, focus going back to the trigger
 //!   (`El::focus_return`). A press outside closes it (`rune_kit::scrim`).
-//! * **Motion**: in from 0.97 and transparent at the trigger's side in about 140 ms, out in about 90 ms.
+//! * **Motion**: in from 0.97 and transparent at the trigger's side in about 140 ms, out in about 90 ms; in place, with no motion,
+//!   when the theme says Reduce Motion (`Theme::reduced_motion`).
 
 use std::rc::Rc;
 
@@ -230,7 +231,8 @@ pub fn mount<S: 'static>(t: &Theme, layer: &mut Vec<El>, surface: El, at: Mount,
     let from = Vec2 { x: 0.0, y: if at.side == Side::Top { 1.0 } else { 0.0 } };
     let motion = Transition::scale_anchor(0.97, from).springs(SpringPair::new(Spring::new(0.14, 0.0), Spring::new(0.09, 0.0)));
     let gap = t.space.at(1.0);
-    layer.push(modal.anchored_fit(at.anchor, at.side, Align::Start, gap).transition(motion));
+    let placed = modal.anchored_fit(at.anchor, at.side, Align::Start, gap);
+    layer.push(if t.reduced_motion { placed } else { placed.transition(motion) });
 }
 
 /// A one-point anchor at a window point (a context menu opens where the pointer pressed); mount it before the surface.

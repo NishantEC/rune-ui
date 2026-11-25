@@ -2,13 +2,13 @@
 schema = 1
 name = "drawer"
 title = "Drawer"
-version = "0.5.1"
+version = "0.8.0"
 type = "component"
 group = "overlays"
 description = "A bottom sheet on Sheet's machinery: grab bar, centred title, full-width actions; slides up, drag the bar down, Escape or press outside to close."
 
 [requires]
-style = ">=0.5.1, <0.8.0"
+style = ">=0.8.0, <0.9.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -20,11 +20,11 @@ stories = ["button"]
 [[files]]
 path = "drawer.rs"
 target = "src/ui/drawer.rs"
-sha256 = "8d8ca7e3fc244ffadd656f7dae872bd7d46bfc67327ff22061768c82900b3986"
+sha256 = "fc34fb76c4688d7d5f4219ec3c9f6c67313e8400ca5f121f759b71c21982e318"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/drawer.rs"
 role = "story"
-sha256 = "176e832456d7bbeb548729e8a2844b3276f13aa9cce7a6482f83b3a4d6daafe5"
+sha256 = "a4f887825a85ffd728c8dd31757dfe4af70145b2318bc06b07ffaf990f7eec0b"

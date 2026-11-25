@@ -1,4 +1,4 @@
-//! rune-ui registry: agent 0.6.0 (base). What the agent set shares: a step's [`Status`] and its mark, the quiet [`FoldLine`] every
+//! rune-ui registry: agent 0.8.0 (base). What the agent set shares: a step's [`Status`] and its mark, the quiet [`FoldLine`] every
 //! tool call, reasoning and step list folds behind, a small icon button that can reach the clipboard, a chip face, the slab code and
 //! output sit on, monospaced type, and the words for durations, token counts and money. `rune-ui add` copies it with any agent item.
 //!
@@ -10,7 +10,7 @@ use std::rc::Rc;
 use rune::{Color, El, Family, Icon, TextStyle, Tx, col, row, text};
 use rune_ui_style::{tabular, weight};
 
-use super::base::{Press, Shape, State, Theme, Tone, glyph, hit_area, paint, paint_state, spinner, states};
+use super::base::{Press, Shape, State, Theme, Tone, glyph, hit_area, paint, paint_state, spinner_in, states};
 use super::icons;
 
 /// What a press does when it also needs the frame's transaction (to copy, to scroll, to move focus).
@@ -73,7 +73,7 @@ impl Status {
 /// slashed ring (skipped), a warning (needs you).
 pub fn mark(t: &Theme, s: Status, size: f32) -> El {
     let icon: &'static Icon = match s {
-        Status::Running => return spinner(size, s.ink(t), s.word()),
+        Status::Running => return spinner_in(t, size, s.ink(t), s.word()),
         Status::Pending => &icons::CIRCLE,
         Status::Done => &icons::CIRCLE_CHECK,
         Status::Error => &icons::CIRCLE_X,

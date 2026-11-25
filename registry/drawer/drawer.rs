@@ -1,4 +1,4 @@
-//! rune-ui registry: drawer 0.5.1. Copied into your app by `rune-ui add drawer`; yours to change. Needs: sheet.
+//! rune-ui registry: drawer 0.8.0 Copied into your app by `rune-ui add drawer`; yours to change. Needs: sheet.
 //!
 //! A sheet that rises from the bottom edge: the **floating** material rounded on its top corners, a grab bar, a centred title and
 //! description, its body, and a footer of full-width actions. It slides up over a scrim and back down. Behaviour is Sheet's (the
@@ -110,7 +110,7 @@ impl<S: 'static> Drawer<S> {
         let key = self.key.clone();
         let (close, return_to) = (self.close.clone(), self.return_to.clone());
         let motion = Transition::move_edge(Edge::Bottom).springs(SpringPair::new(Spring::new(0.3, 0.0), Spring::new(0.22, 0.0)));
-        let panel = self.panel(t).transition(motion);
+        let panel = if t.reduced_motion { self.panel(t) } else { self.panel(t).transition(motion) };
         mount(t, layer, &key, panel, Side::Bottom, return_to.as_deref(), close);
     }
 }

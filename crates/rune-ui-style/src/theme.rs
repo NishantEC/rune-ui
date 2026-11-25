@@ -63,6 +63,11 @@ pub struct Theme {
     /// Spacing that follows the density knob (paddings, gaps, row heights, insets).
     pub metrics: Metrics,
     pub mat: Materials,
+    /// The person asked for less motion (macOS Reduce Motion). Not in the theme file: the app sets it from Rune's
+    /// `Cx::is_reduced_motion` each frame (`Theme::with_reduced_motion`). Components read it to draw their still form: no sweeping
+    /// shimmer, no turning spinner, no fade-in of streaming words, no sliding thumb, overlays that appear in place. The state stays
+    /// visible (a busy flag, a fixed arc, the words).
+    pub reduced_motion: bool,
     kit: rune_kit::Kit,
 }
 
@@ -145,9 +150,15 @@ impl Theme {
             texture: m.number("texture"),
         };
         let mat = Materials::derive(&colors, &elevation, &motion, &control);
-        let mut t = Theme { name: f.name.clone(), dark, corners: f.base.corners, base_radius: f.base.radius, font: f.base.font, c, space, ty, radius, elevation, motion, control, metrics, mat, kit: rune_kit::Kit::neutral(dark) };
+        let mut t = Theme { name: f.name.clone(), dark, corners: f.base.corners, base_radius: f.base.radius, font: f.base.font, c, space, ty, radius, elevation, motion, control, metrics, mat, reduced_motion: false, kit: rune_kit::Kit::neutral(dark) };
         t.kit = t.build_kit();
         t
+    }
+
+    /// This theme with Reduce Motion on or off: `theme.with_reduced_motion(cx.is_reduced_motion())` in the view.
+    pub fn with_reduced_motion(mut self, on: bool) -> Theme {
+        self.reduced_motion = on;
+        self
     }
 
     /// The rune-kit tokens for components whose behaviour is rune-kit's (Select, Combobox, DropdownMenu, ContextMenu): our floating

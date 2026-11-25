@@ -1,6 +1,6 @@
 use rune::El;
 
-use super::super::gallery::{Ctx, StoryItem, spec, specs};
+use super::super::gallery::{Ctx, StoryItem, spec_wide, specs};
 use super::super::response::Response;
 
 pub fn item<S: 'static>() -> StoryItem<S> {
@@ -12,7 +12,7 @@ const WHOLE: &str = "## What changed\n\nThe importer now **retries** a failed pa
 fn all<S: 'static>(c: &mut Ctx<S>) -> El {
     let t = c.t;
     specs(t, vec![
-        spec(t, "Whole: headings, lists, a quote, code and a table", rune::col().w(560.0).child(Response::new("response-whole", WHOLE).build(t))),
-        spec(t, "Streaming: the newest words fade in, a caret trails", rune::col().w(560.0).child(Response::new("response-live", "The importer now **retries** a failed page three times, waiting longer").streaming(true).build(t))),
+        spec_wide(t, "Whole: headings, lists, a quote, code and a table", 560.0, Response::new("response-whole", WHOLE).build(t)),
+        spec_wide(t, "Streaming: the newest words fade in, a caret trails", 560.0, Response::new("response-live", "The importer now **retries** a failed page three times, waiting longer").streaming(true).build(t)),
     ])
 }

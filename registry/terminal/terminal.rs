@@ -1,4 +1,4 @@
-//! rune-ui registry: terminal 0.6.0. Copied into your app by `rune-ui add terminal`; yours to change.
+//! rune-ui registry: terminal 0.8.0 Copied into your app by `rune-ui add terminal`; yours to change.
 //!
 //! A command and what it printed, on the slab: a header with the prompt and command in a monospaced face, then its state at the right
 //! (a turning ring and "Running" while it runs; "exit 0" in the success ink, any other exit code in the danger ink) and how long it
@@ -12,7 +12,7 @@ use rune::{El, col, row, text};
 use rune_ui_style::tabular;
 
 use super::agent::{elapsed, meta, mono, slab};
-use super::base::{Theme, glyph, spinner};
+use super::base::{Theme, glyph, spinner_in};
 use super::icons;
 
 pub struct Terminal<'a> {
@@ -55,7 +55,7 @@ impl<'a> Terminal<'a> {
     pub fn build(self, t: &Theme) -> El {
         let style = mono(t, t.ty.sm);
         let state = if self.running {
-            row().gap(t.space.at(1.5)).center_y().child(spinner(t.control.icon_sm, t.ink_muted(), "Running")).child(text("Running").font(t.ty.sm).color(t.ink_muted()).a11y_hidden())
+            row().gap(t.space.at(1.5)).center_y().child(spinner_in(t, t.control.icon_sm, t.ink_muted(), "Running")).child(text("Running").font(t.ty.sm).color(t.ink_muted()).a11y_hidden())
         } else {
             match self.exit {
                 Some(code) => text(format!("exit {code}")).font(tabular(t.ty.sm)).color(if code == 0 { t.c.success.fg } else { t.c.danger.fg }),

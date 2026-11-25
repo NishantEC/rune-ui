@@ -1,4 +1,4 @@
-//! rune-ui registry: base 0.5.0. What every component shares: the press type, size metrics, the 40 point hit area, a glyph, the
+//! rune-ui registry: base 0.8.0 What every component shares: the press type, size metrics, the 40 point hit area, a glyph, the
 //! spinner, the words beside a control, and `paint` re-exported from the style layer. `rune-ui init` copies it; yours to change.
 
 use std::rc::Rc;
@@ -108,11 +108,24 @@ pub fn glyph(i: &'static Icon, size: f32, color: Color) -> El {
     icon(i, size).color(color).a11y_hidden()
 }
 
-/// Work in progress: a faint ring with a turning arc. The one thing that loops; Rune stops it under Reduce Motion.
+/// Work in progress: a faint ring with a turning arc. The one thing that loops; Rune stops it under Reduce Motion. Prefer
+/// [`spinner_in`], which also holds still when the theme says Reduce Motion (`Theme::reduced_motion`).
 pub fn spinner(size: f32, color: Color, label: &str) -> El {
+    ring(size, color, label, true)
+}
+
+/// [`spinner`] in a theme: under Reduce Motion the arc holds still (a quarter of the ring, still saying busy).
+pub fn spinner_in(t: &Theme, size: f32, color: Color, label: &str) -> El {
+    ring(size, color, label, !t.reduced_motion)
+}
+
+fn ring(size: f32, color: Color, label: &str, turning: bool) -> El {
     let track = icon(&icons::RING, size).absolute(0.0, 0.0).color(color.alpha(0.25));
-    let arc = icon(&icons::ARC, size).absolute(0.0, 0.0).color(color).looping(LoopSpec::rotation(1.0));
-    el().size(size, size).role("progressbar").label(label.to_owned()).child(track).child(arc)
+    let mut arc = icon(&icons::ARC, size).absolute(0.0, 0.0).color(color);
+    if turning {
+        arc = arc.looping(LoopSpec::rotation(1.0));
+    }
+    el().size(size, size).role("progressbar").label(label.to_owned()).busy(true).child(track).child(arc)
 }
 
 /// Words beside a control: the label in the first ink on one line, an optional hint under it in the second, wrapping past 320 points.

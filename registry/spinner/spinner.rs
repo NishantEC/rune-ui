@@ -1,6 +1,7 @@
-//! rune-ui registry: spinner 0.5.0. Copied into your app by `rune-ui add spinner`; yours to change.
+//! rune-ui registry: spinner 0.8.0 Copied into your app by `rune-ui add spinner`; yours to change.
 //!
-//! Work in progress: a faint ring with a turning arc, the one thing in the library that loops (Rune stops it under Reduce Motion). Three
+//! Work in progress: a faint ring with a turning arc, the one thing in the library that loops. Under Reduce Motion (Rune's, or the
+//! theme's `reduced_motion`) the arc holds still and the spinner still says it is busy. Three
 //! sizes; the second ink by default, or a meaning's colour. It says what is loading.
 //!
 //! ```ignore
@@ -40,6 +41,6 @@ impl Spinner {
             _ => 16.0,
         };
         let color = self.tone.map_or(t.ink_muted(), |tone| tone.colors(t).2);
-        super::base::spinner(d, color, &self.label)
+        super::base::spinner_in(t, d, color, &self.label)
     }
 }

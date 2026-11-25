@@ -1,4 +1,4 @@
-//! rune-ui registry: button 0.5.0. Copied into your app by `rune-ui add button`; yours to change.
+//! rune-ui registry: button 0.8.0 Copied into your app by `rune-ui add button`; yours to change.
 //!
 //! shadcn's six variants on the materials: **Default** (ink, a view's one primary action), **Secondary** (raised), **Outline**,
 //! **Ghost**, **Destructive** and **Link**. Three sizes. Words, an icon and words, a trailing icon, or an icon alone (the label is then
@@ -12,7 +12,7 @@
 
 use rune::{El, Icon, row, text};
 
-use super::base::{ButtonVariant, Parts, Press, Shape, Size, SizeExt, State, Theme, glyph, hit_area, paint_state, press, recipes, spinner, states};
+use super::base::{ButtonVariant, Parts, Press, Shape, Size, SizeExt, State, Theme, glyph, hit_area, paint_state, press, recipes, spinner_in, states};
 
 pub struct Button<S: 'static> {
     key: String,
@@ -132,7 +132,7 @@ impl<S: 'static> Button<S> {
         face = paint_state(face, &parts.root, st);
         let size = if self.icon_only { t.control.icon_lg } else { self.size.icon(t) };
         if self.loading {
-            face = face.busy(true).child(spinner(size, ink, &self.label));
+            face = face.busy(true).child(spinner_in(t, size, ink, &self.label));
         } else if let Some(i) = self.icon {
             face = face.child(glyph(i, size, parts.icon.resolve(st)));
         }

@@ -2,13 +2,13 @@
 schema = 1
 name = "spinner"
 title = "Spinner"
-version = "0.5.0"
+version = "0.8.0"
 type = "component"
 group = "display"
 description = "Work in progress: a turning ring, the one thing that loops."
 
 [requires]
-style = ">=0.5.0, <0.8.0"
+style = ">=0.8.0, <0.9.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "spinner.rs"
 target = "src/ui/spinner.rs"
-sha256 = "c1460310cdebe81a3dbc468c8690a6dcfdeba2ac887d11946ccc8b71d9ffa9e8"
+sha256 = "1d3fae9e2a0479cb51f7412db18c171671feba3d52301b35bc72f9e4c740eef3"
 
 # Copied only once the gallery block is installed.
 [[files]]

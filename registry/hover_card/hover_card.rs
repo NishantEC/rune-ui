@@ -1,4 +1,4 @@
-//! rune-ui registry: hover_card 0.5.1. Copied into your app by `rune-ui add hover_card`; yours to change.
+//! rune-ui registry: hover_card 0.8.0 Copied into your app by `rune-ui add hover_card`; yours to change.
 //!
 //! A preview of what a link or a name points to, shown when the pointer rests on it: the **floating** material beside the trigger,
 //! placed by Rune's anchoring through the overlay layer (flipping when there is no room, kept inside the window), with no scrim and no
@@ -109,7 +109,8 @@ impl<S: 'static> HoverCard<S> {
             }
             let from = Vec2 { x: 0.5, y: if self.side == Side::Top { 1.0 } else { 0.0 } };
             let motion = Transition::scale_anchor(0.97, from).springs(SpringPair::new(Spring::new(0.14, 0.0), Spring::new(0.09, 0.0)));
-            layer.push(card.anchored(anchor.clone(), self.side, Align::Center, t.space.at(2.0)).transition(motion));
+            let placed = card.anchored(anchor.clone(), self.side, Align::Center, t.space.at(2.0));
+            layer.push(if t.reduced_motion { placed } else { placed.transition(motion) });
         }
         trigger
     }

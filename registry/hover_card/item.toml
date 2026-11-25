@@ -2,13 +2,13 @@
 schema = 1
 name = "hover_card"
 title = "HoverCard"
-version = "0.5.1"
+version = "0.8.0"
 type = "component"
 group = "overlays"
 description = "A preview card beside a link or a name after the pointer rests on it, through the overlay layer; Return pins it, Escape hides it."
 
 [requires]
-style = ">=0.5.1, <0.8.0"
+style = ">=0.8.0, <0.9.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "hover_card.rs"
 target = "src/ui/hover_card.rs"
-sha256 = "97e13ed51ed64b7aa92395253e068fa0c336e760eaab130fac96081d016efaa9"
+sha256 = "51d07df7d1308c11dec5a2ef0ea1e62093f5137d095ad474f0fe8ca4ee64667f"
 
 # Copied only once the gallery block is installed.
 [[files]]

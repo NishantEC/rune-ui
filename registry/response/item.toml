@@ -2,13 +2,13 @@
 schema = 1
 name = "response"
 title = "Response"
-version = "0.6.0"
+version = "0.8.0"
 type = "component"
 group = "agent"
 description = "The assistant's words as Markdown in the theme's type, streaming with a caret; code fences coloured by Rune's highlighter."
 
 [requires]
-style = ">=0.6.0, <0.8.0"
+style = ">=0.8.0, <0.9.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -22,11 +22,11 @@ stories = []
 [[files]]
 path = "response.rs"
 target = "src/ui/response.rs"
-sha256 = "8d76ced0d21b72ede341594ab43129df75a9c6e8a6f5818009561f91428681ea"
+sha256 = "8eb87d26821947de5609b037459a3f1b7e315e205a9aac084494ac00e8b97f2f"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/response.rs"
 role = "story"
-sha256 = "83159c102387dd02bc854454ec7790642aa6ad11df27de65c2b53c463591bbcc"
+sha256 = "4d468d9899ab1e96e9aebe287294e939348a4bb7d146019b2e354bf81a07de58"

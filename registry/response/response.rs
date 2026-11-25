@@ -1,4 +1,4 @@
-//! rune-ui registry: response 0.6.0. Copied into your app by `rune-ui add response`; yours to change. Needs rune-kit's `markdown`
+//! rune-ui registry: response 0.8.0 Copied into your app by `rune-ui add response`; yours to change. Needs rune-kit's `markdown`
 //! feature, which `rune-ui add response` turns on in your Cargo.toml.
 //!
 //! The assistant's words, as Markdown drawn by rune-kit (pulldown-cmark): paragraphs, headings, lists, task lists, quotes, inline code,
@@ -77,7 +77,7 @@ impl Response {
             }
             src.push_str(CARET);
         }
-        let md = Markdown::new(src).streaming(self.streaming).reveal(if self.streaming { 0.18 } else { 0.0 }).style(Response::style(t, self.column)).build(t.to_kit());
+        let md = Markdown::new(src).streaming(self.streaming).reveal(if self.streaming && !t.reduced_motion { 0.18 } else { 0.0 }).style(Response::style(t, self.column)).build(t.to_kit());
         col().key(self.key).role("document").label("Response").busy(self.streaming).w_full().max_w(self.column).min_w(0.0).child(md)
     }
 }

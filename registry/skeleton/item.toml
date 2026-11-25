@@ -2,13 +2,13 @@
 schema = 1
 name = "skeleton"
 title = "Skeleton"
-version = "0.5.0"
+version = "0.8.0"
 type = "component"
 group = "display"
 description = "The still shape of what is loading."
 
 [requires]
-style = ">=0.5.0, <0.8.0"
+style = ">=0.5.0, <0.9.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "skeleton.rs"
 target = "src/ui/skeleton.rs"
-sha256 = "c73ed13114b874ccbdc59a7996080922d87707c9839d7d52e5cc2ce606f2a03f"
+sha256 = "b81989548988882c4d7dcae26c98aab0bef600795c3864df0d57816e1761fb6a"
 
 # Copied only once the gallery block is installed.
 [[files]]
