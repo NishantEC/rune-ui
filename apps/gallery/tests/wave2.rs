@@ -362,3 +362,40 @@ fn an_otp_input_fills_moves_and_backspaces() {
     key(&mut rt, Key::Text("9".to_owned()));
     assert_eq!(rt.state.g.choice("otp", "12"), "1239", "typing replaces a filled slot");
 }
+
+// ---- Drawer ----
+
+#[test]
+fn a_drawer_rises_against_the_bottom_traps_focus_and_closes_by_key_press_or_drag() {
+    let mut rt = item("drawer");
+    let before = layout(&rt);
+    press(&mut rt, "drawer-open");
+    let d = drawn(&rt, "drawer-demo-drawer");
+    assert!((d[1] + d[3] - H).abs() < 0.5 && d[0] <= 0.5 && d[2] >= W - 0.5, "against the bottom, full width: {d:?}");
+    unmoved(&before, &rt, "opening the drawer");
+    key(&mut rt, Key::Tab);
+    let f = focused(&rt).unwrap_or_default();
+    assert!(f.starts_with("drawer-demo"), "Tab stays inside the drawer: {f}");
+    key(&mut rt, Key::Escape);
+    assert!(rt.presented("drawer-demo-drawer").is_none(), "Escape closes");
+    assert_eq!(focused(&rt).as_deref(), Some("drawer-open"), "focus back on the trigger");
+    press(&mut rt, "drawer-open");
+    rt.pointer_down(20.0, 20.0);
+    rt.pointer_up(20.0, 20.0);
+    settle(&mut rt);
+    assert!(rt.presented("drawer-demo-drawer").is_none(), "a press outside closes");
+    press(&mut rt, "drawer-open");
+    let g = drawn(&rt, "drawer-demo-grab");
+    let (x, y) = (g[0] + g[2] / 2.0, g[1] + g[3] / 2.0);
+    rt.pointer_down(x, y);
+    rt.pointer_move(x, y + 30.0);
+    rt.pointer_up(x, y + 30.0);
+    settle(&mut rt);
+    assert!(rt.presented("drawer-demo-drawer").is_some(), "a short drag leaves it open");
+    rt.pointer_down(x, y);
+    rt.pointer_move(x, y + 50.0);
+    rt.pointer_move(x, y + 100.0);
+    rt.pointer_up(x, y + 100.0);
+    settle(&mut rt);
+    assert!(rt.presented("drawer-demo-drawer").is_none(), "dragging the bar down closes it");
+}

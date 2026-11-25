@@ -1,4 +1,4 @@
-//! rune-ui registry: sheet 0.5.0. Copied into your app by `rune-ui add sheet`; yours to change.
+//! rune-ui registry: sheet 0.5.1. Copied into your app by `rune-ui add sheet`; yours to change.
 //!
 //! A panel against one edge of the window over a scrim (settings, details, a form that needs room). The **floating** material, rounded
 //! only on its free edges, a title and a close button, then its body. Behaviour is Rune's `El::modal` (focus trapped, Escape and a press
@@ -109,23 +109,27 @@ impl<S: 'static> Sheet<S> {
         if !self.open {
             return;
         }
-        let key = self.key.clone();
-        let close = self.close.clone();
-        let side = self.side;
-        let return_to = self.return_to.clone();
-        let mut panel = self.panel(t);
-        if let Some(k) = return_to {
-            panel = panel.focus_return(k);
-        }
-        if let Some(f) = close {
-            panel = panel.modal(true, move |s: &mut S| f(s));
-        }
-        layer.push(el().key(format!("{key}-scrim")).absolute(0.0, 0.0).w_full().h_full().fill(t.c.page.fg.alpha(if t.dark { 0.5 } else { 0.18 })).a11y_hidden());
-        let holder = el().key(format!("{key}-layer")).absolute(0.0, 0.0).w_full().h_full();
-        layer.push(match side {
-            Side::Right => holder.justify_end().child(panel),
-            Side::Left => holder.justify_start().child(panel),
-            Side::Bottom => col().key(format!("{key}-layer")).absolute(0.0, 0.0).w_full().h_full().justify_end().child(panel),
-        });
+        let (key, close, side, return_to) = (self.key.clone(), self.close.clone(), self.side, self.return_to.clone());
+        let panel = self.panel(t);
+        mount(t, layer, &key, panel, side, return_to.as_deref(), close);
     }
+}
+
+/// Mounts `panel` into `layer` against `side` of the window, over a scrim: focus trapped, Escape and a press outside call `close`,
+/// focus going back to `return_to`. Sheet and Drawer share it.
+pub fn mount<S: 'static>(t: &Theme, layer: &mut Vec<El>, key: &str, panel: El, side: Side, return_to: Option<&str>, close: Option<Press<S>>) {
+    let mut panel = panel;
+    if let Some(k) = return_to {
+        panel = panel.focus_return(k);
+    }
+    if let Some(f) = close {
+        panel = panel.modal(true, move |s: &mut S| f(s));
+    }
+    layer.push(el().key(format!("{key}-scrim")).absolute(0.0, 0.0).w_full().h_full().fill(t.c.page.fg.alpha(if t.dark { 0.5 } else { 0.18 })).a11y_hidden());
+    let holder = el().key(format!("{key}-layer")).absolute(0.0, 0.0).w_full().h_full();
+    layer.push(match side {
+        Side::Right => holder.justify_end().child(panel),
+        Side::Left => holder.justify_start().child(panel),
+        Side::Bottom => col().key(format!("{key}-layer")).absolute(0.0, 0.0).w_full().h_full().justify_end().child(panel),
+    });
 }
