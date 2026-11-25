@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "commit"
+title = "Commit"
+version = "0.8.0"
+type = "component"
+group = "agent"
+description = "One commit as a line that folds: hash, subject, author, time, +n −n; open, its files with their counts and the diff; Copy hash."
+
+[requires]
+style = ">=0.8.0, <0.9.0"
+rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
+
+[dependencies]
+registry = ["base", "icons", "agent", "diff"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "commit.rs"
+target = "src/ui/commit.rs"
+sha256 = "11a6d4ed67203462e31e01a6747b8123969ab0232dee7d06cbd254ce665c1728"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/commit.rs"
+role = "story"
+sha256 = "ecf9d0ad9da92c5e749a4400fd28bf5512e52ffec48045d30d2f3d485a4227fc"

@@ -1,0 +1,1 @@
+pub const CHECKS: &[(&str, &str)] = &[("tests-demo", "group"), ("tests-demo-summary", "status"), ("tests-demo-suite-0-trigger", "button"), ("tests-demo-suite-0-test-0", "listitem"), ("tests-demo-suite-0-test-0-diff", "group")];
