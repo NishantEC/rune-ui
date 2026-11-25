@@ -8,7 +8,7 @@ group = "form"
 description = "Several lines on the well material, growing with its text."
 
 [requires]
-style = ">=0.5.0, <0.7.0"
+style = ">=0.5.0, <0.8.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]

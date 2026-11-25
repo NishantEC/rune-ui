@@ -8,7 +8,7 @@ group = "agent"
 description = "A row of suggested prompts as raised chips that wrap; a press hands the words to the app."
 
 [requires]
-style = ">=0.6.0, <0.7.0"
+style = ">=0.6.0, <0.8.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
