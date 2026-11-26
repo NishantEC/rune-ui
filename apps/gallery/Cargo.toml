@@ -14,8 +14,9 @@ name = "gallery"
 path = "src/main.rs"
 
 [dependencies]
-# `tooling`: `--snap`, `--scene`, `--tree` in release builds too (debug builds always have them).
-rune = { workspace = true, features = ["tooling"] }
+# Rune's default features are off in the workspace (so the MPL-2.0 Ogg audio crates are not in the lock file); these are all the
+# ones Rune enables by default except `ogg-audio`. `tooling`: `--snap`, `--scene`, `--tree` in release builds too (debug builds always have them).
+rune = { workspace = true, features = ["tooling", "accessibility", "dbus", "embedded-fonts", "hunspell", "metal-backend", "svg"] }
 rune-kit = { workspace = true, features = ["markdown"] }
 rune-ui-style.workspace = true
 rune-ui-themes.workspace = true
