@@ -55,8 +55,8 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> rune::El {
         ])
         .build(t);
     specs(t, vec![
-        spec(t, "Two lines: a portrait, a second line, a count, a trailing pill; the current row raised; New task is a button", rune::col().h(400.0).child(two)),
         spec(t, "Header, two groups, footer (Calendar pinned to hover)", rune::col().h(400.0).child(bar)),
         spec(t, "A list of tasks: status marks lead each row; one list for assistive technology", rune::col().h(400.0).child(tasks)),
+        spec(t, "Two lines: a portrait, a second line, a count, a trailing pill; the current row raised; New task is a button", rune::col().h(400.0).child(two)),
     ])
 }
