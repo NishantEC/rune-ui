@@ -190,6 +190,15 @@ fn every_role_text_reads_on_its_surface() {
             check(&format!("{name} solid"), tone.on_solid, tone.solid, 4.5);
         }
         check("ring", c.ring, c.page.bg, 3.0);
+        // The identity colour, when a theme sets one: its words read on its tint and on the page, its solid on-colour reads, and the
+        // solid colour is visible enough to draw a ring or a dot with (3:1 on the page).
+        if let Some(id) = c.identity {
+            check("identity", id.fg, id.bg, 4.5);
+            check("identity on page", id.fg, c.page.bg, 4.5);
+            check("identity on surface", id.fg, c.surface.bg, 4.5);
+            check("identity solid", id.on_solid, id.solid, 4.5);
+            check("identity solid on page", id.solid, c.page.bg, 3.0);
+        }
     }
 }
 

@@ -25,15 +25,24 @@ pub const HUE_STEPS: [&str; 11] = ["50", "100", "200", "300", "400", "500", "600
 pub const SURFACE_ROLES: [&str; 9] = ["page", "surface", "floating", "muted", "subtle", "primary", "secondary", "accent", "input"];
 pub const TONE_ROLES: [&str; 4] = ["info", "success", "warning", "danger"];
 pub const LINE_ROLES: [&str; 2] = ["line", "ring"];
+/// Optional colour ramps (a theme that leaves them out behaves as before): `identity` is a hue for one thing's own colour (a ring, a
+/// selected mark) that is neither the ink nor a meaning.
+pub const OPTIONAL_RAMPS: [&str; 1] = ["identity"];
+/// Optional roles, each a [`Tone`] (a quiet tint, its text, a solid colour and its text): `identity` needs the `identity` ramp.
+pub const OPTIONAL_ROLES: [&str; 1] = ["identity"];
 pub const STATE_KEYS: [&str; 4] = ["hover", "pressed", "selected", "disabled"];
 pub const COMPONENT_KEYS: [&str; 11] = ["raised-top", "raised-bottom", "raised-edge", "ink-top", "ink-bottom", "ink-rim", "ink-edge", "well-shadow", "thumb", "float-ring", "shade"];
 pub const NUMBER_KEYS: [&str; 4] = ["elevation", "well-blur", "grain", "texture"];
+/// Optional numbers: `scrim` is how strongly black dims the page behind a modal (0 to 1).
+pub const OPTIONAL_NUMBER_KEYS: [&str; 1] = ["scrim"];
 /// The numeric base knobs.
 pub const BASE_KEYS: [&str; 4] = ["spacing", "radius", "density", "type-scale"];
 /// The base knobs that are words, and the words each allows.
 pub const BASE_WORDS: [(&str, &[&str]); 1] = [("corners", &["continuous", "round"])];
 /// The base knobs that name something registered at run time: `font` (a built-in or an installed font item, [`crate::fonts`]).
 pub const BASE_NAMES: [&str; 1] = ["font"];
+/// Optional base names: `keys-font` is the face of keycaps and menu shortcuts (the theme's own font when left out).
+pub const OPTIONAL_BASE_NAMES: [&str; 1] = ["keys-font"];
 
 /// A surface and the text that reads on it.
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -70,6 +79,10 @@ impl Mode {
     pub fn tone(&self, k: &str) -> Tone {
         self.tones[k]
     }
+    /// The optional identity role, when the theme sets it.
+    pub fn identity(&self) -> Option<Tone> {
+        self.tones.get("identity").copied()
+    }
     pub fn component(&self, k: &str) -> Color {
         self.component[k]
     }
@@ -78,6 +91,10 @@ impl Mode {
     }
     pub fn number(&self, k: &str) -> f32 {
         self.number[k]
+    }
+    /// An optional number, when the theme sets it.
+    pub fn number_opt(&self, k: &str) -> Option<f32> {
+        self.number.get(k).copied()
     }
 }
 
@@ -124,6 +141,8 @@ pub struct Base {
     pub type_scale: f32,
     pub corners: Corners,
     pub font: Font,
+    /// The face of keycaps and menu shortcuts; `None` is `font`.
+    pub keys_font: Option<Font>,
 }
 
 /// A whole theme file, parsed and checked.
@@ -154,9 +173,10 @@ impl ThemeFile {
         let base = root.get("base").map(|b| p.base(b));
         let mut ramps = BTreeMap::new();
         if let Some(color) = root.get("color").and_then(|c| p.object(c, "color")) {
-            p.keys(color, "color", &RAMPS, &["$type"]);
+            let optional: Vec<&str> = std::iter::once("$type").chain(OPTIONAL_RAMPS).collect();
+            p.keys(color, "color", &RAMPS, &optional);
             p.type_tag(color, "color", "color");
-            for ramp in RAMPS {
+            for ramp in RAMPS.iter().copied().chain(OPTIONAL_RAMPS.iter().copied().filter(|r| color.contains_key(*r))) {
                 let path = format!("color.{ramp}");
                 let Some(steps) = color.get(ramp).and_then(|r| p.object(r, &path)) else { continue };
                 let wanted: &[&str] = if ramp == "neutral" { &NEUTRAL_STEPS } else { &HUE_STEPS };
@@ -236,12 +256,13 @@ impl Problems {
         o.get("$value")
     }
 
-    fn numbers(&mut self, v: &Value, path: &str, keys: &[&str]) -> BTreeMap<String, f32> {
+    fn numbers(&mut self, v: &Value, path: &str, keys: &[&str], optional: &[&str]) -> BTreeMap<String, f32> {
         let mut out = BTreeMap::new();
         let Some(o) = self.object(v, path) else { return out };
-        self.keys(o, path, keys, &["$type"]);
+        let allowed: Vec<&str> = std::iter::once("$type").chain(optional.iter().copied()).collect();
+        self.keys(o, path, keys, &allowed);
         self.type_tag(o, path, "number");
-        for k in keys {
+        for k in keys.iter().chain(optional.iter().filter(|k| o.contains_key(**k))) {
             let at = join(path, k);
             if let Some(val) = o.get(*k).and_then(|x| self.leaf(x, &at)) {
                 match val.as_f64() {
@@ -257,10 +278,10 @@ impl Problems {
 
     /// The base knobs: numbers, and words from a fixed list.
     fn base(&mut self, v: &Value) -> Base {
-        let mut b = Base { spacing: 4.0, radius: 8.0, density: 1.0, type_scale: 1.0, corners: Corners::Continuous, font: Font::INTER };
+        let mut b = Base { spacing: 4.0, radius: 8.0, density: 1.0, type_scale: 1.0, corners: Corners::Continuous, font: Font::INTER, keys_font: None };
         let Some(o) = self.object(v, "base") else { return b };
         let all: Vec<&str> = BASE_KEYS.iter().copied().chain(BASE_WORDS.iter().map(|(k, _)| *k)).chain(BASE_NAMES).collect();
-        self.keys(o, "base", &all, &[]);
+        self.keys(o, "base", &all, &OPTIONAL_BASE_NAMES);
         for k in BASE_KEYS {
             let at = join("base", k);
             if let Some(val) = o.get(k).and_then(|x| self.leaf(x, &at)) {
@@ -293,6 +314,16 @@ impl Problems {
                 Some(name) => match crate::fonts::find(name) {
                     Some(f) => b.font = f,
                     None => self.push(&at, &format!("no font called \"{name}\"; this app has {} (a font item adds one: `rune-ui add font_<name>`, then `rune_ui_style::fonts::install(ui::FONTS)` at start-up)", crate::fonts::names().join(", "))),
+                },
+                None => self.push(&at, "must be a font's name, like \"inter\""),
+            }
+        }
+        let at = join("base", "keys-font");
+        if let Some(val) = o.get("keys-font").and_then(|x| self.leaf(x, &at)) {
+            match val.as_str() {
+                Some(name) => match crate::fonts::find(name) {
+                    Some(f) => b.keys_font = Some(f),
+                    None => self.push(&at, &format!("no font called \"{name}\"; this app has {}", crate::fonts::names().join(", "))),
                 },
                 None => self.push(&at, "must be a font's name, like \"inter\""),
             }
@@ -331,7 +362,8 @@ impl Problems {
         if let Some(roles) = o.get("role").and_then(|r| self.object(r, &join(path, "role"))) {
             let rp = join(path, "role");
             let all: Vec<&str> = SURFACE_ROLES.iter().chain(TONE_ROLES.iter()).chain(LINE_ROLES.iter()).copied().collect();
-            self.keys(roles, &rp, &all, &["$type"]);
+            let optional: Vec<&str> = std::iter::once("$type").chain(OPTIONAL_ROLES).collect();
+            self.keys(roles, &rp, &all, &optional);
             self.type_tag(roles, &rp, "color");
             for k in SURFACE_ROLES {
                 let at = join(&rp, k);
@@ -342,7 +374,7 @@ impl Problems {
                     m.roles.insert(k.to_owned(), Role { bg, fg });
                 }
             }
-            for k in TONE_ROLES {
+            for k in TONE_ROLES.iter().copied().chain(OPTIONAL_ROLES.iter().copied().filter(|k| roles.contains_key(*k))) {
                 let at = join(&rp, k);
                 if let Some(r) = roles.get(k).and_then(|r| self.object(r, &at)) {
                     self.keys(r, &at, &["bg", "fg", "solid", "on-solid"], &[]);
@@ -355,7 +387,7 @@ impl Problems {
             m.ring = roles.get("ring").map_or(Color::TRANSPARENT, |x| self.alias(x, &join(&rp, "ring"), ramps));
         }
         if let Some(s) = o.get("state") {
-            m.state = self.numbers(s, &join(path, "state"), &STATE_KEYS);
+            m.state = self.numbers(s, &join(path, "state"), &STATE_KEYS, &[]);
         }
         if let Some(c) = o.get("component").and_then(|c| self.object(c, &join(path, "component"))) {
             let cp = join(path, "component");
@@ -369,7 +401,7 @@ impl Problems {
             }
         }
         if let Some(n) = o.get("number") {
-            m.number = self.numbers(n, &join(path, "number"), &NUMBER_KEYS);
+            m.number = self.numbers(n, &join(path, "number"), &NUMBER_KEYS, &OPTIONAL_NUMBER_KEYS);
         }
         m
     }

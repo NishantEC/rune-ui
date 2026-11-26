@@ -228,7 +228,42 @@
       "950": {
         "$value": "#420203"
       }
-    }
+    },
+      "identity": {
+        "50": {
+          "$value": "#effaf8"
+        },
+        "100": {
+          "$value": "#d3f3ee"
+        },
+        "200": {
+          "$value": "#a8e5dc"
+        },
+        "300": {
+          "$value": "#74d0c5"
+        },
+        "400": {
+          "$value": "#45b8ab"
+        },
+        "500": {
+          "$value": "#2b9a8f"
+        },
+        "600": {
+          "$value": "#1f7d74"
+        },
+        "700": {
+          "$value": "#1c635d"
+        },
+        "800": {
+          "$value": "#1a4f4b"
+        },
+        "900": {
+          "$value": "#18413e"
+        },
+        "950": {
+          "$value": "#0a2725"
+        }
+      }
   },
   "modes": {
     "light": {
@@ -362,6 +397,20 @@
             "$value": "{neutral.0}"
           }
         },
+          "identity": {
+            "bg": {
+              "$value": "{identity.500} / 0.13"
+            },
+            "fg": {
+              "$value": "{identity.700}"
+            },
+            "solid": {
+              "$value": "{identity.600}"
+            },
+            "on-solid": {
+              "$value": "{neutral.0}"
+            }
+          },
         "line": {
           "$value": "{neutral.1000} / 0.07"
         },
@@ -433,6 +482,9 @@
         },
         "texture": {
           "$value": 1.0
+        },
+        "scrim": {
+          "$value": 0.18
         }
       }
     },
@@ -567,6 +619,20 @@
             "$value": "{neutral.0}"
           }
         },
+          "identity": {
+            "bg": {
+              "$value": "{identity.400} / 0.16"
+            },
+            "fg": {
+              "$value": "{identity.300}"
+            },
+            "solid": {
+              "$value": "{identity.600}"
+            },
+            "on-solid": {
+              "$value": "{neutral.0}"
+            }
+          },
         "line": {
           "$value": "{neutral.0} / 0.08"
         },
@@ -638,6 +704,9 @@
         },
         "texture": {
           "$value": 1.0
+        },
+        "scrim": {
+          "$value": 0.55
         }
       }
     }

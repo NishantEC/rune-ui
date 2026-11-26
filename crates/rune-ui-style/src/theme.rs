@@ -32,6 +32,9 @@ pub struct Palette {
     pub success: Tone,
     pub warning: Tone,
     pub danger: Tone,
+    /// An identity colour for one thing's own hue (a progress ring, a selected mark): a quiet tint, its text, a solid colour and
+    /// its text. `None` when the theme file sets no identity role; read it through [`Theme::identity`], which falls back to `info`.
+    pub identity: Option<Tone>,
     /// A hairline between rows.
     pub line: Color,
     /// The keyboard focus ring.
@@ -68,6 +71,11 @@ pub struct Theme {
     /// shimmer, no turning spinner, no fade-in of streaming words, no sliding thumb, overlays that appear in place. The state stays
     /// visible (a busy flag, a fixed arc, the words).
     pub reduced_motion: bool,
+    /// How strongly black dims the page behind a modal (the theme file's `number.scrim`; 0.18 in light and 0.5 in dark when absent).
+    pub scrim_strength: f32,
+    /// The text style of keycaps and menu shortcuts: the theme's `keys-font` (its own font when unset) at the hint size, medium,
+    /// with figures of one width.
+    pub keycap: TextStyle,
     kit: rune_kit::Kit,
 }
 
@@ -108,6 +116,7 @@ impl Theme {
             success: m.tone("success"),
             warning: m.tone("warning"),
             danger: m.tone("danger"),
+            identity: m.identity(),
             line: m.line,
             ring: m.ring,
             hover: ink.alpha(m.state("hover")),
@@ -150,7 +159,10 @@ impl Theme {
             texture: m.number("texture"),
         };
         let mat = Materials::derive(&colors, &elevation, &motion, &control);
-        let mut t = Theme { name: f.name.clone(), dark, corners: f.base.corners, base_radius: f.base.radius, font: f.base.font, c, space, ty, radius, elevation, motion, control, metrics, mat, reduced_motion: false, kit: rune_kit::Kit::neutral(dark) };
+        let keys_font = f.base.keys_font.unwrap_or(f.base.font);
+        let keycap = tabular(weight(TypeScale::for_density(f.base.density).scaled(f.base.type_scale, keys_font.family).fitted(&keys_font).sm, ty.medium));
+        let scrim_strength = m.number_opt("scrim").unwrap_or(if dark { 0.5 } else { 0.18 });
+        let mut t = Theme { name: f.name.clone(), dark, corners: f.base.corners, base_radius: f.base.radius, font: f.base.font, c, space, ty, radius, elevation, motion, control, metrics, mat, reduced_motion: false, scrim_strength, keycap, kit: rune_kit::Kit::neutral(dark) };
         t.kit = t.build_kit();
         t
     }
@@ -207,6 +219,28 @@ impl Theme {
     /// The control text style for a size.
     pub fn control_text(&self, sm: bool, w: f32) -> TextStyle {
         weight(if sm { self.ty.sm } else { self.ty.base }, w)
+    }
+
+    /// The identity colours: the theme's `identity` role, or its `info` meaning where the theme sets none, so a component can always
+    /// draw with them. It never changes the ink (`primary`).
+    pub fn identity(&self) -> Tone {
+        self.c.identity.unwrap_or(self.c.info)
+    }
+
+    /// Whether the theme file sets an identity role of its own.
+    pub fn has_identity(&self) -> bool {
+        self.c.identity.is_some()
+    }
+
+    /// What dims the page behind a modal (a dialog, a sheet, the command palette): black at the theme's strength. Black in both
+    /// modes: the page ink would fog a dark page with a pale veil instead of dimming it.
+    pub fn scrim(&self) -> Color {
+        Color::BLACK.alpha(self.scrim_strength)
+    }
+
+    /// A lighter scrim, for a palette that sits over the page without shutting it away.
+    pub fn scrim_soft(&self) -> Color {
+        Color::BLACK.alpha(self.scrim_strength * 0.7)
     }
 
     /// The first, second and third inks.

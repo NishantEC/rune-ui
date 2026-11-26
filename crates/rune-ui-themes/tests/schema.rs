@@ -2,7 +2,7 @@
 //! dark modes have the same keys, and the JSON Schema names exactly the keys the parser accepts.
 
 use rune_ui_style::ThemeFile;
-use rune_ui_style::tokens::{BASE_KEYS, BASE_NAMES, BASE_WORDS, COMPONENT_KEYS, HUE_STEPS, LINE_ROLES, NEUTRAL_STEPS, NUMBER_KEYS, RAMPS, STATE_KEYS, SURFACE_ROLES, TONE_ROLES};
+use rune_ui_style::tokens::{BASE_KEYS, BASE_NAMES, BASE_WORDS, COMPONENT_KEYS, HUE_STEPS, LINE_ROLES, NEUTRAL_STEPS, NUMBER_KEYS, OPTIONAL_BASE_NAMES, OPTIONAL_NUMBER_KEYS, OPTIONAL_RAMPS, OPTIONAL_ROLES, RAMPS, STATE_KEYS, SURFACE_ROLES, TONE_ROLES};
 use rune_ui_themes::{ALL, DEFAULT, SCHEMA};
 use serde_json::Value;
 
@@ -104,14 +104,83 @@ fn sorted(keys: &[&str]) -> Vec<String> {
 fn the_schema_names_exactly_what_the_parser_accepts() {
     let s: Value = serde_json::from_str(SCHEMA).unwrap();
     assert_eq!(s["additionalProperties"], Value::Bool(false));
-    let base: Vec<&str> = BASE_KEYS.iter().copied().chain(BASE_WORDS.iter().map(|(k, _)| *k)).chain(BASE_NAMES).collect();
+    let base: Vec<&str> = BASE_KEYS.iter().copied().chain(BASE_WORDS.iter().map(|(k, _)| *k)).chain(BASE_NAMES).chain(OPTIONAL_BASE_NAMES).collect();
     assert_eq!(props(&s, &["properties", "base"]), sorted(&base));
-    assert_eq!(props(&s, &["properties", "color"]), sorted(&RAMPS));
+    let ramps: Vec<&str> = RAMPS.iter().chain(&OPTIONAL_RAMPS).copied().collect();
+    assert_eq!(props(&s, &["properties", "color"]), sorted(&ramps));
+    assert_eq!(props(&s, &["properties", "color", "properties", "identity"]), sorted(&HUE_STEPS));
     assert_eq!(props(&s, &["properties", "color", "properties", "neutral"]), sorted(&NEUTRAL_STEPS));
     assert_eq!(props(&s, &["properties", "color", "properties", "blue"]), sorted(&HUE_STEPS));
-    let roles: Vec<&str> = SURFACE_ROLES.iter().chain(&TONE_ROLES).chain(&LINE_ROLES).copied().collect();
+    let roles: Vec<&str> = SURFACE_ROLES.iter().chain(&TONE_ROLES).chain(&LINE_ROLES).chain(&OPTIONAL_ROLES).copied().collect();
     assert_eq!(props(&s, &["properties", "modes", "properties", "light", "properties", "role"]), sorted(&roles));
     assert_eq!(props(&s, &["properties", "modes", "properties", "dark", "properties", "state"]), sorted(&STATE_KEYS));
     assert_eq!(props(&s, &["properties", "modes", "properties", "dark", "properties", "component"]), sorted(&COMPONENT_KEYS));
-    assert_eq!(props(&s, &["properties", "modes", "properties", "dark", "properties", "number"]), sorted(&NUMBER_KEYS));
+    assert_eq!(props(&s, &["properties", "modes", "properties", "dark", "properties", "number"]), sorted(&NUMBER_KEYS.iter().chain(&OPTIONAL_NUMBER_KEYS).copied().collect::<Vec<_>>()));
+}
+
+/// The default theme without its optional identity ramp and role.
+fn without_identity() -> String {
+    edit(|v| {
+        v["color"].as_object_mut().unwrap().remove("identity");
+        for m in ["light", "dark"] {
+            v["modes"][m]["role"].as_object_mut().unwrap().remove("identity");
+        }
+    })
+}
+
+#[test]
+fn the_identity_colour_is_optional_and_a_theme_without_it_falls_back_to_info() {
+    let with = rune_ui_style::Theme::from_json(DEFAULT, false).unwrap();
+    assert!(with.has_identity(), "the default theme sets an identity colour as the example");
+    assert_ne!(with.identity(), with.c.info, "a teal of its own, not the blue");
+    for dark in [false, true] {
+        let t = rune_ui_style::Theme::from_json(&without_identity(), dark).expect("a theme without identity is as valid as before");
+        assert!(!t.has_identity() && t.c.identity.is_none());
+        assert_eq!(t.identity(), t.c.info, "components that ask for it draw in info");
+        // Nothing else changes: the ink, the accent and every meaning are the same as in the theme that sets it.
+        let w = rune_ui_style::Theme::from_json(DEFAULT, dark).unwrap();
+        assert_eq!((t.c.primary, t.c.accent, t.c.info, t.c.ring), (w.c.primary, w.c.accent, w.c.info, w.c.ring));
+    }
+}
+
+#[test]
+fn an_identity_role_without_its_ramp_is_an_error_with_its_path() {
+    let json = edit(|v| {
+        v["color"].as_object_mut().unwrap().remove("identity");
+    });
+    let errs = ThemeFile::parse(&json).unwrap_err();
+    assert!(errs.iter().any(|e| e.starts_with("modes.light.role.identity.bg:") && e.contains("names no ramp step")), "{errs:?}");
+    let bad = edit(|v| v["color"]["identity"]["500"]["$value"] = Value::from("teal"));
+    assert!(ThemeFile::parse(&bad).unwrap_err().iter().any(|e| e == "color.identity.500: must be #rrggbb"));
+}
+
+#[test]
+fn the_scrim_is_black_at_the_themes_strength() {
+    for dark in [false, true] {
+        let t = rune_ui_style::Theme::from_json(DEFAULT, dark).unwrap();
+        let c = t.scrim();
+        assert_eq!((c.r, c.g, c.b), (0.0, 0.0, 0.0), "black, never the page ink: pale ink would fog a dark page");
+        assert!(c.a > 0.1 && c.a < 0.8, "a veil, not a wall: {}", c.a);
+    }
+    let light = rune_ui_style::Theme::from_json(DEFAULT, false).unwrap().scrim().a;
+    let dark = rune_ui_style::Theme::from_json(DEFAULT, true).unwrap().scrim().a;
+    assert!(dark > light, "dark pages need more black to dim");
+    // Set in the file, followed; left out, the usual strengths.
+    let set = rune_ui_style::Theme::from_json(&edit(|v| v["modes"]["dark"]["number"]["scrim"]["$value"] = Value::from(0.7)), true).unwrap();
+    assert_eq!(set.scrim().a, 0.7);
+    let left_out = rune_ui_style::Theme::from_json(&edit(|v| { v["modes"]["dark"]["number"].as_object_mut().unwrap().remove("scrim"); }), true).unwrap();
+    assert_eq!(left_out.scrim().a, 0.5);
+    assert!(set.scrim_soft().a < set.scrim().a);
+}
+
+#[test]
+fn keycaps_use_the_keys_font_or_the_themes_own() {
+    let t = rune_ui_style::Theme::from_json(DEFAULT, false).unwrap();
+    assert_eq!(t.keycap.family, t.ty.sm.family, "the theme's own font when keys-font is left out");
+    assert_eq!(t.keycap.features, "'tnum' 1");
+    let mono = rune_ui_style::Theme::from_json(&edit(|v| v["base"]["keys-font"] = serde_json::json!({ "$value": "mono" })), false).unwrap();
+    assert_eq!(mono.keycap.family, rune_ui_style::Font::MONO.family);
+    assert_eq!(mono.ty.sm.family, t.ty.sm.family, "only the keys change face");
+    let errs = ThemeFile::parse(&edit(|v| v["base"]["keys-font"] = serde_json::json!({ "$value": "comic-sans" }))).unwrap_err();
+    assert!(errs.iter().any(|e| e.starts_with("base.keys-font: no font called")), "{errs:?}");
 }

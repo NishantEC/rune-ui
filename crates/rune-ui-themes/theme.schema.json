@@ -69,6 +69,26 @@
             "$value"
           ],
           "additionalProperties": false
+        },
+        "keys-font": {
+          "type": "object",
+          "properties": {
+            "$type": {
+              "const": "string"
+            },
+            "$value": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*$",
+              "description": "The face of keycaps and menu shortcuts: a font's name, as for font. Optional: the theme's own font when left out."
+            },
+            "$description": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "$value"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -378,6 +398,58 @@
         },
         "$type": {
           "const": "color"
+        },
+        "identity": {
+          "type": "object",
+          "properties": {
+            "50": {
+              "$ref": "#/$defs/hex"
+            },
+            "100": {
+              "$ref": "#/$defs/hex"
+            },
+            "200": {
+              "$ref": "#/$defs/hex"
+            },
+            "300": {
+              "$ref": "#/$defs/hex"
+            },
+            "400": {
+              "$ref": "#/$defs/hex"
+            },
+            "500": {
+              "$ref": "#/$defs/hex"
+            },
+            "600": {
+              "$ref": "#/$defs/hex"
+            },
+            "700": {
+              "$ref": "#/$defs/hex"
+            },
+            "800": {
+              "$ref": "#/$defs/hex"
+            },
+            "900": {
+              "$ref": "#/$defs/hex"
+            },
+            "950": {
+              "$ref": "#/$defs/hex"
+            }
+          },
+          "required": [
+            "50",
+            "100",
+            "200",
+            "300",
+            "400",
+            "500",
+            "600",
+            "700",
+            "800",
+            "900",
+            "950"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -551,6 +623,10 @@
             },
             "$type": {
               "const": "color"
+            },
+            "identity": {
+              "$ref": "#/$defs/tone",
+              "description": "Optional. A hue for one thing's own colour (a progress ring, a selected mark) that is neither the ink nor a meaning: a quiet tint, its text, a solid colour and its text. Needs the identity ramp. Without it components fall back to info."
             }
           },
           "required": [
@@ -671,6 +747,10 @@
             },
             "texture": {
               "$ref": "#/$defs/number"
+            },
+            "scrim": {
+              "$ref": "#/$defs/number",
+              "description": "Optional. How strongly black dims the page behind a modal, 0 to 1 (0.18 in light and 0.5 in dark when left out)."
             }
           },
           "required": [
