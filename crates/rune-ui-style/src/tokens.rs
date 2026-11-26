@@ -44,6 +44,21 @@ pub const BASE_NAMES: [&str; 1] = ["font"];
 /// Optional base names: `keys-font` is the face of keycaps and menu shortcuts (the theme's own font when left out).
 pub const OPTIONAL_BASE_NAMES: [&str; 1] = ["keys-font"];
 
+/// The steps of the type ramp a theme file may set exactly, with `type`: each takes any of `size`, `line-height`, `weight` and
+/// `tracking`, in points, and replaces what the ramp (density, `type-scale`, the font's size adjustment) made for that step.
+pub const TYPE_STEPS: [&str; 7] = ["xs", "sm", "base", "md", "lg", "xl", "xxl"];
+/// The properties of a type step.
+pub const TYPE_PROPS: [&str; 4] = ["size", "line-height", "weight", "tracking"];
+
+/// What a theme file sets for one step of the type ramp; `None` leaves the ramp's value.
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
+pub struct TypeStep {
+    pub size: Option<f32>,
+    pub line_height: Option<f32>,
+    pub weight: Option<f32>,
+    pub tracking: Option<f32>,
+}
+
 /// A surface and the text that reads on it.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Role {
@@ -151,6 +166,8 @@ pub struct ThemeFile {
     pub name: String,
     pub base: Base,
     pub ramps: BTreeMap<String, BTreeMap<String, Color>>,
+    /// Exact type steps (`type`), by step name; empty when the file leaves the ramp alone.
+    pub type_steps: BTreeMap<String, TypeStep>,
     pub light: Mode,
     pub dark: Mode,
 }
@@ -165,7 +182,7 @@ impl ThemeFile {
         let root: Value = serde_json::from_str(json).map_err(|e| vec![format!("not JSON: {e}")])?;
         let mut p = Problems::default();
         let Some(root) = p.object(&root, "") else { return Err(p.0) };
-        p.keys(root, "", &["name", "base", "color", "modes"], &["$schema", "description"]);
+        p.keys(root, "", &["name", "base", "color", "modes"], &["$schema", "description", "type"]);
         let name = root.get("name").and_then(Value::as_str).unwrap_or_default().to_owned();
         if name.is_empty() {
             p.push("name", "a non-empty string is required");
@@ -196,6 +213,7 @@ impl ThemeFile {
                 ramps.insert(ramp.to_owned(), out);
             }
         }
+        let type_steps = root.get("type").map(|v| p.type_steps(v)).unwrap_or_default();
         let mut modes = Vec::new();
         if let Some(m) = root.get("modes").and_then(|m| p.object(m, "modes")) {
             p.keys(m, "modes", &["light", "dark"], &[]);
@@ -207,7 +225,7 @@ impl ThemeFile {
             return Err(p.0);
         }
         let (Some(base), Some(Some(light)), Some(Some(dark))) = (base, modes.first().cloned(), modes.get(1).cloned()) else { return Err(vec!["incomplete theme".to_owned()]) };
-        Ok(ThemeFile { name, base, ramps, light, dark })
+        Ok(ThemeFile { name, base, ramps, type_steps, light, dark })
     }
 }
 
@@ -272,6 +290,40 @@ impl Problems {
                     None => self.push(&at, "must be a number"),
                 }
             }
+        }
+        out
+    }
+
+    /// The optional `type` table: some steps of the ramp, each with some of `size`, `line-height`, `weight` and `tracking`.
+    fn type_steps(&mut self, v: &Value) -> BTreeMap<String, TypeStep> {
+        let mut out = BTreeMap::new();
+        let Some(o) = self.object(v, "type") else { return out };
+        self.keys(o, "type", &[], &TYPE_STEPS.iter().copied().chain(["$type"]).collect::<Vec<_>>());
+        self.type_tag(o, "type", "number");
+        for step in TYPE_STEPS {
+            let path = join("type", step);
+            let Some(so) = o.get(step).and_then(|x| self.object(x, &path)) else { continue };
+            self.keys(so, &path, &[], &TYPE_PROPS);
+            let mut one = TypeStep::default();
+            for prop in TYPE_PROPS {
+                let at = join(&path, prop);
+                let Some(val) = so.get(prop).and_then(|x| self.leaf(x, &at)) else { continue };
+                let Some(n) = val.as_f64().map(|n| n as f32) else {
+                    self.push(&at, "must be a number");
+                    continue;
+                };
+                if matches!(prop, "size" | "line-height") && n <= 0.0 {
+                    self.push(&at, "must be above zero");
+                    continue;
+                }
+                match prop {
+                    "size" => one.size = Some(n),
+                    "line-height" => one.line_height = Some(n),
+                    "weight" => one.weight = Some(n),
+                    _ => one.tracking = Some(n),
+                }
+            }
+            out.insert(step.to_owned(), one);
         }
         out
     }

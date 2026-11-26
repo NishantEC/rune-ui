@@ -184,3 +184,49 @@ fn keycaps_use_the_keys_font_or_the_themes_own() {
     let errs = ThemeFile::parse(&edit(|v| v["base"]["keys-font"] = serde_json::json!({ "$value": "comic-sans" }))).unwrap_err();
     assert!(errs.iter().any(|e| e.starts_with("base.keys-font: no font called")), "{errs:?}");
 }
+
+#[test]
+fn type_steps_set_the_ramp_exactly_and_only_what_they_name() {
+    let plain = rune_ui_style::Theme::from_json(DEFAULT, false).unwrap();
+    let json = edit(|v| {
+        v["type"] = serde_json::json!({
+            "md": { "size": { "$value": 15 }, "line-height": { "$value": 23 } },
+            "xxl": { "size": { "$value": 40 }, "line-height": { "$value": 46 }, "weight": { "$value": 700 }, "tracking": { "$value": -1.2 } }
+        });
+    });
+    for dark in [false, true] {
+        let t = rune_ui_style::Theme::from_json(&json, dark).unwrap();
+        assert_eq!((t.ty.md.size, t.ty.md.line_height, t.ty.md.weight), (15.0, 23.0, plain.ty.md.weight), "only size and line height of md");
+        assert_eq!((t.ty.xxl.size, t.ty.xxl.line_height, t.ty.xxl.weight, t.ty.xxl.tracking), (40.0, 46.0, 700.0, -1.2));
+        assert_eq!((t.ty.base, t.ty.sm, t.ty.xs, t.ty.lg, t.ty.xl), (plain.ty.base, plain.ty.sm, plain.ty.xs, plain.ty.lg, plain.ty.xl), "the other steps are the ramp's");
+    }
+    // They are exact: the knobs that scale the ramp do not touch a step that is set.
+    let scaled = rune_ui_style::Theme::from_json(&edit(|v| {
+        v["base"]["type-scale"]["$value"] = Value::from(1.2);
+        v["type"] = serde_json::json!({ "md": { "size": { "$value": 15 } } });
+    }), false).unwrap();
+    assert_eq!(scaled.ty.md.size, 15.0);
+    assert_ne!(scaled.ty.base.size, plain.ty.base.size, "an unset step still follows the scale");
+}
+
+#[test]
+fn a_bad_type_step_is_an_error_with_its_path() {
+    let errs = ThemeFile::parse(&edit(|v| {
+        v["type"] = serde_json::json!({
+            "huge": { "size": { "$value": 30 } },
+            "md": { "size": { "$value": -2 }, "colour": { "$value": 1 }, "weight": { "$value": "bold" } }
+        });
+    }))
+    .unwrap_err();
+    assert!(errs.contains(&"type.huge: unknown key".to_owned()), "{errs:?}");
+    assert!(errs.contains(&"type.md.size: must be above zero".to_owned()), "{errs:?}");
+    assert!(errs.contains(&"type.md.colour: unknown key".to_owned()), "{errs:?}");
+    assert!(errs.contains(&"type.md.weight: must be a number".to_owned()), "{errs:?}");
+}
+
+#[test]
+fn the_schema_names_the_type_steps_the_parser_accepts() {
+    let s: Value = serde_json::from_str(SCHEMA).unwrap();
+    assert_eq!(props(&s, &["properties", "type"]), sorted(&rune_ui_style::tokens::TYPE_STEPS));
+    assert_eq!(props(&s, &["properties", "type", "properties", "md"]), sorted(&rune_ui_style::tokens::TYPE_PROPS));
+}

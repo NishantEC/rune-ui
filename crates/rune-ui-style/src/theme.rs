@@ -130,7 +130,7 @@ impl Theme {
         // Continuous corners are drawn on a larger ladder, or they would look the same as round ones (`CONTINUOUS_GAIN`).
         let radius = Radius::from_base(f.base.radius * f.base.corners.gain());
         let space = Space { unit: f.base.spacing };
-        let ty = TypeScale::for_density(f.base.density).scaled(f.base.type_scale, f.base.font.family).fitted(&f.base.font);
+        let ty = TypeScale::for_density(f.base.density).scaled(f.base.type_scale, f.base.font.family).fitted(&f.base.font).with_steps(&f.type_steps);
         let metrics = Metrics::from_density(f.base.density);
         let colors = MaterialColors {
             raised_top: m.component("raised-top"),
@@ -160,7 +160,7 @@ impl Theme {
         };
         let mat = Materials::derive(&colors, &elevation, &motion, &control);
         let keys_font = f.base.keys_font.unwrap_or(f.base.font);
-        let keycap = tabular(weight(TypeScale::for_density(f.base.density).scaled(f.base.type_scale, keys_font.family).fitted(&keys_font).sm, ty.medium));
+        let keycap = tabular(weight(TypeScale::for_density(f.base.density).scaled(f.base.type_scale, keys_font.family).fitted(&keys_font).with_steps(&f.type_steps).sm, ty.medium));
         let scrim_strength = m.number_opt("scrim").unwrap_or(if dark { 0.5 } else { 0.18 });
         let mut t = Theme { name: f.name.clone(), dark, corners: f.base.corners, base_radius: f.base.radius, font: f.base.font, c, space, ty, radius, elevation, motion, control, metrics, mat, reduced_motion: false, scrim_strength, keycap, kit: rune_kit::Kit::neutral(dark) };
         t.kit = t.build_kit();

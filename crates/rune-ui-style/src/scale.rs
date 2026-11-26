@@ -79,6 +79,30 @@ impl TypeScale {
 impl TypeScale {
     /// The ramp fitted to a font: sizes times its `size_adjust` (to half points), line heights times its `line_height` (to whole points).
     /// Inter, the face the ramp was tuned in, is 1 and 1, so it comes back unchanged.
+    /// The ramp with the steps a theme file sets exactly (`type`): each property given replaces the ramp's, after density, type scale
+    /// and the font's size adjustment; what is not given stays.
+    pub fn with_steps(mut self, steps: &std::collections::BTreeMap<String, crate::tokens::TypeStep>) -> TypeScale {
+        let set = |s: &mut TextStyle, d: &crate::tokens::TypeStep| {
+            s.size = d.size.unwrap_or(s.size);
+            s.line_height = d.line_height.unwrap_or(s.line_height);
+            s.weight = d.weight.unwrap_or(s.weight);
+            s.tracking = d.tracking.unwrap_or(s.tracking);
+        };
+        for (name, d) in steps {
+            match name.as_str() {
+                "xs" => set(&mut self.xs, d),
+                "sm" => set(&mut self.sm, d),
+                "base" => set(&mut self.base, d),
+                "md" => set(&mut self.md, d),
+                "lg" => set(&mut self.lg, d),
+                "xl" => set(&mut self.xl, d),
+                "xxl" => set(&mut self.xxl, d),
+                _ => {}
+            }
+        }
+        self
+    }
+
     pub fn fitted(self, font: &crate::fonts::Font) -> TypeScale {
         if font.size_adjust == 1.0 && font.line_height == 1.0 {
             return self;

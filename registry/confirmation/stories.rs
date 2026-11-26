@@ -65,7 +65,7 @@ fn neutral<S: 'static>(c: &mut Ctx<S>) -> El {
 fn listed<S: 'static>(c: &mut Ctx<S>) -> El {
     let (t, g, acc) = (c.t, c.g, c.access);
     let ask = |k: &'static str, title: &str, at: usize| {
-        Confirmation::<S>::new(format!("confirm-l{at}"), title.to_owned(), decision_of(g, k)).escape_denies(false).in_list(at, 3).detail("cargo publish").on_decide(move |s: &mut S, d| acc(s).choose(k, word(d)))
+        Confirmation::<S>::new(format!("confirm-l{at}"), title.to_owned(), decision_of(g, k)).escape_denies(false).in_list(at, 3).detail(if at == 1 { "cargo publish" } else { "git push origin v1.0.0" }).on_decide(move |s: &mut S, d| acc(s).choose(k, word(d)))
     };
     let column = rune::col().key("confirm-list").role("list").label("Pending requests").w_full().gap(t.space.at(2.0))
         .child(ask("confirm-l1", "Publish the crate", 1).build(t))

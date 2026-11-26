@@ -476,6 +476,583 @@
         "dark"
       ],
       "additionalProperties": false
+    },
+    "type": {
+      "type": "object",
+      "description": "Optional. Exact steps of the type ramp, replacing what density, type-scale and the font's size adjustment make for each step you list.",
+      "properties": {
+        "$type": {
+          "const": "number"
+        },
+        "xs": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "line-height": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "weight": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number"
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "tracking": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number"
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false,
+          "description": "Any of size, line-height (points), weight and tracking; each replaces the ramp's value for this step."
+        },
+        "sm": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "line-height": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "weight": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number"
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "tracking": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number"
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false,
+          "description": "Any of size, line-height (points), weight and tracking; each replaces the ramp's value for this step."
+        },
+        "base": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "line-height": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "weight": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number"
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "tracking": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number"
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false,
+          "description": "Any of size, line-height (points), weight and tracking; each replaces the ramp's value for this step."
+        },
+        "md": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "line-height": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "weight": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number"
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "tracking": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number"
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false,
+          "description": "Any of size, line-height (points), weight and tracking; each replaces the ramp's value for this step."
+        },
+        "lg": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "line-height": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "weight": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number"
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "tracking": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number"
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false,
+          "description": "Any of size, line-height (points), weight and tracking; each replaces the ramp's value for this step."
+        },
+        "xl": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "line-height": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "weight": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number"
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "tracking": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number"
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false,
+          "description": "Any of size, line-height (points), weight and tracking; each replaces the ramp's value for this step."
+        },
+        "xxl": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "line-height": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "weight": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number"
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            },
+            "tracking": {
+              "type": "object",
+              "properties": {
+                "$type": {
+                  "const": "number"
+                },
+                "$value": {
+                  "type": "number"
+                },
+                "$description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "$value"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false,
+          "description": "Any of size, line-height (points), weight and tracking; each replaces the ramp's value for this step."
+        }
+      },
+      "additionalProperties": false
     }
   },
   "required": [
