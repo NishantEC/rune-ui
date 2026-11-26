@@ -5,11 +5,13 @@ use super::super::attachment::{Attachment, Kind};
 use super::super::avatar::Avatar;
 use super::super::base::Size;
 use super::super::gallery::{Ctx, StoryItem, spec_wide, specs};
-use super::super::message::{Message, Reveal, words};
+use super::super::message::{Bubble, Message, Reveal, words};
+use super::super::portrait::{Activity, Portrait};
 
 pub fn item<S: 'static>() -> StoryItem<S> {
     StoryItem::new("message", "Message", "agent")
         .story("A person's bubble and the agent's words on the page", all::<S>)
+        .story("A leader above the turn, and the person's words in a well", leader::<S>)
         .story("Actions on hover or focus: hidden, they take no height", reveal::<S>)
 }
 
@@ -22,6 +24,24 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> El {
     let bot = Message::assistant("message-bot", "Assistant").child(words(t, "The migration step timed out after 10 minutes. It waits on a lock another job holds; running them one after the other fixes it."))
         .actions(Actions::<S>::new("message-actions").copy("The migration step timed out.", g.flag("message-copied"), move |s: &mut S| acc(s).toggle("message-copied")).retry(|_: &mut S| {}).build(t)).build(t);
     specs(t, vec![spec_wide(t, "User, with attachments and an avatar; assistant, plain on the page", 640.0, rune::col().w_full().gap(t.space.at(6.0)).child(user).child(bot))])
+}
+
+/// A turn led by a header (a portrait, a name, the state in words) and a person's bubble sunk into a well, light and dark.
+fn leader<S: 'static>(c: &mut Ctx<S>) -> El {
+    let t = c.t;
+    let head = |key: &str, a: Activity, words: &str| {
+        // The ring's room sits in the margin: the tile itself is on the reading edge, under the words' left edge.
+        let (gap, stroke) = super::super::portrait::ring_metrics(24.0);
+        rune::row().gap(t.space.at(2.5) - gap - stroke).center_y().ml(-(gap + stroke))
+            .child(Portrait::new(format!("{key}-portrait"), "Assistant", 24.0).state(a).ringed(true).decorative(true).build(t))
+            .child(rune::text("Assistant").font(rune_ui_style::weight(t.ty.base, t.ty.semibold)).color(t.ink()).a11y_hidden())
+            .child(rune::text(words).font(t.ty.sm).color(t.ink_muted()).a11y_hidden())
+    };
+    let user = Message::user("message-well", "Asha").bubble(Bubble::Well).child(words(t, "Why is the build slow? It was fine on Monday.")).build(t);
+    let bot = Message::assistant("message-led", "Assistant").header(head("message-led-head", Activity::Working, "Thinking")).child(words(t, "Linking takes most of the time; a faster linker halves it.")).build(t);
+    let done = Message::assistant("message-led-done", "Assistant").header(head("message-led-done-head", Activity::None, "Done")).child(words(t, "I switched the linker; the build now takes 40 seconds.")).build(t);
+    let quiet = Message::user("message-quiet", "Asha").child(words(t, "The quiet bubble, for comparison.")).build(t);
+    specs(t, vec![spec_wide(t, "Well bubble, a working leader, a finished one; the quiet bubble below", 640.0, rune::col().w_full().gap(t.space.at(5.0)).child(user).child(bot).child(done).child(quiet))])
 }
 
 /// A person's message and the agent's answer whose actions show only while hovered or focused: live (point at them, or Tab to them),

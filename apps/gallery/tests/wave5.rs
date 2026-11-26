@@ -250,3 +250,36 @@ fn a_theme_without_an_identity_colour_draws_the_ring_in_info() {
     assert!(!t.has_identity());
     let _ = ui::portrait::Portrait::new("x", "Asha", 28.0).state(ui::portrait::Activity::Working).ringed(true).build(&t);
 }
+
+// ---- Message: a header slot and a well bubble ----
+
+#[test]
+fn a_message_header_leads_the_turn_one_block_gap_above_its_first_block() {
+    let rt = item("message");
+    let (head, article) = (drawn(&rt, "message-led-header"), drawn(&rt, "message-led"));
+    assert!((head[0] - article[0]).abs() < 0.5, "on the reading edge: {head:?} {article:?}");
+    assert!((head[1] - article[1]).abs() < 0.5, "at the top of the turn");
+    let words = rt.elements().into_iter().find(|e| e.text.as_deref().is_some_and(|w| w.starts_with("Linking takes most"))).expect("the answer");
+    assert!((words.rect[1] - (head[1] + head[3]) - 4.0).abs() < 0.5, "the first block sits one block gap (4) under the header: {head:?} {:?}", words.rect);
+    assert!(rt.presented("message-bot-header").is_none(), "no header, no row, no gap");
+    let bot = drawn(&rt, "message-bot");
+    let first = rt.elements().into_iter().find(|e| e.text.as_deref().is_some_and(|w| w.starts_with("The migration step"))).unwrap();
+    assert!((first.rect[1] - bot[1]).abs() < 0.5, "a message without a header starts where it did");
+}
+
+#[test]
+fn the_well_bubble_is_the_well_material_with_16_and_10_point_padding() {
+    for dark in [false, true] {
+        let rt = item_in("message", dark);
+        let t = rune_ui_themes::theme(dark);
+        let (well, quiet) = (info(&rt, "message-well-bubble"), info(&rt, "message-quiet-bubble"));
+        let ops = rune_ui_style::plan(&t.mat.well.base);
+        let rune_ui_style::Op::Fill(fill) = ops[0] else { panic!("a well starts with its fill") };
+        assert_eq!(well.fill, fill, "dark {dark}: the bubble is painted with the well material");
+        assert!(well.fill.a < 0.2 && quiet.rect[2] > 0.0, "a light tint, no heavy fill: {:?}", well.fill);
+        let words = rt.elements().into_iter().find(|e| e.text.as_deref().is_some_and(|w| w.starts_with("Why is the build slow? It was"))).unwrap();
+        assert!((words.rect[0] - well.rect[0] - 16.0).abs() < 0.6 && (words.rect[1] - well.rect[1] - 10.0).abs() < 0.6, "16 across, 10 down: {:?} {:?}", words.rect, well.rect);
+        assert!(well.rect[2] <= 720.0 * 0.8 + 0.5, "at most four fifths of the column");
+        assert!(well.rect[0] + well.rect[2] <= drawn(&rt, "message-well")[0] + drawn(&rt, "message-well")[2] + 0.5, "inside its message");
+    }
+}
