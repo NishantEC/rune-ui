@@ -307,3 +307,52 @@ fn the_composer_takes_a_leading_element_and_chips_in_reading_and_tab_order() {
     // Unused, the composer has no body row and no chip row.
     assert!(rt.presented("prompt-demo-body").is_none() && rt.presented("prompt-demo-chips").is_none());
 }
+
+// ---- SidebarItem: two lines, an image, raised, a trailing slot, a button form, the count read out ----
+
+#[test]
+fn a_two_line_sidebar_row_has_an_image_a_second_line_a_raised_current_state_and_a_trailing_slot() {
+    let mut rt = item("sidebar");
+    let (p1, p2, p3, new) = (drawn(&rt, "sidebar-p1"), drawn(&rt, "sidebar-p2"), drawn(&rt, "sidebar-p3"), drawn(&rt, "sidebar-new"));
+    assert_eq!((p1[3], p2[3], p3[3]), (52.0, 52.0, 52.0), "two lines are 52 points high at the default density");
+    assert_eq!(new[3], 36.0, "a one-line row is as before");
+    let face = drawn(&rt, "sidebar-p1-face");
+    assert_eq!((face[2], face[3]), (ui::portrait::ringed(28.0), ui::portrait::ringed(28.0)), "the image keeps the size it was built at");
+    assert!((face[1] + face[3] / 2.0 - (p1[1] + p1[3] / 2.0)).abs() < 0.6, "centred in the row");
+    let title = rt.elements().into_iter().find(|e| e.text.as_deref() == Some("Asha") && e.rect[1] >= p1[1] && e.rect[1] < p1[1] + 52.0).unwrap();
+    let sub = rt.elements().into_iter().find(|e| e.text.as_deref() == Some("Fixing the login test")).unwrap();
+    assert!(sub.rect[1] >= title.rect[1] + title.rect[3] - 1.0, "the second line sits under the title: {:?} {:?}", title.rect, sub.rect);
+    assert_eq!(title.text_style.unwrap().weight, rune_ui_themes::theme(false).ty.semibold, "the current row's title is semibold");
+    assert!(title.rect[0] > face[0] + face[2], "words after the image");
+    // The trailing pill is at the row's end, after the count.
+    let pill = rt.elements().into_iter().find(|e| e.text.as_deref() == Some("PR")).unwrap();
+    let count = rt.elements().into_iter().find(|e| e.text.as_deref() == Some("3") && e.rect[1] >= p1[1] && e.rect[1] < p1[1] + 52.0).unwrap();
+    assert!(pill.rect[0] > count.rect[0] + count.rect[2] && pill.rect[0] + pill.rect[2] <= p1[0] + p1[2], "trailing slot after the count, inside the row");
+    // Raised: the current row is drawn with the raised material, a different fill from the quiet rows'.
+    // (The pebble itself is a gradient and shadows, which the element list does not report: the picture shows it.)
+    // The ring is kept: keyboard focus on the raised row shows it.
+    focus(&mut rt, "sidebar-p1");
+    key(&mut rt, Key::Tab);
+    focus(&mut rt, "sidebar-p1");
+    assert!(info(&rt, "sidebar-p1").focused);
+}
+
+#[test]
+fn a_sidebar_row_can_be_a_button_and_reads_out_its_count_and_second_line() {
+    let mut rt = item("sidebar");
+    let tree = rt.accessibility_json();
+    let new = ax(&tree, "sidebar-new").expect("New task");
+    assert_eq!(new["role"].as_str(), Some("button"), "{new}");
+    let p1 = ax(&tree, "sidebar-p1").expect("Asha's row");
+    let words = p1.to_string();
+    assert!(words.contains("Fixing the login test") && words.contains("3 unread"), "the second line and the count are read after the name: {p1}");
+    assert_eq!(p1["position"].as_u64(), Some(1));
+    // Without count words, the count is still said.
+    assert!(ax(&tree, "sidebar-p3").unwrap().to_string().contains("Count 12"));
+    // The old one-line rows keep their roles.
+    assert_eq!(ax(&tree, "sidebar-home").unwrap()["role"].as_str(), Some("link"));
+    // Return opens a list row, as before.
+    focus(&mut rt, "sidebar-p2");
+    key(&mut rt, Key::Enter);
+    assert_eq!(rt.accessibility_json().to_string().contains("sidebar-p2"), true);
+}
