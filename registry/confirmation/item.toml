@@ -20,11 +20,11 @@ stories = []
 [[files]]
 path = "confirmation.rs"
 target = "src/ui/confirmation.rs"
-sha256 = "95458c5b5b3ef1d40c1b9a4837fc1c87172631c42c4498d725e984c736e1025e"
+sha256 = "1a7f019be06ebb22455c2f5bacee9ff98b5d3f7133b58f022a22f160f8166929"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/confirmation.rs"
 role = "story"
-sha256 = "f57ec7935c6ebbd1552a429e063620c62d65f4610eac96da2d2ac6cec0f436bb"
+sha256 = "3446f0b0f5c6d0f649ad1bb3dc26721915399db3ac09185d45b03a78c1e04891"

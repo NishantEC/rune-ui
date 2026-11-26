@@ -5,7 +5,7 @@ use super::super::confirmation::{Confirmation, Decision};
 use super::super::gallery::{Ctx, StoryItem, spec_wide, specs};
 
 pub fn item<S: 'static>() -> StoryItem<S> {
-    StoryItem::new("confirmation", "Confirmation", "agent").story("Asking, then answered", all::<S>).story("Answered with neutral marks: no green, no red", neutral::<S>)
+    StoryItem::new("confirmation", "Confirmation", "agent").story("Asking, then answered", all::<S>).story("Answered with neutral marks: no green, no red", neutral::<S>).story("In a list, with Escape left to the list", listed::<S>)
 }
 
 /// The live request's answer, kept in the gallery.
@@ -59,4 +59,17 @@ fn neutral<S: 'static>(c: &mut Ctx<S>) -> El {
         one("confirm-n-denied", "Push to main", Decision::Denied),
         one("confirm-n-expired", "Install a package", Decision::Expired),
     ])
+}
+
+/// Three requests in one list: the first two wait with Escape left alone, the third is answered; each says its place.
+fn listed<S: 'static>(c: &mut Ctx<S>) -> El {
+    let (t, g, acc) = (c.t, c.g, c.access);
+    let ask = |k: &'static str, title: &str, at: usize| {
+        Confirmation::<S>::new(format!("confirm-l{at}"), title.to_owned(), decision_of(g, k)).escape_denies(false).in_list(at, 3).detail("cargo publish").on_decide(move |s: &mut S, d| acc(s).choose(k, word(d)))
+    };
+    let column = rune::col().key("confirm-list").role("list").label("Pending requests").w_full().gap(t.space.at(2.0))
+        .child(ask("confirm-l1", "Publish the crate", 1).build(t))
+        .child(ask("confirm-l2", "Push the tag", 2).build(t))
+        .child(Confirmation::<S>::new("confirm-l3", "Edit Cargo.toml", Decision::AllowedOnce).in_list(3, 3).build(t));
+    specs(t, vec![spec_wide(t, "In a list: \"1 of 3\"; Escape is left to the list and denies nothing", 520.0, column)])
 }

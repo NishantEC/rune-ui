@@ -5,7 +5,8 @@
 //! (raised) and **Deny** (ghost). Tab reaches each answer and Return or Space gives it; Escape anywhere in the request denies. Once
 //! answered (or expired) it becomes one quiet line saying what happened, with no buttons, so it cannot be answered twice.
 //!
-//! An optional `why` line under the request says why it is asked. The **destructive** form is for what cannot be taken back: there is
+//! Escape denies by default; `escape_denies(false)` leaves Escape to whatever the request sits in (a list, a sheet), and
+//! `in_list(position, size)` numbers one request among several. An optional `why` line under the request says why it is asked. The **destructive** form is for what cannot be taken back: there is
 //! no "Always allow", the confirm button is the danger material, Return gives no answer (only a press or Space on a focused answer
 //! does), and Escape still denies.
 //!
@@ -60,6 +61,8 @@ pub struct Confirmation<S: 'static> {
     why: Option<String>,
     destructive: bool,
     marks: Marks,
+    escape_denies: bool,
+    place: Option<(usize, usize)>,
     decision: Decision,
     decide: Option<Decide<S>>,
 }
@@ -67,7 +70,7 @@ pub struct Confirmation<S: 'static> {
 impl<S: 'static> Confirmation<S> {
     /// `title`: what the tool wants to do, in words.
     pub fn new(key: impl Into<String>, title: impl Into<String>, decision: Decision) -> Confirmation<S> {
-        Confirmation { key: key.into(), title: title.into(), detail: None, why: None, destructive: false, marks: Marks::Coloured, decision, decide: None }
+        Confirmation { key: key.into(), title: title.into(), detail: None, why: None, destructive: false, marks: Marks::Coloured, escape_denies: true, place: None, decision, decide: None }
     }
 
     /// The exact command or input, shown monospaced.
@@ -86,6 +89,21 @@ impl<S: 'static> Confirmation<S> {
     /// nothing (a press, or Space on a focused answer, does). Escape still denies.
     pub fn destructive(mut self, on: bool) -> Self {
         self.destructive = on;
+        self
+    }
+
+    /// Whether Escape anywhere in a pending request denies it (on by default). Turn it off when the request sits in something that
+    /// has its own use for Escape (a list whose Escape clears the selection, a sheet that closes): Escape then reaches that, and
+    /// the request waits for a deliberate answer.
+    pub fn escape_denies(mut self, on: bool) -> Self {
+        self.escape_denies = on;
+        self
+    }
+
+    /// One request among several in a list: its place (1-based) and the list's size, for assistive technology. The request, and
+    /// its quiet line once answered, say "2 of 3".
+    pub fn in_list(mut self, position: usize, size: usize) -> Self {
+        self.place = Some((position, size));
         self
     }
 
@@ -111,10 +129,14 @@ impl<S: 'static> Confirmation<S> {
                 (_, Decision::Denied) => glyph(&icons::CIRCLE_X, t.control.icon, t.c.danger.fg),
                 _ => glyph(&icons::CLOCK, t.control.icon, t.ink_faint()),
             };
-            return row().key(self.key).role("status").label(format!("{}: {}", self.title, self.decision.word())).w_full().h(t.control.md).px(t.space.at(1.5)).gap(t.metrics.gap).center_y()
+            let line = row().key(self.key).role("status").label(format!("{}: {}", self.title, self.decision.word())).w_full().h(t.control.md).px(t.space.at(1.5)).gap(t.metrics.gap).center_y()
                 .child(mark)
                 .child(text(self.decision.word()).font(weight(t.ty.base, t.ty.medium)).color(t.ink_muted()).a11y_hidden())
                 .child(text(self.title).font(t.ty.base).color(t.ink_faint()).truncate().min_w(0.0).a11y_hidden());
+            return match self.place {
+                Some((p, n)) => line.position_in_set(p, n),
+                None => line,
+            };
         }
         let destructive = self.destructive;
         let answer = |suffix: &str, words: &str, v: ButtonVariant, d: Decision| {
@@ -148,9 +170,13 @@ impl<S: 'static> Confirmation<S> {
         }
         let how = if destructive { "Allow once or deny. Escape denies." } else { "Allow once, always allow, or deny. Escape denies." };
         let mut panel = slab(t, self.key.clone()).role("alertdialog").label(format!("Permission: {}", self.title)).description(how).round_as(t).child(body.child(answers));
+        if let Some((p, n)) = self.place {
+            panel = panel.position_in_set(p, n);
+        }
         if let Some(f) = self.decide {
+            let escape = self.escape_denies;
             panel = panel.on_key(move |s: &mut S, k: &KeyEvent, _: &mut Tx| match k.key {
-                Key::Escape => {
+                Key::Escape if escape => {
                     f(s, Decision::Denied);
                     true
                 }

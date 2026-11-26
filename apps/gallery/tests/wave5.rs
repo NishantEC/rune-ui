@@ -604,3 +604,52 @@ fn the_context_breakdown_can_be_placed_and_says_when_its_window_is_a_guess() {
     assert!(panel[1] + panel[3] <= trigger[1] + 0.5, "above by default (the window keeps it on screen sideways): {trigger:?} {panel:?}");
     assert!(rt.presented("context-demo-assumed").is_none());
 }
+
+// ---- Textarea: a limit and a counter ----
+
+#[test]
+fn a_textarea_counts_its_characters_colours_the_counter_and_a_firm_limit_takes_the_excess_out() {
+    let mut rt = item("textarea");
+    let t = rune_ui_themes::theme(false);
+    let color = |rt: &Runtime<App>, key: &str| info(rt, key).text_color.unwrap();
+    assert_eq!(texts_in(&rt, "textarea-limit-live-count-row"), vec!["0 / 40"]);
+    assert_eq!(color(&rt, "textarea-limit-live-count"), t.ink_faint());
+    assert_eq!(texts_in(&rt, "textarea-limit-near-count-row"), vec!["38 / 40"]);
+    assert_eq!(color(&rt, "textarea-limit-near-count"), t.c.warning.fg, "from 90%");
+    assert_eq!(texts_in(&rt, "textarea-limit-over-count-row"), vec!["53 / 40"]);
+    assert_eq!(color(&rt, "textarea-limit-over-count"), t.c.danger.fg, "over");
+    assert!(info(&rt, "textarea-limit-over-input").description.unwrap_or_default().contains("13 characters over"), "said in words too");
+    // Typing: the counter follows; a soft limit lets the text go over.
+    focus(&mut rt, "textarea-limit-live-input");
+    for ch in "hello".chars() {
+        key(&mut rt, Key::Text(ch.to_string()));
+    }
+    assert_eq!(texts_in(&rt, "textarea-limit-live-count-row"), vec!["5 / 40"]);
+    // A firm limit stops at 40: typing 50 characters leaves 40.
+    focus(&mut rt, "textarea-limit-hard-input");
+    for _ in 0..50 {
+        key(&mut rt, Key::Text("x".to_owned()));
+    }
+    assert_eq!(texts_in(&rt, "textarea-limit-hard-count-row"), vec!["40 / 40"]);
+    assert_eq!(rt.state.g.edit("limit-hard").text.chars().count(), 40);
+    // Without a limit there is no counter.
+    assert!(rt.presented("textarea-rest-count-row").is_none());
+}
+
+// ---- Confirmation: in a list, with Escape left alone ----
+
+#[test]
+fn a_request_in_a_list_numbers_itself_and_can_leave_escape_to_the_list() {
+    let mut rt = item("confirmation");
+    let tree = rt.accessibility_json();
+    assert_eq!(ax(&tree, "confirm-l1").unwrap()["position"].as_u64(), Some(1));
+    assert_eq!(ax(&tree, "confirm-l3").unwrap()["position"].as_u64(), Some(3), "the answered line is numbered too");
+    // Escape in a request that leaves it alone denies nothing; in the default one it still denies.
+    focus(&mut rt, "confirm-l1-allow");
+    key(&mut rt, Key::Escape);
+    assert_eq!(rt.state.g.choice("confirm-l1", ""), "", "Escape did not answer the listed request");
+    assert!(rt.presented("confirm-l1-allow").is_some(), "it still waits");
+    focus(&mut rt, "confirm-demo-allow");
+    key(&mut rt, Key::Escape);
+    assert_eq!(rt.state.g.choice("confirm", ""), "deny", "the default request is denied by Escape, as before");
+}
