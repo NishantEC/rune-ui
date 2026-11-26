@@ -1,0 +1,1 @@
+pub const CHECKS: &[(&str, &str)] = &[("receipt", "group"), ("receipt-files", "list"), ("receipt-file0", "button"), ("receipt-review", "button"), ("receipt-more", "group"), ("receipt-grew-file0", "listitem")];

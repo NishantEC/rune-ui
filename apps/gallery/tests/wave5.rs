@@ -419,3 +419,98 @@ fn reasoning_can_swap_the_sparkle_for_a_hollow_dot() {
     assert!(dot.iter().any(|e| (e.rect[2], e.rect[3]) == (7.0, 7.0)), "a 7 point dot");
     assert!(!within(&rt, "reasoning-done-trigger").iter().any(|e| (e.rect[2], e.rect[3]) == (7.0, 7.0)), "the sparkle is the default");
 }
+
+// ---- Receipt ----
+
+#[test]
+fn a_receipt_has_a_40_point_head_files_in_a_well_in_32_point_rows_and_a_foot() {
+    let rt = item("receipt");
+    let (card, head, files, foot) = (drawn(&rt, "receipt"), drawn(&rt, "receipt-head"), drawn(&rt, "receipt-files"), drawn(&rt, "receipt-foot"));
+    assert_eq!(head[3], 40.0, "the head is 40 points");
+    assert_eq!(foot[3], 40.0, "so is the foot");
+    assert!((head[0] - card[0] - 6.0).abs() < 0.5 && (head[1] - card[1] - 6.0).abs() < 0.5, "6 points of padding: {card:?} {head:?}");
+    assert!((files[0] - card[0] - 6.0).abs() < 0.5 && (card[0] + card[2] - files[0] - files[2] - 6.0).abs() < 0.5, "the well is inset by the padding");
+    for i in 0..5 {
+        let r = drawn(&rt, &format!("receipt-file{i}"));
+        assert_eq!(r[3], 32.0, "row {i} is 32 points");
+        assert!(r[1] >= files[1] && r[1] + r[3] <= files[1] + files[3] + 0.5, "inside the well");
+    }
+    assert!(head[1] + head[3] <= files[1] + 0.5 && files[1] + files[3] <= foot[1] + 0.5, "head, files, foot in order");
+    // The portrait leads the head; the totals end it.
+    let lead = drawn(&rt, "receipt-portrait");
+    assert!(lead[0] < head[0] + 20.0 && lead[3] == 24.0, "a 24 point portrait at the start: {lead:?}");
+    // The branch comes first in the foot, the actions after, Review before Undo.
+    let (branch, review, undo) = (drawn(&rt, "receipt-branch"), drawn(&rt, "receipt-review"), drawn(&rt, "receipt-undo"));
+    assert!(branch[0] < review[0] && review[0] < undo[0], "branch, then the actions in order");
+}
+
+#[test]
+fn a_receipt_shows_only_figures_that_are_not_zero_and_says_the_rest_in_words() {
+    let mut rt = item("receipt");
+    let words = |rt: &Runtime<App>, key: &str| texts_in(rt, key);
+    assert_eq!(words(&rt, "receipt-file0"), vec!["src/importer/retry.rs", "+38", "\u{2212}6"], "both sides");
+    assert_eq!(words(&rt, "receipt-file1"), vec!["src/importer/mod.rs", "+4"], "no zero removed");
+    assert!(words(&rt, "receipt-file2").contains(&"\u{2212}22".to_owned()) && !words(&rt, "receipt-file2").iter().any(|w| w.starts_with('+')), "no zero added");
+    assert!(!words(&rt, "receipt-file3").iter().any(|w| w.starts_with('+') || w.starts_with('\u{2212}')), "neither side: no figures");
+    let tree = rt.accessibility_json();
+    assert!(ax(&tree, "receipt-file0").unwrap().to_string().contains("38 added, 6 removed"));
+    assert!(ax(&tree, "receipt-file1").unwrap().to_string().contains("4 added") && !ax(&tree, "receipt-file1").unwrap().to_string().contains("0 removed"));
+    assert!(ax(&tree, "receipt").unwrap().to_string().contains("Fixed the login test: 56 added, 30 removed"));
+}
+
+#[test]
+fn long_paths_are_cut_in_the_middle_and_more_than_five_files_end_in_and_n_more() {
+    let rt = item("receipt");
+    let long = rt.elements().into_iter().find(|e| e.text.as_deref().is_some_and(|w| w.contains("gives_up_after_three"))).expect("the long path");
+    assert!(long.truncate && long.text_cut, "cut, on purpose: {:?}", long.rect);
+    let row = drawn(&rt, "receipt-file4");
+    assert!(long.rect[0] + long.rect[2] <= row[0] + row[2], "the path stays inside its row");
+    assert!(rt.presented("receipt-more-file7").is_none(), "only five rows are drawn");
+    assert!(rt.presented("receipt-more-file4").is_some());
+    assert_eq!(texts_in(&rt, "receipt-more-more"), vec!["and 3 more"]);
+    assert!(rt.presented("receipt-bare-files").is_none() && rt.presented("receipt-bare-foot").is_none(), "no files, no well; no branch or actions, no foot");
+}
+
+#[test]
+fn a_file_row_is_a_button_with_a_name_and_the_card_settles_unless_motion_is_reduced() {
+    let rt = item("receipt");
+    let row = info(&rt, "receipt-file0");
+    assert!(row.focusable && row.role == "button", "{row:?}");
+    assert!(info(&rt, "receipt-grew-file0").role != "button" && !info(&rt, "receipt-grew-file0").focusable, "without on_file, plain rows");
+    // Settling: the source skips the transition under Reduce Motion (the registry test checks the line), and a live card takes it.
+    let src = std::fs::read_to_string(std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../registry/receipt/receipt.rs")).unwrap();
+    assert!(src.contains("self.settle && !t.reduced_motion"));
+}
+
+// ---- Diff: stats, selection, a foot ----
+
+#[test]
+fn a_diff_takes_its_figures_from_the_app_and_can_hide_a_zero() {
+    let rt = item("diff");
+    assert_eq!(texts_in(&rt, "diff-folded-trigger"), vec!["src/importer/very/deep/folder/that/keeps/going/retry.rs", "+120", "\u{2212}34"], "a folded file with no lines shows the app's figures");
+    assert_eq!(info(&rt, "diff-folded-trigger").label.as_deref(), Some("src/importer/very/deep/folder/that/keeps/going/retry.rs, 120 added, 34 removed"));
+    let grew = texts_in(&rt, "diff-grew-trigger");
+    assert!(grew.contains(&"+9".to_owned()) && !grew.iter().any(|w| w.starts_with('\u{2212}')), "only the added figure: {grew:?}");
+    assert_eq!(info(&rt, "diff-grew-trigger").label.as_deref(), Some("src/retry.rs, 9 added"));
+    // Unset, the header counts the lines as before.
+    assert!(texts_in(&rt, "diff-sel-trigger").iter().any(|w| w == "+3" || w.starts_with('+')), "{:?}", texts_in(&rt, "diff-sel-trigger"));
+}
+
+#[test]
+fn a_selectable_diff_selects_the_words_not_the_signs_and_has_a_foot() {
+    let rt = item("diff");
+    let sel = within(&rt, "diff-sel-lines");
+    assert!(!sel.is_empty());
+    let words: Vec<&ElementInfo> = sel.iter().filter(|e| e.text.as_deref().is_some_and(|w| w.trim().len() > 2)).collect();
+    assert!(!words.is_empty());
+    let foot = drawn(&rt, "diff-sel-foot");
+    let lines = drawn(&rt, "diff-sel-lines");
+    assert!(foot[1] >= lines[1] + lines[3] - 0.5, "the foot is under the lines: {foot:?} {lines:?}");
+    assert!(rt.presented("diff-sel-foot-copy").is_some() && rt.presented("diff-sel-foot-reveal").is_some());
+    // A file with no lines shows no lines box, only its foot.
+    assert!(rt.presented("diff-bin-lines").is_none());
+    assert!(rt.presented("diff-bin-foot").is_some());
+    assert_eq!(texts_in(&rt, "diff-bin-foot"), vec!["Binary file"]);
+    let src = std::fs::read_to_string(std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../registry/diff/diff.rs")).unwrap();
+    assert!(src.contains(".selectable(self.selectable)") && src.contains("selection_group(self.selectable)"));
+}

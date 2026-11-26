@@ -2,7 +2,7 @@
 schema = 1
 name = "diff"
 title = "Diff"
-version = "0.8.0"
+version = "0.10.0"
 type = "component"
 group = "agent"
 description = "A unified diff per file: a folding header with the path and +n \u2212n, added and removed lines on their washes."
@@ -15,16 +15,16 @@ rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 registry = ["base", "icons", "agent"]
 cargo = ["rune", "rune-ui-style"]
 # What the stories use besides this item: they are copied only when these are installed too.
-stories = []
+stories = ["button"]
 
 [[files]]
 path = "diff.rs"
 target = "src/ui/diff.rs"
-sha256 = "5b333632736fea94300570e48c9a007d6fd78465152713b7fa81c97d50138490"
+sha256 = "91203f09597bc605d4e69aa6fa785d5b1220bf5e259180050a65848d31a27336"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/diff.rs"
 role = "story"
-sha256 = "c8983fdfc62f412d4a5af7f7b89a9948a852714e7223abf3784574ea69fddd2e"
+sha256 = "1dd98e587297fe408dd0282625048d25907ab17758fc39b9b4261202daa84f3a"
