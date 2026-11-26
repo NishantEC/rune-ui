@@ -14,5 +14,6 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> El {
     specs(t, vec![
         spec_wide(t, "Whole: headings, lists, a quote, code and a table", 560.0, Response::new("response-whole", WHOLE).build(t)),
         spec_wide(t, "Streaming: the newest words fade in, a caret trails", 560.0, Response::new("response-live", "The importer now **retries** a failed page three times, waiting longer").streaming(true).build(t)),
+        spec_wide(t, "Muted: interim words inside a fold, in the second ink", 560.0, Response::new("response-muted", "First I'll read the importer, then run **its tests** once to see the failure:\n\n- `importer/retry.rs`\n- `importer/tests.rs`").muted(true).build(t)),
     ])
 }

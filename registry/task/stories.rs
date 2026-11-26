@@ -5,17 +5,29 @@ use super::super::gallery::{Ctx, StoryItem, spec_wide, specs};
 use super::super::task::{Run, Task};
 
 pub fn item<S: 'static>() -> StoryItem<S> {
-    StoryItem::new("task", "Task", "agent").story("Run cards", all::<S>)
+    StoryItem::new("task", "Task", "agent").story("Run cards", all::<S>).story("Only the facts given", sparse::<S>)
 }
 
 fn all<S: 'static>(c: &mut Ctx<S>) -> El {
     let (t, acc) = (c.t, c.access);
-    let done = Run { title: "ENG-123: retry failed pages in the importer".to_owned(), status: Status::Done, files: 4, added: 120, removed: 34, passed: 212, failed: 0, cost: 0.42, secs: 252.0 };
-    let failed = Run { title: "Upgrade the parser to 0.4".to_owned(), status: Status::Error, files: 9, added: 310, removed: 188, passed: 198, failed: 3, cost: 1.16, secs: 611.0 };
-    let running = Run { title: "Write the migration guide".to_owned(), status: Status::Running, files: 1, added: 40, removed: 0, passed: 0, failed: 0, cost: 0.05, secs: 48.0 };
-        specs(t, vec![
+    let done = Run::new("ENG-123: retry failed pages in the importer", Status::Done).changes(4, 120, 34).checks(212, 0).cost(0.42).secs(252.0);
+    let failed = Run::new("Upgrade the parser to 0.4", Status::Error).changes(9, 310, 188).checks(198, 3).cost(1.16).secs(611.0);
+    let running = Run::new("Write the migration guide", Status::Running).changes(1, 40, 0).cost(0.05).secs(48.0);
+    specs(t, vec![
         spec_wide(t, "Done", 520.0, Task::<S>::new("task-done", &done).action("Review changes", move |s: &mut S| acc(s).presses += 1).build(t)),
         spec_wide(t, "Failed checks", 520.0, Task::<S>::new("task-failed", &failed).action("Open the failures", |_: &mut S| {}).build(t)),
-        spec_wide(t, "Running", 520.0, Task::<S>::new("task-running", &running).build(t)),
+        spec_wide(t, "Running: no checks yet, so none shown", 520.0, Task::<S>::new("task-running", &running).build(t)),
+    ])
+}
+
+fn sparse<S: 'static>(c: &mut Ctx<S>) -> El {
+    let t = c.t;
+    let tokens = Run::new("Answer a question about the build", Status::Done).tokens(18_400).secs(14.0).branch("asha/build-notes");
+    let noted = Run::new("Draft the release notes", Status::Waiting).branch("release/0.9").note("Waiting on a review from Lee before it opens a pull request.");
+    let bare = Run::new("Tidy the fixtures folder", Status::Pending);
+    specs(t, vec![
+        spec_wide(t, "Tokens in the cost's place, time and branch", 520.0, Task::<S>::new("task-tokens", &tokens).build(t)),
+        spec_wide(t, "A branch and a note line", 520.0, Task::<S>::new("task-noted", &noted).build(t)),
+        spec_wide(t, "Nothing but the title and status", 520.0, Task::<S>::new("task-bare", &bare).build(t)),
     ])
 }

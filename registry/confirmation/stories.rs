@@ -9,7 +9,11 @@ pub fn item<S: 'static>() -> StoryItem<S> {
 
 /// The live request's answer, kept in the gallery.
 pub fn decision(g: &super::super::gallery::GalleryState) -> Decision {
-    match g.choice("confirm", "").as_str() {
+    decision_of(g, "confirm")
+}
+
+fn decision_of(g: &super::super::gallery::GalleryState, key: &str) -> Decision {
+    match g.choice(key, "").as_str() {
         "once" => Decision::AllowedOnce,
         "always" => Decision::AlwaysAllowed,
         "deny" => Decision::Denied,
@@ -22,13 +26,24 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> El {
     let live = Confirmation::<S>::new("confirm-demo", "Run a shell command", decision(g)).detail("rm -rf target/debug/incremental").on_decide(move |s: &mut S, d| {
         let g = acc(s);
         g.presses += 1;
-        g.choose("confirm", match d { Decision::AllowedOnce => "once", Decision::AlwaysAllowed => "always", Decision::Denied => "deny", _ => "" });
+        g.choose("confirm", word(d));
     }).build(t);
+    let danger = Confirmation::<S>::new("confirm-danger", "Delete 214 files in fixtures/", decision_of(g, "confirm-danger")).detail("rm -rf fixtures/").why("Asked because commands can change anything on this Mac.").destructive(true).on_decide(move |s: &mut S, d| acc(s).choose("confirm-danger", word(d))).build(t);
     specs(t, vec![
         spec_wide(t, "Needs you: Tab to an answer, Return gives it, Escape denies", 520.0, live),
+        spec_wide(t, "Destructive, with a why line: no Always allow, danger to confirm, Return does nothing", 520.0, danger),
         spec_wide(t, "Allowed once", 520.0, Confirmation::<S>::new("confirm-once", "Edit .cargo/config.toml", Decision::AllowedOnce).build(t)),
         spec_wide(t, "Always allowed", 520.0, Confirmation::<S>::new("confirm-always", "Read files in src/", Decision::AlwaysAllowed).build(t)),
         spec_wide(t, "Denied", 520.0, Confirmation::<S>::new("confirm-denied", "Push to main", Decision::Denied).build(t)),
         spec_wide(t, "Expired", 520.0, Confirmation::<S>::new("confirm-expired", "Install a package", Decision::Expired).build(t)),
     ])
+}
+
+fn word(d: Decision) -> &'static str {
+    match d {
+        Decision::AllowedOnce => "once",
+        Decision::AlwaysAllowed => "always",
+        Decision::Denied => "deny",
+        _ => "",
+    }
 }

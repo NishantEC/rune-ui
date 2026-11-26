@@ -1,4 +1,4 @@
-item-response group 0 0 940 648
+item-response group 0 0 940 778
 response-whole document 0 64 560 490
 b0 heading 0 64 560 22
 b1 text 0 96 560 44
@@ -32,6 +32,13 @@ c2 cell 144 519 59 34
 s-end group 0 553 204 0
 response-live document 0 602 560 22
 b0 text 0 602 560 22
+response-muted document 0 672 560 82
+b0 text 0 672 560 22
+b1 list 0 706 560 48
+i0 listitem 0 706 560 22
+b0 text 32 706 528 22
+i1 listitem 0 732 560 22
+b0 text 32 732 528 22
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32
 editor-mode-1 button 1059 -184 53 32
