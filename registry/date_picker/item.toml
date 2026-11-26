@@ -8,7 +8,7 @@ group = "form"
 description = "A date in a well that opens a Calendar on the shared popup: one date or a range, focus on the chosen day, Escape and outside press close."
 
 [requires]
-style = ">=0.5.1, <0.10.0"
+style = ">=0.5.1, <0.11.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]

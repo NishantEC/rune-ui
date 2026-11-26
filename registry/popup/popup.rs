@@ -30,7 +30,7 @@ pub struct Row<S: 'static> {
     pub icon: Option<&'static Icon>,
     /// A leading picture or element in place of the icon (a portrait, a swatch, a file icon): built at the size you want, centred
     /// in the icon's column, hidden from assistive technology (the row's label names it).
-    pub image: Option<El>,
+    pub image: Option<Box<El>>,
     pub shortcut: Option<String>,
     pub description: Option<String>,
     pub checked: Option<bool>,
@@ -58,7 +58,7 @@ impl<S: 'static> Row<S> {
     /// A leading picture or element (a portrait, a colour swatch) in place of an icon. It sits in a column as wide as an icon's,
     /// or as wide as it is when larger, and the row grows to hold it.
     pub fn image(mut self, e: El) -> Self {
-        self.image = Some(e);
+        self.image = Some(Box::new(e));
         self
     }
 
@@ -121,7 +121,7 @@ pub fn paint_row<S: 'static>(t: &Theme, r: &Row<S>, key: String, highlight: Opti
         None => e,
     };
     if let Some(img) = &r.image {
-        e = e.child(row().min_w(t.control.icon).center().a11y_hidden().child(img.clone()));
+        e = e.child(row().min_w(t.control.icon).center().a11y_hidden().child((**img).clone()));
     } else if let Some(i) = r.icon {
         e = e.child(glyph(i, t.control.icon, if r.disabled || r.danger { ink } else { t.ink_muted() }));
     }

@@ -51,7 +51,7 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> rune::El {
         .list(Some("People"), "People", vec![
             person("p1", "Asha", "Fixing the login test", Activity::Working).count(3).count_label("3 unread").trail(pill("PR")),
             person("p2", "Lee", "Needs your answer", Activity::NeedsYou).trail(pill("2 min")),
-            person("p3", "Mei", "Finished 10 minutes ago", Activity::None).count(12),
+            person("p3", "Sam", "Finished 10 minutes ago", Activity::None).count(12),
         ])
         .build(t);
     specs(t, vec![

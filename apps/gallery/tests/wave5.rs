@@ -55,10 +55,6 @@ fn key<S: 'static>(rt: &mut Runtime<S>, k: Key) {
     settle(rt);
 }
 
-fn space<S: 'static>(rt: &mut Runtime<S>) {
-    key(rt, Key::Text(" ".to_owned()));
-}
-
 fn focused<S: 'static>(rt: &Runtime<S>) -> Option<String> {
     rt.elements().into_iter().find(|e| e.focused).and_then(|e| e.key)
 }
@@ -206,7 +202,7 @@ fn rt_has(rt: &Runtime<Probe>, key: &str) -> bool {
 
 #[test]
 fn a_portrait_is_an_image_named_with_its_state_in_words() {
-    let mut rt = probe(portrait_view, false, false);
+    let rt = probe(portrait_view, false, false);
     let tree = rt.accessibility_json();
     let w = ax(&tree, "p1").expect("the working portrait");
     assert_eq!(w["name"].as_str().or(w["label"].as_str()), Some("Asha Rao"), "{w}");
@@ -354,7 +350,7 @@ fn a_sidebar_row_can_be_a_button_and_reads_out_its_count_and_second_line() {
     // Return opens a list row, as before.
     focus(&mut rt, "sidebar-p2");
     key(&mut rt, Key::Enter);
-    assert_eq!(rt.accessibility_json().to_string().contains("sidebar-p2"), true);
+    assert!(rt.accessibility_json().to_string().contains("sidebar-p2"));
 }
 
 // ---- Neutral step marks ----
@@ -446,7 +442,7 @@ fn a_receipt_has_a_40_point_head_files_in_a_well_in_32_point_rows_and_a_foot() {
 
 #[test]
 fn a_receipt_shows_only_figures_that_are_not_zero_and_says_the_rest_in_words() {
-    let mut rt = item("receipt");
+    let rt = item("receipt");
     let words = |rt: &Runtime<App>, key: &str| texts_in(rt, key);
     assert_eq!(words(&rt, "receipt-file0"), vec!["src/importer/retry.rs", "+38", "\u{2212}6"], "both sides");
     assert_eq!(words(&rt, "receipt-file1"), vec!["src/importer/mod.rs", "+4"], "no zero removed");
@@ -547,7 +543,7 @@ fn a_menu_row_can_lead_with_a_picture_and_still_has_one_name_and_its_shortcut_in
 
 #[test]
 fn a_popup_list_says_each_options_place_its_selected_one_and_its_own_name() {
-    let mut rt = scene("open-select", false);
+    let rt = scene("open-select", false);
     let tree = rt.accessibility_json();
     let list = ax(&tree, "select-demo-list").expect("the listbox");
     assert_eq!(list["name"].as_str(), Some("Starting level"));
@@ -563,7 +559,7 @@ fn a_popup_list_says_each_options_place_its_selected_one_and_its_own_name() {
     assert_eq!(content["name"].as_str(), Some("Starting level"), "the modal surface is named after its list: {content}");
     // A menu numbers its rows without counting separators or labels.
     let rt = scene("open-dropdown-menu", false);
-    let mut rt = rt;
+    let rt = rt;
     let tree = rt.accessibility_json();
     let positions: Vec<u64> = (1..=6).filter_map(|i| ax(&tree, &format!("dropdown-demo-item{i}"))).filter_map(|n| n["position"].as_u64()).collect();
     assert!(positions.windows(2).all(|w| w[1] == w[0] + 1) && positions.first() == Some(&1), "rows numbered 1.. with no gaps: {positions:?}");
@@ -698,7 +694,7 @@ fn a_reorder_list_moves_a_row_with_alt_and_the_arrows_and_by_dragging() {
     assert_eq!(order(&rt), vec![1, 0, 2, 3]);
     // Pointer: drag the last row up two places and let go.
     let (x, y) = rt.find("reorder-item3").unwrap();
-    let pitch = drawn(&rt, "reorder-item1")[3] + 1.0;
+    let pitch = drawn(&rt, "reorder-item1")[3];
     rt.pointer_down(x, y);
     for i in 1..=20 {
         rt.pointer_move(x, y - 2.0 * pitch * i as f32 / 20.0);

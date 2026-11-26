@@ -8,7 +8,7 @@ group = "fonts"
 description = "A crisp, technical grotesque from Vercel, made for developer tools and dashboards. Variable weight 100 to 900."
 
 [requires]
-style = ">=0.5.0, <0.10.0"
+style = ">=0.5.0, <0.11.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]

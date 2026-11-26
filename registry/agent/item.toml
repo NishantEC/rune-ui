@@ -8,7 +8,7 @@ group = "base"
 description = "What the agent set shares: a step's status and its mark, the quiet fold line, an icon button that can copy, the chip face, the code slab, monospaced type, and words for durations, tokens and money."
 
 [requires]
-style = ">=0.8.0, <0.10.0"
+style = ">=0.8.0, <0.11.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]

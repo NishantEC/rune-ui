@@ -191,6 +191,14 @@ Wave 2 added `recipes::series` (chart colours from the theme's roles), Label and
 Drawer share it) and `GalleryState::slot` (a component's own state type in the gallery). Their behaviour is tested in the live path
 (`apps/gallery/tests/wave2.rs`: real presses, pointer moves, drags and keys).
 
+## Components (0.10.0)
+
+| Group | Items |
+| --- | --- |
+| Display | Portrait (a tile with a progress ring and a status dot) |
+| Structure | Reorder (rows put in order by dragging or with Alt and the arrows) |
+| Agent | Receipt (what a run leaves behind) |
+
 ## 0.9.0: what the first app needed
 
 Everything here came from an agent app built on rune-ui that had to work round these components; each is additive or a visual fix,
@@ -228,6 +236,64 @@ What Rune cannot do here at this rev:
 | `chat::ChatState` has `reveal` | add `reveal: Default::default()` to a struct literal (or use `ChatState::default()`) |
 | A conversation's gaps are 20 and 4 points (were 24 and 8) | none needed; to keep the old rhythm, change `TURN_GAP` and `BLOCK_GAP` in your copies |
 
+## 0.10.0: closing the gaps
+
+What an agent app found missing, built as general parts; each is additive unless listed under "Upgrade notes (0.9 to 0.10)". Tested in
+the live path in `apps/gallery/tests/wave5.rs`, pictured light and dark in the gallery.
+
+| Item | New |
+| --- | --- |
+| Portrait (new) | `Portrait::new(key, name, size)` (20 to 112 points): `.image(&Pixels)`, `.face(El)` or the initials of `name`, on `.ground(colour)`. `.ringed(true)` reserves the ring's room in every state (`portrait::ringed(size)` is the outer size); `.state(Activity::Working)` turns a third of a circle round it (still under Reduce Motion), `NeedsYou`, `Failed`, `Done` and `Info` put a dot of the theme's meaning on the corner, ringed in `.under(surface)`. Ring and dot are made 4.5:1 and 3:1 against `under`. An `img` named `name` and described by the state in words (`.state_words(..)`); `.decorative(true)` hides it. |
+| Theme file | Optional `color.identity` and `role.identity` (`bg`, `fg`, `solid`, `on-solid`), `number.scrim`, `base.keys-font`, and `type.<step>.{size, line-height, weight, tracking}`. `Theme::identity()` (falls back to `info`), `scrim()` / `scrim_soft()` (black at the theme's strength), `keycap` (the keys' text style), `shade(a)` / `glint(a)`. The default theme sets identity (a teal) and the scrim as the example. `docs/recipes.md` has the details. |
+| Scrim | Dialog, AlertDialog, Sheet, Drawer and Command dim with black (`Theme::scrim()`), not the page ink at an alpha, so a dark page dims instead of fogging. |
+| Message | `.header(El)`: a row that leads the turn (portrait, name, state), one `BLOCK_GAP` above the first block, keyed `<key>-header`. `.bubble(Bubble::Well)`: the person's words in the well material (16 across, 10 down, at most four fifths of the column); `Bubble::Quiet` is as before. |
+| PromptInput | `.lead(El)`: beside the text, top-aligned, its own Tab stop before the text. `.chip(El)` (repeat): a wrapping row under the text, Tab stops after the text and before the toolbar. Unused, nothing changes. |
+| SidebarItem | `.image(El)` and `.subtitle(words)`: a two-line row (52 points at the default density) with a title over a quiet second line. `.selected_style(Selected::Raised)`: the current row as a raised pebble, with its focus ring. `.trail(El)`: a trailing element after the count. `.button(true)`: role `button`. A count is read out ("Count 3", or `.count_label("3 unread")`) with the second line, after the name. |
+| Tool, Confirmation, Reasoning | `Tool::marks(Marks::Neutral)` and `Confirmation::answered_marks(Marks::Neutral)`: a tick in the third ink for done, an 8 by 1.5 dash for denied, no green and no red; only a failure keeps colour. `Reasoning::icon(None)`: a hollow 7 point dot in place of the sparkle. `agent::mark_with`, `agent::hollow_dot`. |
+| Receipt (new) | `Receipt::new(key, sentence)`: `.lead(El)`, `.totals(added, removed)`, `.files(&[ReceiptFile::new(path, added, removed)])`, `.max_files(5)` ("and N more"), `.note(words)`, `.branch(name)`, `.action(El)`, `.on_file(f)` (rows become buttons), `.settle(bool)`. A raised card, 6 points of padding, a 40 point header, files in a well in 32 point rows (paths cut in the middle, a zero side of a figure hidden), a 40 point foot. `receipt::figures` and `figures_words` for your own rows. |
+| Diff | `.stats(added, removed)` for a folded or cut file, `.hide_zero(true)`, `.selectable(true)` (the words of the lines, one selection across them, signs left out), `.foot(El)` (a row under the lines). |
+| Menus | `Row::image(El)` (also on `DropdownMenuItem` and `ContextMenuItem`): a picture or element leads a row in place of its icon. Shortcuts are drawn in `Theme::keycap`, as Kbd is. Every row says its place (`position_in_set`), a listbox's current option is selected, and the open surface is named after its list, so Select and menus read as "2 of 5". |
+| Context | `.placement(Placement)` (above and to the right by default) and `.limit_assumed(true)` ("Window (assumed)" and a line saying so). |
+| Task | `.secondary(words, f)` (repeat): raised actions beside the primary one. `agent::Status::Stopped` (a square, neutral, "Stopped"). |
+| Confirmation (list) | `.in_list(position, size)` and `.escape_denies(false)`: one request among several, Escape left to the list. |
+| Textarea | `.limit(n)`: a "12 / 500" counter at the foot (warning ink from 90%, danger over the limit, the well invalid), characters not bytes. `.hard_limit(true)` takes the excess out as it is typed or pasted. |
+| Reorder (new) | `Reorder::new(key, name, pitch).rows(vec![..]).on_move(|s, from, to| ..)`: Alt with Up, Down, Home and End, or drag a row; Escape cancels a drag. `reorder::move_item`, `drop_index`, `key_target`. You keep the list. |
+
+What Rune cannot do here at this rev:
+
+- **A live drag preview in Reorder:** a dragged row does not travel under the pointer; it moves when released. Rune's `on_drag` reports
+  the travel but a row has no per-frame offset without app state.
+- **Dropping Rune's Ogg audio from an app without naming its features:** see "Licences" below.
+
+### Upgrade notes (0.9 to 0.10)
+
+Move `rune-ui-style` and `rune-ui-themes` to `v0.10.0` first, then `rune-ui update`. The copies of `popup`, `kbd`, `dialog`, `sheet`,
+`command` and `portrait` need the new style crate (`Theme::keycap`, `Theme::scrim`).
+
+| Break | Fix |
+| --- | --- |
+| `agent::Status` has `Stopped`; `Status::ALL` is `[Status; 8]` | add an arm for `Status::Stopped` where you match on `Status` without a wildcard |
+| `popup::Row` has a public field `image` | build rows with `Row::new(..)`; a struct literal gets `image: None` |
+| Style structs gained fields: `Palette::identity`, `Theme::scrim_strength` and `keycap`, `Base::keys_font`, `ThemeFile::type_steps` | only code that builds these by struct literal (not from a theme file) breaks: add the fields, or build from JSON |
+| The modal scrim is black at `Theme::scrim()` (0.18 light, 0.55 dark in the default theme; was the page ink at 0.18 and 0.5) | none needed; set `number.scrim` in your theme file to tune it |
+| A sidebar row with a count now says "Count N" to assistive technology; popup rows say their place | none needed; `.count_label(words)` words the count |
+| The workspace takes Rune with `default-features = false` (see "Licences") | none for apps: `rune-ui init` still writes Rune with its default features |
+
+## Licences
+
+rune-ui is MIT. Through Rune, an app also gets permissive crates (MIT, Apache-2.0, Zlib, BSD, ISC, Unicode, Unlicense) and, with Rune's
+default features, two MPL-2.0 crates, `symphonia` and `opuscule` (Rune's Ogg audio decoders), which arrive through the `ogg-audio`
+feature. From 0.10.0 rune-ui's own lock file has neither: the workspace depends on Rune with `default-features = false` and the
+gallery names every default feature except `ogg-audio` (`accessibility`, `dbus`, `embedded-fonts`, `hunspell`, `metal-backend`, `svg`);
+nothing else is lost (the other defaults only re-enable those). An app drops them the same way:
+
+```toml
+rune = { git = "https://github.com/anomalyco/rune", rev = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2", default-features = false, features = ["accessibility", "dbus", "embedded-fonts", "hunspell", "metal-backend", "svg"] }
+```
+
+Cargo unifies features, so an app that keeps Rune's defaults (what `rune-ui init` writes) still builds them. Fonts are OFL 1.1 (each
+font item carries its licence).
+
 ## Agent set
 
 The components an app needs to show an AI agent at work, built on the base components and the style system. Names follow Vercel's
@@ -236,7 +302,7 @@ AI Elements where one exists. Everything is data in and events out: plain struct
 | Item | What it is for |
 | --- | --- |
 | Conversation | The scroll area: pinned to the newest message, lets go when the reader scrolls up, then shows Jump to latest |
-| Message | A person's quiet bubble at the right, or the agent's words on the page in a 720 point column; avatar, attachments, actions |
+| Message | A person's quiet or well bubble at the right, or the agent's words on the page in a 720 point column; a header that leads the turn, avatar, attachments, actions |
 | Response | The agent's words as Markdown (rune-kit's `markdown` feature), with a caret while streaming |
 | PromptInput | The composer: growing text, attachment chips, a toolbar, Send that becomes Stop; Return, Shift+Return, Escape. With nothing to send, Send is a raised button at rest with a faint arrow (off, but still a button); with words it is ink. `.spellcheck(true)` marks misspelt words |
 | ModelSelector | Models grouped by provider in a searchable panel from the overlay layer, with a tier or price per row |
@@ -245,9 +311,10 @@ AI Elements where one exists. Everything is data in and events out: plain struct
 | Reasoning | "Thinking…" with a shimmer, then a "Thought for 12s" fold ("Thought" under a second; nothing at all when there are no words) |
 | ChainOfThought | The "Worked for 2m 14s" fold: steps with marks, words and details |
 | CodeBlock | Code with a language label, Copy, line numbers and sideways scroll; colour from Rune's built-in highlighter |
-| Diff | A unified diff per file: a folding header with `+n −n`, added and removed lines on their washes |
+| Diff | A unified diff per file: a folding header with `+n −n` (or the app's figures), added and removed lines on their washes, selectable, with a foot |
+| Receipt | What a run leaves behind: totals, the files with their own figures, the branch and actions |
 | Terminal | A command, its output, its running state and exit status |
-| Task | A run card: status pill, only the facts given (files, checks, cost or tokens, time, branch, a note), one primary action |
+| Task | A run card: status pill, only the facts given (files, checks, cost or tokens, time, branch, a note), a primary action and secondary ones |
 | Plan | A checklist: to do, doing, done, skipped |
 | Queue | Messages waiting to be sent, moved with Alt and the arrows, removed with Delete |
 | Sources, InlineCitation | A "Used 4 sources" fold of links; a citation chip with a hover card |

@@ -30,7 +30,7 @@ rune-kit is a **styled** kit (it ships its own look), not a headless one. rune-u
 3. **Text editing is Rune's `text_input`** (caret, selection, IME, undo, accessibility), the same editor rune-kit builds on. Input and
    Textarea paint the well round it.
 4. **Simple components are painted directly** from recipes: Button, Toggle, Checkbox, RadioGroup, Switch, Slider, Tabs, Badge, Card,
-   Separator, Skeleton, Progress, Kbd, Avatar, Alert, Empty, Breadcrumb, Sidebar rows.
+   Separator, Skeleton, Progress, Kbd, Avatar, Portrait, Alert, Empty, Breadcrumb, Sidebar rows.
 5. **Accessibility lives with behaviour.** Every interactive element sets a role, a name, its state (`checked`, `expanded`, `disabled`,
    `busy`, range values) and is focusable only when live. Icon-only controls require a name. Each item's accessibility check proves it.
 

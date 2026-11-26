@@ -8,7 +8,7 @@ group = "structure"
 description = "An app's side column: header, labelled groups of rows with icons (or status marks) and counts, lists for assistive technology, footer."
 
 [requires]
-style = ">=0.5.0, <0.10.0"
+style = ">=0.5.0, <0.11.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -27,4 +27,4 @@ sha256 = "0bffb4994c3c3677eddb069ab86e9261ff1875d31ded644526e2d993b85bf9ed"
 path = "stories.rs"
 target = "src/ui/stories/sidebar.rs"
 role = "story"
-sha256 = "a31384168ac6b171c7dafc0fe9d93ced4ebbd071d73eb7a5dc4ff1df5ba1164c"
+sha256 = "b138088b03b3db32c35c1a0ce9112cdf0a62ce38e7f8d2257fe1443f0589016b"

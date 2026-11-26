@@ -8,7 +8,7 @@ group = "structure"
 description = "Previous, the pages near the current one with the first, the last and gaps, and Next; a fixed width so nothing shifts."
 
 [requires]
-style = ">=0.5.1, <0.10.0"
+style = ">=0.5.1, <0.11.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]

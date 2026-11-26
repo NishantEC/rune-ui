@@ -22,7 +22,7 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> El {
         o => o,
     };
     let rows: Vec<El> = order.iter().map(|&k| SidebarItem::<S>::new(format!("reorder-item{k}"), NAMES[k]).icon(&icons::FOLDER).build(t)).collect();
-    let list = Reorder::<S>::new("reorder-demo", "Workspaces", t.metrics.row + 1.0).rows(rows).on_move(move |s: &mut S, from, to| {
+    let list = Reorder::<S>::new("reorder-demo", "Workspaces", t.metrics.row).rows(rows).on_move(move |s: &mut S, from, to| {
         let o = &mut acc(s).slot_mut::<Order>("reorder-order").0;
         if o.is_empty() {
             *o = (0..NAMES.len()).collect();
