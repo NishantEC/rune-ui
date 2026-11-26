@@ -356,3 +356,66 @@ fn a_sidebar_row_can_be_a_button_and_reads_out_its_count_and_second_line() {
     key(&mut rt, Key::Enter);
     assert_eq!(rt.accessibility_json().to_string().contains("sidebar-p2"), true);
 }
+
+// ---- Neutral step marks ----
+
+/// Every element inside the element keyed `key`.
+fn within<S: 'static>(rt: &Runtime<S>, key: &str) -> Vec<ElementInfo> {
+    let els = rt.elements();
+    let Some(root) = els.iter().position(|e| e.key.as_deref() == Some(key)) else { return Vec::new() };
+    let inside = |mut i: usize| loop {
+        if i == root {
+            return true;
+        }
+        match els[i].parent {
+            Some(p) => i = p,
+            None => return false,
+        }
+    };
+    els.iter().enumerate().filter(|(i, _)| inside(*i)).map(|(_, e)| e.clone()).collect()
+}
+
+fn inks(els: &[ElementInfo]) -> Vec<rune::Color> {
+    els.iter().flat_map(|e| [e.text_color, Some(e.fill)]).flatten().collect()
+}
+
+#[test]
+fn neutral_tool_marks_keep_colour_for_a_failure_only() {
+    for dark in [false, true] {
+        let rt = item_in("tool", dark);
+        let t = rune_ui_themes::theme(dark);
+        let (done, failed, denied) = (within(&rt, "tool-neutral-done-trigger"), within(&rt, "tool-neutral-failed-trigger"), within(&rt, "tool-neutral-denied-trigger"));
+        assert!(!inks(&done).contains(&t.c.success.fg), "dark {dark}: done is not green");
+        assert!(inks(&within(&rt, "tool-done-trigger")).contains(&t.c.success.fg), "dark {dark}: the coloured default still is (the control)");
+        assert!(inks(&done).contains(&t.ink_faint()), "dark {dark}: done is a tick in the third ink");
+        assert!(inks(&failed).contains(&t.c.danger.fg), "dark {dark}: a failure keeps its colour");
+        assert!(denied.iter().any(|e| (e.rect[2], e.rect[3]) == (8.0, 1.5)), "dark {dark}: denied is an 8 by 1.5 dash");
+        assert!(!done.iter().any(|e| (e.rect[2], e.rect[3]) == (8.0, 1.5)), "and only denied");
+        // Running keeps the spinner (it loops), in the second ink.
+        let running = within(&rt, "tool-neutral-running-trigger");
+        assert!(running.iter().any(|e| e.loop_phase.is_some()), "running turns");
+        assert!(inks(&running).contains(&t.ink_muted()), "in the second ink");
+    }
+}
+
+#[test]
+fn an_answered_request_can_be_marked_without_green_or_red() {
+    let rt = item("confirmation");
+    let t = rune_ui_themes::theme(false);
+    for k in ["confirm-n-once", "confirm-n-always", "confirm-n-denied"] {
+        let i = inks(&within(&rt, k));
+        assert!(!i.contains(&t.c.success.fg) && !i.contains(&t.c.danger.fg), "{k}: no green check, no red cross");
+    }
+    assert!(inks(&within(&rt, "confirm-once")).contains(&t.c.success.fg), "the default still has its green check");
+    assert!(within(&rt, "confirm-n-denied").iter().any(|e| (e.rect[2], e.rect[3]) == (8.0, 1.5)), "denied is a dash");
+    let line = info(&rt, "confirm-n-denied");
+    assert_eq!(line.label.as_deref(), Some("Push to main: Denied"), "the words still say it");
+}
+
+#[test]
+fn reasoning_can_swap_the_sparkle_for_a_hollow_dot() {
+    let rt = item("reasoning");
+    let dot = within(&rt, "reasoning-dot-done-trigger");
+    assert!(dot.iter().any(|e| (e.rect[2], e.rect[3]) == (7.0, 7.0)), "a 7 point dot");
+    assert!(!within(&rt, "reasoning-done-trigger").iter().any(|e| (e.rect[2], e.rect[3]) == (7.0, 7.0)), "the sparkle is the default");
+}

@@ -1,4 +1,4 @@
-item-reasoning group 0 0 940 550
+item-reasoning group 0 0 940 736
 reasoning-live group 0 64 480 36
 hit(reasoning-live-trigger) none 0 62 129 40
 reasoning-live-trigger button 0 64 129 36
@@ -15,6 +15,13 @@ hit(reasoning-quick-trigger) none 0 400 115 40
 reasoning-quick-trigger button 0 402 115 36
 reasoning-between group 0 486 480 40
 reasoning-empty group 0 486 0 0
+reasoning-dot-live group 0 592 480 36
+hit(reasoning-dot-live-trigger) none 0 590 129 40
+reasoning-dot-live-trigger button 0 592 129 36
+reasoning-dot-live-shimmer status 30 600 69 20
+reasoning-dot-done group 0 676 480 36
+hit(reasoning-dot-done-trigger) none 0 674 163 40
+reasoning-dot-done-trigger button 0 676 163 36
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32
 editor-mode-1 button 1059 -184 53 32

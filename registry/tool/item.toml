@@ -2,7 +2,7 @@
 schema = 1
 name = "tool"
 title = "Tool"
-version = "0.9.0"
+version = "0.10.0"
 type = "component"
 group = "agent"
 description = "One tool call as one quiet line that reads like a sentence (status, its words or a whole line, a note, a duration from one second) that folds open to free words, its input and output."
@@ -20,11 +20,11 @@ stories = []
 [[files]]
 path = "tool.rs"
 target = "src/ui/tool.rs"
-sha256 = "dbfe0440e0e9dadeb679920aed88b9a9ed5810c3d4177944600fdd8fbbe5c084"
+sha256 = "f75ced2e6e0c86b5203fcf4a409fdfc72d796509d63f32dadfd7422c653275d0"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/tool.rs"
 role = "story"
-sha256 = "54bef0f24bbba95004fb9a1e8bf5e7b3978d64066e5c52155a0de5fa95b76c5f"
+sha256 = "9bdc8e396d34738766f8138206856accba27bf0abef1b0e178a27b91abba34c1"

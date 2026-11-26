@@ -2,7 +2,7 @@
 schema = 1
 name = "agent"
 title = "Agent"
-version = "0.9.0"
+version = "0.10.0"
 type = "base"
 group = "base"
 description = "What the agent set shares: a step's status and its mark, the quiet fold line, an icon button that can copy, the chip face, the code slab, monospaced type, and words for durations, tokens and money."
@@ -18,4 +18,4 @@ cargo = ["rune", "rune-ui-style"]
 [[files]]
 path = "agent.rs"
 target = "src/ui/agent.rs"
-sha256 = "add742a6cb3e8b86919375ae3cafd09928dec0ae1a5bbf91bd878e99249e69f5"
+sha256 = "39436f03f3e13ff746b042bf99173d3c5baca62242da78950a2a2531ee162673"

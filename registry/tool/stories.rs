@@ -1,6 +1,6 @@
 use rune::El;
 
-use super::super::agent::Status;
+use super::super::agent::{Marks, Status};
 use super::super::base::State;
 use super::super::gallery::{Ctx, StoryItem, spec_wide, specs};
 use super::super::tool::{Tool, ToolCall};
@@ -9,6 +9,7 @@ pub fn item<S: 'static>() -> StoryItem<S> {
     StoryItem::new("tool", "Tool", "agent")
         .story("One call in each state; press a line to fold it", all::<S>)
         .story("A step line that reads like a sentence", sentence::<S>)
+        .story("Neutral marks: quiet ticks, a dash for denied, colour only for a failure", neutral::<S>)
 }
 
 fn call(name: &str, summary: &str, status: Status, secs: Option<f64>) -> ToolCall {
@@ -53,4 +54,15 @@ fn sentence<S: 'static>(c: &mut Ctx<S>) -> El {
         spec_wide(t, "Under a second: no time. A long command cut in the middle, with a note. Denied: neutral, not red", 480.0, col),
         spec_wide(t, "Open: the whole line, free words, the input and the output", 480.0, open),
     ])
+}
+
+/// The same states with quiet marks: only a failure keeps colour.
+fn neutral<S: 'static>(c: &mut Ctx<S>) -> El {
+    let t = c.t;
+    let mut col = rune::col().key("tool-neutral").w_full().gap(t.space.at(1.0));
+    let states = [("done", Status::Done, Some(1.4)), ("running", Status::Running, Some(2.0)), ("pending", Status::Pending, None), ("failed", Status::Error, Some(12.4)), ("denied", Status::Denied, None), ("skipped", Status::Skipped, None)];
+    for (name, status, secs) in states {
+        col = col.child(Tool::<S>::new(format!("tool-neutral-{name}"), &call("run", name, status, secs), false).marks(Marks::Neutral).build(t));
+    }
+    specs(t, vec![spec_wide(t, "Marks::Neutral: done, running, pending, failed, denied, skipped", 480.0, col)])
 }

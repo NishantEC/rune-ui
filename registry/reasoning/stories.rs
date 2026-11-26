@@ -4,7 +4,7 @@ use super::super::gallery::{Ctx, StoryItem, spec, specs};
 use super::super::reasoning::Reasoning;
 
 pub fn item<S: 'static>() -> StoryItem<S> {
-    StoryItem::new("reasoning", "Reasoning", "agent").story("Thinking, then a fold", all::<S>).story("Nothing to show means nothing shown", quiet::<S>)
+    StoryItem::new("reasoning", "Reasoning", "agent").story("Thinking, then a fold", all::<S>).story("Nothing to show means nothing shown", quiet::<S>).story("A hollow dot in place of the sparkle", dot::<S>)
 }
 
 const THOUGHTS: &str = "The failing test only fails on the second run, so something survives between runs. The fixture folder is not cleaned; check the teardown first.";
@@ -25,5 +25,14 @@ fn quiet<S: 'static>(c: &mut Ctx<S>) -> El {
     specs(t, vec![
         spec(t, "Under a second: \"Thought\", no figure", rune::col().w(480.0).child(Reasoning::<S>::new("reasoning-quick", false, 0.4, false).text(THOUGHTS).build(t))),
         spec(t, "Done with no words: nothing between the two lines", between(Reasoning::<S>::new("reasoning-empty", false, 3.0, false).build(t))),
+    ])
+}
+
+/// The thinking mark: a hollow dot, 7 points across, for an app that keeps its marks quiet.
+fn dot<S: 'static>(c: &mut Ctx<S>) -> El {
+    let t = c.t;
+    specs(t, vec![
+        spec(t, "Thinking, hollow dot", rune::col().w(480.0).child(Reasoning::<S>::new("reasoning-dot-live", true, 4.0, false).icon(None).build(t))),
+        spec(t, "Done, hollow dot", rune::col().w(480.0).child(Reasoning::<S>::new("reasoning-dot-done", false, 12.0, false).text(THOUGHTS).icon(None).build(t))),
     ])
 }

@@ -1,4 +1,4 @@
-//! rune-ui registry: agent 0.9.0 (base). What the agent set shares: a step's [`Status`] and its mark, the quiet [`FoldLine`] every
+//! rune-ui registry: agent 0.10.0 (base). What the agent set shares: a step's [`Status`] and its mark, the quiet [`FoldLine`] every
 //! tool call, reasoning and step list folds behind, a small icon button that can reach the clipboard, a chip face, the slab code and
 //! output sit on, monospaced type, and the words for durations, token counts and money. `rune-ui add` copies it with any agent item.
 //!
@@ -7,7 +7,7 @@
 
 use std::rc::Rc;
 
-use rune::{Color, El, Family, Icon, TextStyle, Tx, col, row, text};
+use rune::{Color, El, Family, Icon, TextStyle, Tx, col, el, row, text};
 use rune_ui_style::{tabular, weight};
 
 use super::base::{Press, Shape, State, Theme, Tone, glyph, hit_area, paint, paint_state, spinner_in, states};
@@ -70,6 +70,37 @@ impl Status {
             Status::Waiting => t.c.warning.fg,
         }
     }
+}
+
+/// How a step's mark is drawn.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub enum Marks {
+    /// Colour says the state: a green check for done, a red cross for a failure, and so on ([`mark`]).
+    #[default]
+    Coloured,
+    /// Quiet marks that leave colour to what needs a person: done is a tick in the third ink, denied and skipped are a short dash
+    /// and a slashed ring in the third ink, running is the spinner in the second ink, pending a hollow ring. Only a failure keeps
+    /// colour (a red circle with a cross), and "needs you" keeps its warning mark.
+    Neutral,
+}
+
+/// A status as one small mark in the given style: [`mark`] is `mark_with(t, s, size, Marks::Coloured)`.
+pub fn mark_with(t: &Theme, s: Status, size: f32, marks: Marks) -> El {
+    if marks == Marks::Coloured {
+        return mark(t, s, size);
+    }
+    match s {
+        Status::Done => glyph(&icons::CHECK, size, t.ink_faint()),
+        // A short dash, 8 by 1.5 points, centred in the mark's box.
+        Status::Denied => row().size(size, size).center().a11y_hidden().child(el().size(8.0, 1.5).radius(0.75).fill(t.ink_faint())),
+        _ => mark(t, s, size),
+    }
+}
+
+/// A hollow dot, 7 points across, centred in a box `size` across: a quiet mark for something that has no state of its own (a
+/// thought, a plain step).
+pub fn hollow_dot(t: &Theme, size: f32) -> El {
+    row().size(size, size).center().a11y_hidden().child(el().size(7.0, 7.0).radius(3.5).border(1.25, t.ink_faint()))
 }
 
 /// A status as one small mark: a hollow ring (pending), a turning ring (running, the one thing that loops), a check, a cross, a

@@ -2,7 +2,7 @@
 schema = 1
 name = "reasoning"
 title = "Reasoning"
-version = "0.9.0"
+version = "0.10.0"
 type = "component"
 group = "agent"
 description = "Thinking\u2026 with a shimmer while the model thinks, then a Thought for 12s fold."
@@ -20,11 +20,11 @@ stories = []
 [[files]]
 path = "reasoning.rs"
 target = "src/ui/reasoning.rs"
-sha256 = "aae0522f6e5b208abc7caf0d40f0c6139a7a11831d6e1296b62f8f3fb2dd952b"
+sha256 = "b50d4686187019711d6718d7d01969a0be63aeebb900b4b4b497ebe4f05461d8"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/reasoning.rs"
 role = "story"
-sha256 = "4c689198aa2b027d35023ce524f9441680091e7c5051a38138b2641990774ed6"
+sha256 = "6bfad3eae9ec59ce0d3df473fcddcd7e601023ff20da527cb822b30b13f5c32f"

@@ -1,4 +1,4 @@
-item-confirmation group 0 0 940 858
+item-confirmation group 0 0 940 1212
 confirm-demo alertdialog 0 64 520 182
 confirm-demo-detail code 16 144 488 38
 confirm-demo-detail-x group 16 144 488 38
@@ -22,6 +22,10 @@ confirm-once status 0 546 520 36
 confirm-always status 0 630 520 36
 confirm-denied status 0 714 520 36
 confirm-expired status 0 798 520 36
+confirm-n-once status 0 900 520 36
+confirm-n-always status 0 984 520 36
+confirm-n-denied status 0 1068 520 36
+confirm-n-expired status 0 1152 520 36
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32
 editor-mode-1 button 1059 -184 53 32

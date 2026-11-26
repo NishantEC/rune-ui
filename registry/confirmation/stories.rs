@@ -1,10 +1,11 @@
 use rune::El;
 
+use super::super::agent::Marks;
 use super::super::confirmation::{Confirmation, Decision};
 use super::super::gallery::{Ctx, StoryItem, spec_wide, specs};
 
 pub fn item<S: 'static>() -> StoryItem<S> {
-    StoryItem::new("confirmation", "Confirmation", "agent").story("Asking, then answered", all::<S>)
+    StoryItem::new("confirmation", "Confirmation", "agent").story("Asking, then answered", all::<S>).story("Answered with neutral marks: no green, no red", neutral::<S>)
 }
 
 /// The live request's answer, kept in the gallery.
@@ -46,4 +47,16 @@ fn word(d: Decision) -> &'static str {
         Decision::Denied => "deny",
         _ => "",
     }
+}
+
+/// An answered request with quiet marks: a tick in the third ink, a dash.
+fn neutral<S: 'static>(c: &mut Ctx<S>) -> El {
+    let t = c.t;
+    let one = |key: &str, title: &str, d: Decision| spec_wide(t, d.word(), 520.0, Confirmation::<S>::new(key.to_owned(), title.to_owned(), d).answered_marks(Marks::Neutral).build(t));
+    specs(t, vec![
+        one("confirm-n-once", "Edit .cargo/config.toml", Decision::AllowedOnce),
+        one("confirm-n-always", "Read files in src/", Decision::AlwaysAllowed),
+        one("confirm-n-denied", "Push to main", Decision::Denied),
+        one("confirm-n-expired", "Install a package", Decision::Expired),
+    ])
 }
