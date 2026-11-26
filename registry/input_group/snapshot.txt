@@ -1,6 +1,6 @@
 item-input_group group 0 0 940 208
-hit(group-site-copy) group 260 62 40 40
-hit(group-send-go) group 260 146 40 40
+hit(group-site-copy) none 260 62 40 40
+hit(group-send-go) none 260 146 40 40
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32
 editor-mode-1 button 1059 -184 53 32

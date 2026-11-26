@@ -1,6 +1,6 @@
 item-empty group 0 0 940 306
 empty-tasks group 0 64 380 218
-hit(empty-new) button 132 212 116 40
+hit(empty-new) none 132 212 116 40
 empty-new button 132 214 116 36
 empty-search group 404 64 380 166
 editor-mode radiogroup 1000 -184 260 32

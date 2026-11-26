@@ -1,8 +1,8 @@
 item-sheet group 0 0 940 348
 sheet-inplace-sheet dialog 0 64 320 260
-hit(sheet-inplace-close) button 260 84 40 40
+hit(sheet-inplace-close) none 260 84 40 40
 sheet-inplace-close button 264 88 32 32
-hit(sheet-open) button 344 62 78 40
+hit(sheet-open) none 344 62 78 40
 sheet-open button 344 64 78 36
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32

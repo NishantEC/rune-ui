@@ -1,5 +1,5 @@
 item-model_selector group 0 0 940 120
-hit(model-demo-trigger) button 0 60 86 40
+hit(model-demo-trigger) none 0 60 86 40
 model-demo-trigger combobox 0 64 86 32
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32

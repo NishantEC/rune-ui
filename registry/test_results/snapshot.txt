@@ -3,7 +3,7 @@ tests-demo group 0 64 620 334
 tests-demo-summary status 0 64 620 20
 tests-demo-suites group 0 96 620 302
 tests-demo-suite-0 group 0 96 620 222
-hit(tests-demo-suite-0-trigger) button 0 94 279 40
+hit(tests-demo-suite-0-trigger) none 0 94 279 40
 tests-demo-suite-0-trigger button 0 96 279 36
 tests-demo-suite-0-content group 0 136 620 182
 tests-demo-suite-0-tests list 30 136 590 178
@@ -15,10 +15,10 @@ tests-demo-suite-0-test-0-actual group 52 216 568 22
 tests-demo-suite-0-test-1 listitem 30 244 590 32
 tests-demo-suite-0-test-2 listitem 30 282 590 32
 tests-demo-suite-1 group 0 322 620 36
-hit(tests-demo-suite-1-trigger) button 0 320 213 40
+hit(tests-demo-suite-1-trigger) none 0 320 213 40
 tests-demo-suite-1-trigger button 0 322 213 36
 tests-demo-suite-2 group 0 362 620 36
-hit(tests-demo-suite-2-trigger) button 0 360 215 40
+hit(tests-demo-suite-2-trigger) none 0 360 215 40
 tests-demo-suite-2-trigger button 0 362 215 36
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32

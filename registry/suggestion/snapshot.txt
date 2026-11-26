@@ -1,12 +1,12 @@
 item-suggestion group 0 0 940 160
 suggestion-demo group 0 64 520 72
-hit(suggestion-demo-0) button 0 60 137 40
+hit(suggestion-demo-0) none 0 60 137 40
 suggestion-demo-0 button 0 64 137 32
-hit(suggestion-demo-1) button 145 60 173 40
+hit(suggestion-demo-1) none 145 60 173 40
 suggestion-demo-1 button 145 64 173 32
-hit(suggestion-demo-2) button 325 60 157 40
+hit(suggestion-demo-2) none 325 60 157 40
 suggestion-demo-2 button 325 64 157 32
-hit(suggestion-demo-3) button 0 100 162 40
+hit(suggestion-demo-3) none 0 100 162 40
 suggestion-demo-3 button 0 104 162 32
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32

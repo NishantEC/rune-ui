@@ -2,13 +2,13 @@
 schema = 1
 name = "base"
 title = "Base"
-version = "0.8.0"
+version = "0.9.0"
 type = "base"
 group = "base"
 description = "Shared helpers: press type, size metrics, hit area, glyph, spinner, words beside a control."
 
 [requires]
-style = ">=0.8.0, <0.9.0"
+style = ">=0.8.0, <0.10.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -18,4 +18,4 @@ cargo = ["rune", "rune-ui-style", "rune-kit"]
 [[files]]
 path = "base.rs"
 target = "src/ui/base.rs"
-sha256 = "e8ae5af013621b76dd077a4665fe2565d6d181a31dbdfa7ba1bf12977dfb0f3c"
+sha256 = "266aa194360563641bd8874f9930d494cd913d67abf7dc33196af1844bc47dd9"

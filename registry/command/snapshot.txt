@@ -13,7 +13,7 @@ command-inline-settings-keys note 457 332 45 20
 command-none dialog 544 64 360 124
 command-none-input textbox 586 77 302 22
 command-none-list listbox 544 112 360 76
-hit(command-open) button 0 412 179 40
+hit(command-open) none 0 412 179 40
 command-open button 0 414 179 36
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32

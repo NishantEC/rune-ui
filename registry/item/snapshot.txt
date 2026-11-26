@@ -1,12 +1,12 @@
 item-item group 0 0 940 410
 item-default group 0 64 440 72
-hit(item-default-open) group 367 80 57 40
+hit(item-default-open) none 367 80 57 40
 item-default-open button 367 84 57 32
 item-outline group 0 148 440 72
-hit(item-outline-more) group 388 164 40 40
+hit(item-outline-more) none 388 164 40 40
 item-outline-more button 392 168 32 32
 item-muted group 0 232 440 90
-hit(item-muted-on) group 352 257 72 40
+hit(item-muted-on) none 352 257 72 40
 item-muted-on button 352 261 72 32
 item-small button 0 334 440 52
 editor-mode radiogroup 1000 -184 260 32

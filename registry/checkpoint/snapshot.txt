@@ -1,6 +1,6 @@
 item-checkpoint group 0 0 940 186
 checkpoint-demo group 0 64 560 32
-hit(checkpoint-demo-restore) button 315 60 83 40
+hit(checkpoint-demo-restore) none 315 60 83 40
 checkpoint-demo-restore button 315 64 83 32
 checkpoint-mark group 0 144 560 18
 editor-mode radiogroup 1000 -184 260 32

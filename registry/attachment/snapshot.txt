@@ -1,9 +1,9 @@
 item-attachment group 0 0 940 126
 attachment-file group 0 64 260 38
-hit(attachment-file-remove) button 222 63 40 40
+hit(attachment-file-remove) none 222 63 40 40
 attachment-file-remove button 226 67 32 32
 attachment-image group 284 64 205 38
-hit(attachment-image-remove) button 451 63 40 40
+hit(attachment-image-remove) none 451 63 40 40
 attachment-image-remove button 455 67 32 32
 attachment-sent group 513 64 103 38
 editor-mode radiogroup 1000 -184 260 32

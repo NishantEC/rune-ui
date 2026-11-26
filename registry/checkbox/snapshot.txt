@@ -3,7 +3,7 @@ check-off checkbox -4 64 169 36
 check-on checkbox 185 64 169 36
 check-mixed checkbox 374 64 169 36
 check-hover checkbox 563 64 169 36
-hit(check-focus) button 743 52 40 40
+hit(check-focus) none 743 52 40 40
 check-focus checkbox 755 64 16 16
 check-invalid checkbox -4 148 169 36
 check-disabled checkbox 185 148 169 36

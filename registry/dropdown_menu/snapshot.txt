@@ -1,6 +1,6 @@
 item-dropdown_menu group 0 0 940 124
 dropdown-demo-trigger group 0 64 110 36
-hit(dropdown-trigger) button 0 62 110 40
+hit(dropdown-trigger) none 0 62 110 40
 dropdown-trigger button 0 64 110 36
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32

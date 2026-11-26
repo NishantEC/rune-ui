@@ -15,9 +15,9 @@ form-team-input group 24 344 400 36
 form-team-input-input textbox 38 352 372 20
 form-team-description text 24 388 400 18
 form-demo-footer group 24 426 400 40
-hit(form-demo-cancel) button 204 428 78 40
+hit(form-demo-cancel) none 204 428 78 40
 form-demo-cancel button 204 430 78 36
-hit(form-demo-submit) button 290 428 134 40
+hit(form-demo-submit) none 290 428 134 40
 form-demo-submit button 290 430 134 36
 form-busy-frame group 472 64 448 212
 form-busy form 496 88 400 164
@@ -26,9 +26,9 @@ form-busy-old-label group 496 130 400 18
 form-busy-input group 496 156 400 36
 form-busy-input-input textbox 510 164 372 20
 form-busy-footer group 496 212 400 40
-hit(form-busy-cancel) group 723 214 78 40
+hit(form-busy-cancel) none 723 214 78 40
 form-busy-cancel button 723 216 78 36
-hit(form-busy-submit) group 809 214 87 40
+hit(form-busy-submit) none 809 214 87 40
 form-busy-submit button 809 216 87 36
 form-failed-frame group 0 538 388 298
 form-failed form 24 562 340 250
@@ -39,7 +39,7 @@ form-failed-mail-input group 24 690 340 36
 form-failed-mail-input-input textbox 38 698 312 20
 form-failed-mail-error text 24 734 340 18
 form-failed-footer group 24 772 340 40
-hit(form-failed-submit) button 258 774 106 40
+hit(form-failed-submit) none 258 774 106 40
 form-failed-submit button 258 776 106 36
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32

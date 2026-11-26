@@ -2,13 +2,13 @@ item-queue group 0 0 940 220
 queue-demo group 0 64 480 132
 queue-demo-list list 0 86 480 110
 queue-demo-item-0 listitem 0 86 480 36
-hit(queue-demo-item-0-remove) button 444 84 40 40
+hit(queue-demo-item-0-remove) none 444 84 40 40
 queue-demo-item-0-remove button 448 88 32 32
 queue-demo-item-1 listitem 0 123 480 36
-hit(queue-demo-item-1-remove) button 444 121 40 40
+hit(queue-demo-item-1-remove) none 444 121 40 40
 queue-demo-item-1-remove button 448 125 32 32
 queue-demo-item-2 listitem 0 160 480 36
-hit(queue-demo-item-2-remove) button 444 158 40 40
+hit(queue-demo-item-2-remove) none 444 158 40 40
 queue-demo-item-2-remove button 448 162 32 32
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32

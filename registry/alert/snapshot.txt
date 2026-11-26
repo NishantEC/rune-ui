@@ -4,7 +4,7 @@ alert-info alert 0 150 520 74
 alert-success alert 0 236 520 74
 alert-warning alert 0 322 520 74
 alert-danger alert 0 408 520 74
-hit(alert-retry) group 447 420 57 40
+hit(alert-retry) none 447 420 57 40
 alert-retry button 447 424 57 32
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32

@@ -1,9 +1,9 @@
 item-sources group 0 0 940 379
 sources-demo group 0 64 480 36
-hit(sources-demo-trigger) button 0 62 164 40
+hit(sources-demo-trigger) none 0 62 164 40
 sources-demo-trigger button 0 64 164 36
 sources-open group 0 148 480 207
-hit(sources-open-trigger) group 0 146 164 40
+hit(sources-open-trigger) none 0 146 164 40
 sources-open-trigger button 0 148 164 36
 sources-open-content group 0 188 480 167
 sources-open-list list 30 188 450 163

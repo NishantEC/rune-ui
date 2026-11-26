@@ -2,7 +2,7 @@ item-popover group 0 0 940 206
 popover-inplace-panel dialog 0 64 280 118
 popover-switch switch 10 132 252 36
 popover-demo-trigger group 304 64 95 36
-hit(popover-button) button 304 62 95 40
+hit(popover-button) none 304 62 95 40
 popover-button button 304 64 95 36
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32

@@ -4,11 +4,11 @@ drawer-inplace-grab group 24 64 472 24
 drawer-inplace-less button 40 163 44 44
 drawer-inplace-more button 436 163 44 44
 drawer-inplace-footer group 40 234 440 84
-hit(drawer-inplace-submit) button 40 236 440 40
+hit(drawer-inplace-submit) none 40 236 440 40
 drawer-inplace-submit button 40 238 440 36
-hit(drawer-inplace-cancel) button 40 280 440 40
+hit(drawer-inplace-cancel) none 40 280 440 40
 drawer-inplace-cancel button 40 282 440 36
-hit(drawer-open) button 544 62 119 40
+hit(drawer-open) none 544 62 119 40
 drawer-open button 544 64 119 36
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32
