@@ -653,3 +653,64 @@ fn a_request_in_a_list_numbers_itself_and_can_leave_escape_to_the_list() {
     key(&mut rt, Key::Escape);
     assert_eq!(rt.state.g.choice("confirm", ""), "deny", "the default request is denied by Escape, as before");
 }
+
+// ---- Reorder ----
+
+fn order(rt: &Runtime<App>) -> Vec<usize> {
+    rt.state.g.slot::<ui::stories::reorder::Order>("reorder-order").0
+}
+
+#[test]
+fn reorder_helpers_move_items_and_read_keys_and_drags() {
+    use ui::reorder::{drop_index, key_target, move_item};
+    let mut v = vec!["a", "b", "c", "d"];
+    move_item(&mut v, 0, 2);
+    assert_eq!(v, ["b", "c", "a", "d"]);
+    move_item(&mut v, 3, 99);
+    assert_eq!(v, ["b", "c", "a", "d"], "clamped into the list");
+    move_item(&mut v, 3, 0);
+    assert_eq!(v, ["d", "b", "c", "a"]);
+    assert_eq!(drop_index(1, 40.0, 36.0, 4), 2, "a bit over one place down is one place");
+    assert_eq!(drop_index(1, 20.0, 36.0, 4), 2, "past half a place rounds up");
+    assert_eq!(drop_index(1, 10.0, 36.0, 4), 1, "under half stays");
+    assert_eq!(drop_index(1, -500.0, 36.0, 4), 0, "clamped at the top");
+    assert_eq!(drop_index(1, 500.0, 36.0, 4), 3, "and at the bottom");
+    let alt = |k| KeyEvent { key: k, mods: Mods { alt: true, ..Mods::default() } };
+    assert_eq!((key_target(&alt(Key::Up), 2, 4), key_target(&alt(Key::Down), 2, 4), key_target(&alt(Key::Home), 2, 4), key_target(&alt(Key::End), 2, 4)), (Some(1), Some(3), Some(0), Some(3)));
+    assert_eq!((key_target(&alt(Key::Up), 0, 4), key_target(&alt(Key::Down), 3, 4)), (None, None), "no move at the ends");
+    assert_eq!(key_target(&KeyEvent { key: Key::Down, mods: Mods::default() }, 1, 4), None, "Down alone is the list's own");
+}
+
+#[test]
+fn a_reorder_list_moves_a_row_with_alt_and_the_arrows_and_by_dragging() {
+    let mut rt = item("reorder");
+    let tree = rt.accessibility_json();
+    assert_eq!(ax(&tree, "reorder-demo").unwrap()["role"].as_str(), Some("list"));
+    assert!(ax(&tree, "reorder-demo-row2").unwrap().to_string().contains("3 of 4"), "each row says its place");
+    // Keyboard: Alt+Down on the first row moves it down one place.
+    focus(&mut rt, "reorder-item0");
+    rt.key(KeyEvent { key: Key::Down, mods: Mods { alt: true, ..Mods::default() } });
+    settle(&mut rt);
+    assert_eq!(order(&rt), vec![1, 0, 2, 3], "moved down one");
+    assert!(drawn(&rt, "reorder-item1")[1] < drawn(&rt, "reorder-item0")[1], "and drawn so");
+    // Plain Down moves nothing.
+    key(&mut rt, Key::Down);
+    assert_eq!(order(&rt), vec![1, 0, 2, 3]);
+    // Pointer: drag the last row up two places and let go.
+    let (x, y) = rt.find("reorder-item3").unwrap();
+    let pitch = drawn(&rt, "reorder-item1")[3] + 1.0;
+    rt.pointer_down(x, y);
+    for i in 1..=20 {
+        rt.pointer_move(x, y - 2.0 * pitch * i as f32 / 20.0);
+        rt.frame(1.0 / 60.0);
+    }
+    rt.pointer_up(x, y - 2.0 * pitch);
+    settle(&mut rt);
+    assert_eq!(order(&rt), vec![1, 3, 0, 2], "the last row went up two places");
+    // A press that does not move is still a press: nothing is reordered.
+    let (x, y) = rt.find("reorder-item1").unwrap();
+    rt.pointer_down(x, y);
+    rt.pointer_up(x, y);
+    settle(&mut rt);
+    assert_eq!(order(&rt), vec![1, 3, 0, 2]);
+}

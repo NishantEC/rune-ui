@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "reorder"
+title = "Reorder"
+version = "0.10.0"
+type = "component"
+group = "structure"
+description = "A column of rows the person can put in order by dragging or with Alt and the arrows; you keep the list."
+
+[requires]
+style = ">=0.8.0, <0.11.0"
+rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
+
+[dependencies]
+registry = ["base"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = ["sidebar", "icons"]
+
+[[files]]
+path = "reorder.rs"
+target = "src/ui/reorder.rs"
+sha256 = "b384c71676b8e3f93b25190fd3fc920ade57d84871efff179cd43ee282835e80"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/reorder.rs"
+role = "story"
+sha256 = "75dadb6b6d36e1080fa9f85b0c12a819243cc19189afdd5424851553b5d799ac"
