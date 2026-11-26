@@ -1,4 +1,4 @@
-item-prompt_input group 0 0 940 632
+item-prompt_input group 0 0 940 860
 prompt-demo group 0 64 560 130
 prompt-demo-attachments group 12 74 536 38
 prompt-file group 12 74 196 38
@@ -33,6 +33,20 @@ prompt-menu-input textbox 12 534 536 22
 prompt-menu-toolbar group 12 564 536 36
 hit(prompt-menu-submit) none 510 562 40 40
 prompt-menu-submit button 512 564 36 36
+prompt-slots group 0 674 560 146
+prompt-slots-body group 12 684 536 44
+prompt-slots-lead button 12 684 28 28
+prompt-slots-portrait group 12 684 28 28
+scroll group 52 684 496 44
+prompt-slots-input textbox 52 684 496 22
+prompt-slots-chips group 12 736 536 32
+prompt-slots-folder button 12 736 86 32
+prompt-slots-branch button 106 736 50 32
+prompt-slots-toolbar group 12 776 536 36
+hit(prompt-slots-attach) none 8 774 40 40
+prompt-slots-attach button 12 778 32 32
+hit(prompt-slots-submit) none 510 774 40 40
+prompt-slots-submit button 512 776 36 36
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32
 editor-mode-1 button 1059 -184 53 32

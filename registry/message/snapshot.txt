@@ -16,11 +16,11 @@ message-well article 0 322 640 42
 message-well-bubble group 286 322 354 42
 message-led article 0 384 640 59
 message-led-header group 0 384 640 33
-message-led-head-portrait group 0 384 33 33
-message-led-head-portrait-arc group 0 384 33 33
+message-led-head-portrait group -4 384 33 33
+message-led-head-portrait-arc group -4 384 33 33
 message-led-done article 0 463 640 59
 message-led-done-header group 0 463 640 33
-message-led-done-head-portrait group 0 463 33 33
+message-led-done-head-portrait group -4 463 33 33
 message-quiet article 0 542 640 42
 message-quiet-bubble group 368 542 272 42
 message-live group 0 650 560 84

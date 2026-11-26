@@ -283,3 +283,27 @@ fn the_well_bubble_is_the_well_material_with_16_and_10_point_padding() {
         assert!(well.rect[0] + well.rect[2] <= drawn(&rt, "message-well")[0] + drawn(&rt, "message-well")[2] + 0.5, "inside its message");
     }
 }
+
+// ---- PromptInput: a leading slot and a row of chips ----
+
+#[test]
+fn the_composer_takes_a_leading_element_and_chips_in_reading_and_tab_order() {
+    let mut rt = item("prompt_input");
+    let (lead, input, folder, branch, attach, send) = (drawn(&rt, "prompt-slots-lead"), drawn(&rt, "prompt-slots-input"), drawn(&rt, "prompt-slots-folder"), drawn(&rt, "prompt-slots-branch"), drawn(&rt, "prompt-slots-attach"), drawn(&rt, "prompt-slots-submit"));
+    assert!(lead[0] + lead[2] < input[0], "the lead sits left of the text: {lead:?} {input:?}");
+    assert!((lead[1] - input[1]).abs() < 6.0, "top-aligned with the first line: {lead:?} {input:?}");
+    assert!(folder[1] >= input[1] + input[3] - 0.5 && folder[1] < attach[1], "the chips sit under the text, above the toolbar: {folder:?}");
+    assert!(branch[0] > folder[0] + folder[2], "in order, in a row");
+    assert!(send[0] > attach[0], "the toolbar is as before");
+    // Tab order: the lead, the text, the chips, then the toolbar.
+    focus(&mut rt, "prompt-slots-lead");
+    let mut seen = Vec::new();
+    for _ in 0..5 {
+        key(&mut rt, Key::Tab);
+        seen.push(focused(&rt).unwrap_or_default());
+    }
+    let at = |k: &str| seen.iter().position(|s| s == k);
+    assert!(at("prompt-slots-input") < at("prompt-slots-folder") && at("prompt-slots-folder") < at("prompt-slots-branch") && at("prompt-slots-branch") < at("prompt-slots-attach"), "Tab order {seen:?}");
+    // Unused, the composer has no body row and no chip row.
+    assert!(rt.presented("prompt-demo-body").is_none() && rt.presented("prompt-demo-chips").is_none());
+}

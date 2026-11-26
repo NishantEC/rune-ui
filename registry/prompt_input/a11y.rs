@@ -1,1 +1,1 @@
-pub const CHECKS: &[(&str, &str)] = &[("prompt-demo", "group"), ("prompt-demo-input", "textbox"), ("prompt-demo-submit", "button"), ("prompt-demo-attach", "button"), ("prompt-busy-submit", "button"), ("prompt-menu-input", "textbox")];
+pub const CHECKS: &[(&str, &str)] = &[("prompt-demo", "group"), ("prompt-demo-input", "textbox"), ("prompt-demo-submit", "button"), ("prompt-demo-attach", "button"), ("prompt-busy-submit", "button"), ("prompt-menu-input", "textbox"), ("prompt-slots-lead", "button"), ("prompt-slots-folder", "button"), ("prompt-slots-input", "textbox")];

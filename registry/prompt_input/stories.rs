@@ -1,13 +1,15 @@
 use rune::El;
 
+use super::super::agent::chip;
 use super::super::attachment::Attachment;
+use super::super::portrait::Portrait;
 use super::super::gallery::{Ctx, GalleryState, StoryItem, spec_wide, specs};
 use super::super::icons;
 use super::super::model_selector::{Model, ModelSelector};
 use super::super::prompt_input::{MenuState, Phase, PromptInput, Suggestion};
 
 pub fn item<S: 'static>() -> StoryItem<S> {
-    StoryItem::new("prompt_input", "PromptInput", "agent").story("Ready, streaming and disabled", all::<S>).story("Mentions with @, commands with /", menus::<S>)
+    StoryItem::new("prompt_input", "PromptInput", "agent").story("Ready, streaming and disabled", all::<S>).story("Mentions with @, commands with /", menus::<S>).story("A leading element and a row of chips", slots::<S>)
 }
 
 fn all<S: 'static>(c: &mut Ctx<S>) -> El {
@@ -58,6 +60,18 @@ pub fn commands() -> Vec<Suggestion> {
         Suggestion::new("model", "model").detail("Choose the model"),
         Suggestion::new("review", "review").detail("Review the open diff"),
     ]
+}
+
+/// A leading picker at the text's left and chips under the text: in reading and Tab order, the text keeping the room that is left.
+fn slots<S: 'static>(c: &mut Ctx<S>) -> El {
+    let (t, g, acc) = (c.t, c.g, c.access);
+    let lead = rune::row().key("prompt-slots-lead").role("button").label("Message for Asha").help("Message for Asha").focusable(true).radius(t.radius.md)
+        .child(Portrait::new("prompt-slots-portrait", "Asha", 28.0).decorative(true).build(t));
+    let pill = |key: &str, words: &str| chip(t, key, None).role("button").label(words.to_owned()).focusable(true).child(rune::text(words.to_owned()).font(t.ty.sm).color(t.ink_muted()).a11y_hidden());
+    let composer = PromptInput::<S>::new("prompt-slots", g.edit("prompt-slots"), move |s: &mut S| acc(s).edit_mut("prompt-slots"))
+        .placeholder("Ask Asha").rows(2, 6).lead(lead).chip(pill("prompt-slots-folder", "acme-web")).chip(pill("prompt-slots-branch", "main")).on_attach(|_: &mut S| {})
+        .on_submit(|_: &mut S| {}).build(t);
+    specs(t, vec![spec_wide(t, "A portrait beside the text, folder and branch chips under it; Tab goes portrait, text, chips, attach, send", 560.0, composer)])
 }
 
 fn menu_state(g: &mut GalleryState) -> &mut MenuState {

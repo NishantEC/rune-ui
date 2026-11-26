@@ -2,7 +2,7 @@
 schema = 1
 name = "prompt_input"
 title = "PromptInput"
-version = "0.8.1"
+version = "0.10.0"
 type = "component"
 group = "agent"
 description = "The composer: a growing text area, attachments, a toolbar, and Send that becomes Stop; Return, Shift+Return, Escape."
@@ -15,16 +15,16 @@ rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 registry = ["base", "icons", "agent"]
 cargo = ["rune", "rune-ui-style"]
 # What the stories use besides this item: they are copied only when these are installed too.
-stories = ["attachment", "model_selector"]
+stories = ["attachment", "model_selector", "portrait"]
 
 [[files]]
 path = "prompt_input.rs"
 target = "src/ui/prompt_input.rs"
-sha256 = "11df870f1c352a75b6fc15916d47f91aad72a80a79e2da5bddb88c8146ad195f"
+sha256 = "cddcab793506a117536965bc386441b654b0099c6d76b89aee1b0780adbd49b1"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/prompt_input.rs"
 role = "story"
-sha256 = "0abcafa84f76b9af0eae58401c4d7d06dc2967ee93eb53c1a5ad7cb883c45dc3"
+sha256 = "6d41fe54580a2814b56d341ec0283e160c8d6c3dcda92808ad7bfac04ae1f31c"
