@@ -97,11 +97,32 @@ density's row height through the line height `to_kit()` gives them.
 
 | Tier | Where in the file | Keys |
 | --- | --- | --- |
-| 1, ramps | `color` | `neutral` (0, 25, 50, 100, 150, 200, 300 … 900, 925, 950, 975, 1000); `blue`, `green`, `amber`, `red` (50 … 950) |
-| 2, roles | `modes.<mode>.role` | `page`, `surface`, `floating`, `muted`, `subtle`, `primary`, `secondary`, `accent`, `input` (each `bg` + `fg`); `info`, `success`, `warning`, `danger` (`bg`, `fg`, `solid`, `on-solid`); `line`, `ring` |
+| 1, ramps | `color` | `neutral` (0, 25, 50, 100, 150, 200, 300 … 900, 925, 950, 975, 1000); `blue`, `green`, `amber`, `red` (50 … 950); optional `identity` (50 … 950) |
+| 2, roles | `modes.<mode>.role` | `page`, `surface`, `floating`, `muted`, `subtle`, `primary`, `secondary`, `accent`, `input` (each `bg` + `fg`); `info`, `success`, `warning`, `danger` (`bg`, `fg`, `solid`, `on-solid`); optional `identity` (the same four); `line`, `ring` |
 | states | `modes.<mode>.state` | `hover`, `pressed`, `selected` (alphas of `page.fg`), `disabled` (an opacity) |
 | 3, component | `modes.<mode>.component` | `raised-top`, `raised-bottom`, `raised-edge`, `ink-top`, `ink-bottom`, `ink-rim`, `ink-edge`, `well-shadow`, `thumb`, `float-ring`, `shade` |
-| numbers | `modes.<mode>.number` | `elevation` (shadow strength), `well-blur`, `grain` |
+| numbers | `modes.<mode>.number` | `elevation` (shadow strength), `well-blur`, `grain`, `texture`; optional `scrim` |
+| type steps | `type` (optional) | `xs`, `sm`, `base`, `md`, `lg`, `xl`, `xxl`, each with any of `size`, `line-height`, `weight`, `tracking` |
+| keys font | `base.keys-font` (optional) | a font name, as `base.font` |
+
+### Optional tokens (0.10)
+
+A theme that leaves these out parses and draws as it always did.
+
+- **Identity colour** (`color.identity` and `modes.<mode>.role.identity`): a hue for one thing's own colour (a progress ring, a
+  selected mark) that is neither the ink (`primary`) nor a meaning. Like `info`, it is a quiet tint (`bg`), its text (`fg`), a solid
+  colour and the text on that (`on-solid`). `Theme::identity()` returns it, or `info` where the theme sets none, so a component
+  can always ask; `Theme::has_identity()` says which. The tests require 4.5:1 for `fg` on its tint, the page and the surface, 4.5:1
+  for `on-solid` on `solid`, and 3:1 for `solid` on the page. `Portrait`'s ring and `Receipt`-style marks use it. The default theme
+  sets a teal as the example.
+- **Scrim** (`modes.<mode>.number.scrim`, 0 to 1): how strongly *black* dims the page behind a modal. `Theme::scrim()` is black at
+  that strength (`scrim_soft()` is 70% of it, for the command palette). Left out: 0.18 in light and 0.5 in dark. Black in both modes:
+  the page ink at an alpha fogs a dark page with a pale veil. The default theme sets 0.18 and 0.55.
+- **Keys font** (`base.keys-font`): the face of keycaps and menu shortcuts (`Theme::keycap`, tabular figures, medium weight at the
+  hint size). Left out, the theme's own font.
+- **Type steps** (`type.<step>.<property>`): sets a step of the ramp exactly (`size` and `line-height` in points above zero,
+  `weight`, `tracking`). A listed property replaces the ramp's value *after* density, `type-scale` and the font's size adjustment; an
+  unlisted step or property keeps the ramp. `Theme::keycap` follows a changed `sm`.
 
 Values in modes alias ramp steps: `"{neutral.900}"`, or at an alpha: `"{neutral.1000} / 0.05"`.
 
