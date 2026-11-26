@@ -191,6 +191,43 @@ Wave 2 added `recipes::series` (chart colours from the theme's roles), Label and
 Drawer share it) and `GalleryState::slot` (a component's own state type in the gallery). Their behaviour is tested in the live path
 (`apps/gallery/tests/wave2.rs`: real presses, pointer moves, drags and keys).
 
+## 0.9.0: what the first app needed
+
+Everything here came from an agent app built on rune-ui that had to work round these components; each is additive or a visual fix,
+except the breaks listed under "Upgrade notes" below. Tested in the live path in `apps/gallery/tests/wave4.rs`.
+
+| Item | New |
+| --- | --- |
+| Message | `.reveal_actions(reveal, access)`: the action bar shows only while the message is hovered or holds focus. Hidden, it takes no height and leaves no gap; its buttons stay in the Tab order, and the bar shows when one has focus. The app keeps one `message::Reveal` per message. Rhythm: `TURN_GAP` (20 points) between turns, `BLOCK_GAP` (4) between the blocks of a turn and above the bar (was 24 and 8). |
+| Context | `.face(Face::Ring)` (the default: a 20 point ring filling clockwise, the warning ink from 80%, the danger ink from 95%) or `Face::Bar`; `.percent(bool)`; `.note(words)`. The popover shows used and window, in, out, cached, the cost only when `Usage::cost` is `Some`, then the note. Return and Space open it, as a press does. |
+| Tool | `.label(words)` (the whole line, cut in the middle when long; the whole of it is the line's name and is in the fold), `.note(words)` ("exit 1"), `.text(words)` (free words at the top of the fold). No time under one second. `Status::Denied`: a neutral shield and "Denied", not red. |
+| Reasoning | "Thought" under one second; finished with no words, it draws nothing (no height, no gap). |
+| FoldLine (`agent`) | `.indent(false)` sets the open body on the line's own left edge; `.truncate_middle(true)`. ChainOfThought passes `.indent(..)` through. `agent::took(secs)` is a duration only from one second. |
+| Response | `.selectable(bool)` (unset: a finished answer is selectable, one still streaming is not); `.muted(bool)` draws the words in the second ink. |
+| Confirmation | `.why(words)`: a line under the request. `.destructive(true)`: no Always allow, the confirm button in the danger material, Return answers nothing (a press or Space on a focused answer does), Escape denies. |
+| Task | Every fact is optional (`Run::new(title, status).changes(..).checks(..).cost(..).tokens(..).secs(..).branch(..).note(..)`); tokens stand in for a missing cost; no checks, no "0 passed". |
+| Sidebar | `SidebarItem::lead(el)`: a status mark in the icon's place, on the icon's box. `.list_row(position, size)` and `.description(words)`: an `option` with its place and selected state, Return opens it. `Sidebar::list(label, name, rows)` makes a group one `listbox` and numbers its rows. |
+| RadioGroup | Stacked, an option's description wraps to the group's width (at least 240 points), not at 320. |
+| Hit areas | The 40 point wrapper (`hit(<key>)`) has role `none`: it no longer reads as an unnamed button round the named control. `apps/gallery/tests/unnamed.rs` fails on any unnamed button in any story. |
+| Disabled ink | Disabled Default (ink) and Destructive (danger) buttons keep their shape: the body lets the surface through, the rim, lit edge and contact shadow stay, the words dim (`recipes::DISABLED_WORDS`), and the control keeps its opacity. Other variants still fade. PromptInput's empty Send stays the raised material at rest with a faint arrow: a dimmed ink disc is a different look, so it was not folded into this. |
+
+What Rune cannot do here at this rev:
+
+- **Hover that changes layout without app state:** Rune's hover groups (`hover_group`, `group_opacity`) change paint only, so a bar
+  that takes no room until hovered needs the app to keep a flag (`message::Reveal`), set from `on_hover_change` and
+  `on_focus_within_change`.
+
+### Upgrade notes (0.8 to 0.9)
+
+| Break | Fix |
+| --- | --- |
+| `context::Usage` has `context` (tokens in the context now) and `cost: Option<f64>`; `Usage::used()` is gone | `Usage { input, output, cache, limit, cost }` → `Usage { context: input + output + cache, input, output, cache, limit, cost: Some(cost) }` |
+| Context's default face is the ring | `.face(Face::Bar)` keeps the bar |
+| `task::Run`'s facts are options (`changes`, `checks`, `cost`, `tokens`, `secs`, `branch`, `note`) | `Run { title, status, files, added, removed, passed, failed, cost, secs }` → `Run::new(title, status).changes(files, added, removed).checks(passed, failed).cost(cost).secs(secs)` |
+| `agent::Status` has `Denied`; `Status::ALL` is `[Status; 7]` | add an arm for `Status::Denied` where you match on `Status` without a wildcard |
+| `chat::ChatState` has `reveal` | add `reveal: Default::default()` to a struct literal (or use `ChatState::default()`) |
+| A conversation's gaps are 20 and 4 points (were 24 and 8) | none needed; to keep the old rhythm, change `TURN_GAP` and `BLOCK_GAP` in your copies |
+
 ## Agent set
 
 The components an app needs to show an AI agent at work, built on the base components and the style system. Names follow Vercel's
@@ -204,22 +241,22 @@ AI Elements where one exists. Everything is data in and events out: plain struct
 | PromptInput | The composer: growing text, attachment chips, a toolbar, Send that becomes Stop; Return, Shift+Return, Escape. With nothing to send, Send is a raised button at rest with a faint arrow (off, but still a button); with words it is ink. `.spellcheck(true)` marks misspelt words |
 | ModelSelector | Models grouped by provider in a searchable panel from the overlay layer, with a tier or price per row |
 | Attachment | A file or image chip with remove |
-| Tool | One tool call as one quiet line that folds open to its input and output |
-| Reasoning | "Thinking…" with a shimmer, then a "Thought for 12s" fold |
+| Tool | One tool call as one quiet line that reads like a sentence (its own words, a note, a time from 1 s) that folds open to its input and output |
+| Reasoning | "Thinking…" with a shimmer, then a "Thought for 12s" fold ("Thought" under a second; nothing at all when there are no words) |
 | ChainOfThought | The "Worked for 2m 14s" fold: steps with marks, words and details |
 | CodeBlock | Code with a language label, Copy, line numbers and sideways scroll; colour from Rune's built-in highlighter |
 | Diff | A unified diff per file: a folding header with `+n −n`, added and removed lines on their washes |
 | Terminal | A command, its output, its running state and exit status |
-| Task | A run card: status pill, files changed, checks, cost, time, one primary action |
+| Task | A run card: status pill, only the facts given (files, checks, cost or tokens, time, branch, a note), one primary action |
 | Plan | A checklist: to do, doing, done, skipped |
 | Queue | Messages waiting to be sent, moved with Alt and the arrows, removed with Delete |
 | Sources, InlineCitation | A "Used 4 sources" fold of links; a citation chip with a hover card |
 | Suggestion | A row of suggested prompts |
 | Actions | Copy, Retry, Good, Bad under an answer, with tooltips |
-| Confirmation | A tool asking permission: Allow once, Always allow, Deny; answered, one quiet line |
+| Confirmation | A tool asking permission: Allow once, Always allow, Deny, an optional why line, a destructive form; answered, one quiet line |
 | Shimmer, Loader | Words with a sweeping band; three dots. Both still under Reduce Motion |
 | StackTrace, TestResults, Commit | An error and its frames; a test run; one commit folding to its files and diff (wave 3) |
-| Context | A token and cost meter with a popover breakdown |
+| Context | A context meter (a 20 point ring, or a bar) with a popover: used and window, in, out, cached, an optional cost and note |
 | Branch | "2 / 3" between alternative answers |
 | Checkpoint | A divider with Restore |
 | `chat` (block) | All of it composed into one agent screen with placeholder content |

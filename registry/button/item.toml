@@ -8,7 +8,7 @@ group = "actions"
 description = "Default (ink), secondary (raised), outline, ghost, destructive and link; three sizes; icon, loading, selected."
 
 [requires]
-style = ">=0.8.0, <0.9.0"
+style = ">=0.8.0, <0.10.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
