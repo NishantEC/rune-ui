@@ -199,11 +199,9 @@ impl<S: 'static> Receipt<S> {
             });
             card = card.child(foot.children(self.actions));
         }
-        if self.settle && !t.reduced_motion {
-            let mut motion = Transition::offset(0.0, 8.0);
-            motion.insertion.opacity = 0.0;
-            card = card.transition(motion);
-        }
-        card
+        // Settles in 8 points up with a fade; in place under Reduce Motion.
+        let mut motion = Transition::offset(0.0, 8.0);
+        motion.insertion.opacity = 0.0;
+        if self.settle { if t.reduced_motion { card } else { card.transition(motion) } } else { card }
     }
 }

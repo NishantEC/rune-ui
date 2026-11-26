@@ -126,7 +126,7 @@ pub const RING_CONTRAST: f32 = 4.5;
 pub const DOT_CONTRAST: f32 = 3.0;
 
 /// `base` taken toward `strong` until it reaches `min`:1 against `under` (or all the way): a ring or dot that always shows.
-pub fn seen_on(base: Color, strong: Color, under: Color, min: f32) -> Color {
+pub fn seen_on(base: Color, strong: Color, under: Color, min: f32) -> Color { // guard: allow (a return type, not a colour)
     (0..=10).map(|i| mix(base, strong, i as f32 / 10.0)).find(|c| contrast(*c, under) >= min).unwrap_or(strong)
 }
 

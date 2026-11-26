@@ -479,7 +479,7 @@ fn a_file_row_is_a_button_with_a_name_and_the_card_settles_unless_motion_is_redu
     assert!(info(&rt, "receipt-grew-file0").role != "button" && !info(&rt, "receipt-grew-file0").focusable, "without on_file, plain rows");
     // Settling: the source skips the transition under Reduce Motion (the registry test checks the line), and a live card takes it.
     let src = std::fs::read_to_string(std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../registry/receipt/receipt.rs")).unwrap();
-    assert!(src.contains("self.settle && !t.reduced_motion"));
+    assert!(src.contains("if t.reduced_motion { card } else { card.transition(motion) }"));
 }
 
 // ---- Diff: stats, selection, a foot ----

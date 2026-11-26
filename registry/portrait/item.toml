@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "portrait.rs"
 target = "src/ui/portrait.rs"
-sha256 = "94cd4ceca053cd587892464b8cf2d2c308bef27e44aae0fbb98aae9c2e208827"
+sha256 = "e1669042a44823f7f5a71f5e5d3022b7d8d07bb66881d771fb2c178dd3bef08e"
 
 # Copied only once the gallery block is installed.
 [[files]]

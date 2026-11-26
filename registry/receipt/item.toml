@@ -20,7 +20,7 @@ stories = ["button", "portrait"]
 [[files]]
 path = "receipt.rs"
 target = "src/ui/receipt.rs"
-sha256 = "828c71756aaee0d8a9aa67e6461471f50e65845b01a81ff803a7cf5b3669d604"
+sha256 = "457df95808fb2abe1c70fa04aed7aac472213f936ce903a19150b38a108fd9e7"
 
 # Copied only once the gallery block is installed.
 [[files]]
