@@ -45,7 +45,7 @@ pub fn view(s: &App, cx: &mut Cx<App>) -> El {
 }
 
 /// Scenes that show an overlay open: (scene, item, overlay key).
-pub const OPEN_SCENES: [(&str, &str, &str); 23] = [
+pub const OPEN_SCENES: [(&str, &str, &str); 24] = [
     ("open-context-menu", "context_menu", "context-demo"),
     ("open-alert-dialog", "alert_dialog", "alert-demo"),
     ("open-toast", "toast", "toast-demo"),
@@ -69,6 +69,7 @@ pub const OPEN_SCENES: [(&str, &str, &str); 23] = [
     ("open-inline-citation", "inline_citation", "cite-demo"),
     ("open-prompt-model", "prompt_input", "prompt-model"),
     ("open-dropdown-people", "dropdown_menu", "dropdown-people"),
+    ("open-context-assumed", "context", "context-assumed"),
 ];
 
 /// Sets up a scene by name: a group, `materials`, `all`, `item-<name>`, or one of [`OPEN_SCENES`].
@@ -185,7 +186,7 @@ macro_rules! scenes {
 /// A named scene and how it sets up the state.
 pub type Scene = (&'static str, fn(&mut App));
 
-pub const SCENES: &[Scene] = scenes!["actions", "form", "overlays", "structure", "display", "materials", "materials-round", "typography", "typography-geist", "typography-ibm-plex-sans", "typography-figtree", "typography-manrope", "typography-dm-sans", "typography-plus-jakarta-sans", "typography-jetbrains-mono", "form-geist", "actions-geist", "all", "actions-compact", "form-compact", "structure-compact", "overlays-compact", "display-compact", "form-round", "structure-round", "tuned", "open-select", "open-combobox", "open-context-menu", "open-alert-dialog", "open-toast", "open-dropdown-menu", "open-popover", "open-dialog", "open-sheet", "open-command", "open-date-picker", "open-menubar", "open-navigation-menu", "open-hover-card", "open-drawer", "open-chart-bar", "open-chart-donut", "agent", "agent-compact", "agent-round", "agent-geist", "agent-serif", "chat-open", "chat-streaming", "open-model-selector", "open-context", "open-context-free", "open-inline-citation", "open-prompt-model", "open-dropdown-people", "open-toolbar-more", "open-prompt-mention", "open-prompt-command", "open-stack-trace", "open-tree", "segmented-moved", "open-tree-compact", "segmented-moved-round", "open-stack-trace-geist", "open-toolbar-more-compact"];
+pub const SCENES: &[Scene] = scenes!["actions", "form", "overlays", "structure", "display", "materials", "materials-round", "typography", "typography-geist", "typography-ibm-plex-sans", "typography-figtree", "typography-manrope", "typography-dm-sans", "typography-plus-jakarta-sans", "typography-jetbrains-mono", "form-geist", "actions-geist", "all", "actions-compact", "form-compact", "structure-compact", "overlays-compact", "display-compact", "form-round", "structure-round", "tuned", "open-select", "open-combobox", "open-context-menu", "open-alert-dialog", "open-toast", "open-dropdown-menu", "open-popover", "open-dialog", "open-sheet", "open-command", "open-date-picker", "open-menubar", "open-navigation-menu", "open-hover-card", "open-drawer", "open-chart-bar", "open-chart-donut", "agent", "agent-compact", "agent-round", "agent-geist", "agent-serif", "chat-open", "chat-streaming", "open-model-selector", "open-context", "open-context-free", "open-inline-citation", "open-prompt-model", "open-dropdown-people", "open-context-assumed", "open-toolbar-more", "open-prompt-mention", "open-prompt-command", "open-stack-trace", "open-tree", "segmented-moved", "open-tree-compact", "segmented-moved-round", "open-stack-trace-geist", "open-toolbar-more-compact"];
 
 static HEADLESS: AtomicBool = AtomicBool::new(false);
 

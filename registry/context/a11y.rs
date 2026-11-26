@@ -1,1 +1,1 @@
-pub const CHECKS: &[(&str, &str)] = &[("context-demo-trigger", "meter"), ("context-full-trigger", "meter"), ("context-bar-trigger", "meter"), ("context-free-trigger", "meter")];
+pub const CHECKS: &[(&str, &str)] = &[("context-demo-trigger", "meter"), ("context-full-trigger", "meter"), ("context-bar-trigger", "meter"), ("context-free-trigger", "meter"), ("context-assumed-trigger", "meter")];

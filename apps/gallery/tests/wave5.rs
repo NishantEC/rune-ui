@@ -585,3 +585,22 @@ fn a_stopped_run_is_neutral_and_a_card_can_carry_secondary_actions_in_order() {
     assert_eq!(ui::agent::Status::Stopped.word(), "Stopped");
     assert_eq!(ui::agent::Status::ALL.len(), 8);
 }
+
+// ---- Context: placement and an assumed window ----
+
+#[test]
+fn the_context_breakdown_can_be_placed_and_says_when_its_window_is_a_guess() {
+    let rt = scene("open-context-assumed", false);
+    let (trigger, panel) = (drawn(&rt, "context-assumed-trigger"), drawn(&rt, "context-assumed-panel"));
+    assert!(panel[1] >= trigger[1] + trigger[3] - 0.5, "BottomStart opens below the trigger: {trigger:?} {panel:?}");
+    assert!((panel[0] - trigger[0]).abs() < 1.5, "and starts at its left edge: {trigger:?} {panel:?}");
+    assert!(rt.presented("context-assumed-assumed").is_some(), "the guess is said under the figures");
+    assert!(texts_in(&rt, "context-assumed-panel").iter().any(|w| w == "Window (assumed)"));
+    let label = info(&rt, "context-assumed-trigger").label.unwrap_or_default();
+    assert!(label.contains("window assumed"), "{label}");
+    // The default is as before: above, no assumed line.
+    let rt = scene("open-context", false);
+    let (trigger, panel) = (drawn(&rt, "context-demo-trigger"), drawn(&rt, "context-demo-panel"));
+    assert!(panel[1] + panel[3] <= trigger[1] + 0.5, "above by default (the window keeps it on screen sideways): {trigger:?} {panel:?}");
+    assert!(rt.presented("context-demo-assumed").is_none());
+}

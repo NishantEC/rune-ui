@@ -1,10 +1,12 @@
 use rune::El;
 
+use rune_kit::Placement;
+
 use super::super::context::{Context, Face, Usage};
 use super::super::gallery::{Ctx, StoryItem, spec, specs};
 
 pub fn item<S: 'static>() -> StoryItem<S> {
-    StoryItem::new("context", "Context", "agent").story("Press for the breakdown", all::<S>).story("The bar, and the breakdown's own figures", bars::<S>)
+    StoryItem::new("context", "Context", "agent").story("Press for the breakdown", all::<S>).story("The bar, and the breakdown's own figures", bars::<S>).story("Placed to open downward, with an assumed window", placed::<S>)
 }
 
 fn all<S: 'static>(c: &mut Ctx<S>) -> El {
@@ -37,4 +39,15 @@ fn bars<S: 'static>(c: &mut Ctx<S>) -> El {
         spec(t, "The bar", Context::<S>::new("context-bar", &usage, false).face(Face::Bar).build(t, c.layer)),
         spec(t, "No cost: the breakdown draws no cost row", local),
     ])
+}
+
+/// A breakdown that opens below and to the right of its trigger, for a trigger with no room above; an assumed window.
+fn placed<S: 'static>(c: &mut Ctx<S>) -> El {
+    let (t, g, acc) = (c.t, c.g, c.access);
+    let guess = Usage { context: 52_000, limit: 128_000, input: 60_000, output: 8_000, cache: 0, cost: None };
+    let live = Context::<S>::new("context-assumed", &guess, g.is_open("context-assumed")).placement(Placement::BottomStart).limit_assumed(true).on_open(move |s: &mut S, o| {
+        let g = acc(s);
+        g.open = o.then(|| "context-assumed".to_owned());
+    }).build(t, c.layer);
+    specs(t, vec![spec(t, "placement(BottomStart) and limit_assumed(true): press it", live)])
 }
