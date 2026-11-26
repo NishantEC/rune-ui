@@ -5,6 +5,12 @@ sidebar-inbox link 8 169 224 36
 sidebar-calendar link 8 206 224 36
 sidebar-app link 8 283 224 36
 sidebar-docs link 8 320 224 36
+sidebar-tasks navigation 332 64 240 400
+sidebar-tasks-list-0 listbox 340 97 224 147
+sidebar-t1 option 340 97 224 36
+sidebar-t2 option 340 134 224 36
+sidebar-t3 option 340 171 224 36
+sidebar-t4 option 340 208 224 36
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32
 editor-mode-1 button 1059 -184 53 32

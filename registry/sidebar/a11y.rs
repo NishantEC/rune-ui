@@ -1,1 +1,1 @@
-pub const CHECKS: &[(&str, &str)] = &[("sidebar", "navigation"), ("sidebar-home", "link"), ("sidebar-inbox", "link")];
+pub const CHECKS: &[(&str, &str)] = &[("sidebar", "navigation"), ("sidebar-home", "link"), ("sidebar-inbox", "link"), ("sidebar-tasks", "navigation"), ("sidebar-t1", "option"), ("sidebar-t2", "option")];
