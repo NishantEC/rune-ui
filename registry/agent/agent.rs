@@ -32,10 +32,12 @@ pub enum Status {
     Waiting,
     /// A person (or a rule) said no. Neutral, not a failure: nothing went wrong.
     Denied,
+    /// Stopped before it finished, by the person or by the app closing under it. Neutral, not a failure: a square, not a cross.
+    Stopped,
 }
 
 impl Status {
-    pub const ALL: [Status; 7] = [Status::Pending, Status::Running, Status::Done, Status::Error, Status::Skipped, Status::Waiting, Status::Denied];
+    pub const ALL: [Status; 8] = [Status::Pending, Status::Running, Status::Done, Status::Error, Status::Skipped, Status::Waiting, Status::Denied, Status::Stopped];
 
     pub fn word(self) -> &'static str {
         match self {
@@ -46,6 +48,7 @@ impl Status {
             Status::Skipped => "Skipped",
             Status::Waiting => "Needs you",
             Status::Denied => "Denied",
+            Status::Stopped => "Stopped",
         }
     }
 
@@ -63,7 +66,7 @@ impl Status {
     /// The ink its mark is drawn in.
     pub fn ink(self, t: &Theme) -> Color { // guard: allow (a return type, not a colour)
         match self {
-            Status::Pending | Status::Skipped | Status::Denied => t.ink_faint(),
+            Status::Pending | Status::Skipped | Status::Denied | Status::Stopped => t.ink_faint(),
             Status::Running => t.ink_muted(),
             Status::Done => t.c.success.fg,
             Status::Error => t.c.danger.fg,
@@ -104,7 +107,7 @@ pub fn hollow_dot(t: &Theme, size: f32) -> El {
 }
 
 /// A status as one small mark: a hollow ring (pending), a turning ring (running, the one thing that loops), a check, a cross, a
-/// slashed ring (skipped), a warning (needs you), a shield (denied: a permission said no).
+/// slashed ring (skipped), a warning (needs you), a shield (denied: a permission said no), a square (stopped).
 pub fn mark(t: &Theme, s: Status, size: f32) -> El {
     let icon: &'static Icon = match s {
         Status::Running => return spinner_in(t, size, s.ink(t), s.word()),
@@ -114,6 +117,7 @@ pub fn mark(t: &Theme, s: Status, size: f32) -> El {
         Status::Skipped => &icons::CIRCLE_SLASH,
         Status::Waiting => &icons::WARNING,
         Status::Denied => &icons::SHIELD,
+        Status::Stopped => &icons::STOP,
     };
     glyph(icon, size, s.ink(t))
 }

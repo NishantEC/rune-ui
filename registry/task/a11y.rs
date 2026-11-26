@@ -1,1 +1,1 @@
-pub const CHECKS: &[(&str, &str)] = &[("task-done", "group"), ("task-done-action", "button"), ("task-running", "group"), ("task-tokens", "group"), ("task-noted", "group"), ("task-bare", "group")];
+pub const CHECKS: &[(&str, &str)] = &[("task-done", "group"), ("task-done-action", "button"), ("task-running", "group"), ("task-tokens", "group"), ("task-noted", "group"), ("task-bare", "group"), ("task-stopped", "group"), ("task-stopped-secondary0", "button"), ("task-stopped-secondary1", "button")];

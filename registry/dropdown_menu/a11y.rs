@@ -1,1 +1,1 @@
-pub const CHECKS: &[(&str, &str)] = &[("dropdown-trigger", "button")];
+pub const CHECKS: &[(&str, &str)] = &[("dropdown-trigger", "button"), ("dropdown-people-trigger", "button")];

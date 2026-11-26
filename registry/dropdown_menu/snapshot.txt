@@ -2,6 +2,9 @@ item-dropdown_menu group 0 0 940 124
 dropdown-demo-trigger group 0 64 110 36
 hit(dropdown-trigger) none 0 62 110 40
 dropdown-trigger button 0 64 110 36
+dropdown-people-trigger group 295 64 116 36
+hit(dropdown-people-trigger) none 295 62 116 40
+dropdown-people-trigger button 295 64 116 36
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32
 editor-mode-1 button 1059 -184 53 32

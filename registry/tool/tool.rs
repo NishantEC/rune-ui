@@ -98,7 +98,7 @@ impl<'a, S: 'static> Tool<'a, S> {
         // What the figures say: a word where the mark alone would need colour to read (waiting, denied, a failure with no time), the
         // time when it was a second or more, and nothing for a quick step that went well.
         let figure = match (c.status, c.secs.and_then(took)) {
-            (Status::Pending | Status::Waiting | Status::Denied, _) => Some(c.status.word().to_owned()),
+            (Status::Pending | Status::Waiting | Status::Denied | Status::Stopped, _) => Some(c.status.word().to_owned()),
             (_, Some(d)) => Some(d),
             (Status::Error | Status::Skipped, None) => Some(c.status.word().to_owned()),
             _ => None,

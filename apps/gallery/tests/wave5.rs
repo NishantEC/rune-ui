@@ -514,3 +514,74 @@ fn a_selectable_diff_selects_the_words_not_the_signs_and_has_a_foot() {
     let src = std::fs::read_to_string(std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../registry/diff/diff.rs")).unwrap();
     assert!(src.contains(".selectable(self.selectable)") && src.contains("selection_group(self.selectable)"));
 }
+
+// ---- Menu rows that lead with an image or an element ----
+
+#[test]
+fn a_menu_row_can_lead_with_a_picture_and_still_has_one_name_and_its_shortcut_in_keycap_style() {
+    for dark in [false, true] {
+        let mut rt = scene("open-dropdown-people", dark);
+        let t = rune_ui_themes::theme(dark);
+        let (row, face) = (drawn(&rt, "dropdown-people-asha"), drawn(&rt, "dropdown-people-asha-face"));
+        assert!(face[0] >= row[0] && face[0] + face[2] < row[0] + row[2] / 2.0, "the picture leads the row: {row:?} {face:?}");
+        assert!((face[1] + face[3] / 2.0 - (row[1] + row[3] / 2.0)).abs() < 0.6, "centred on the row's line");
+        assert!(row[3] >= 28.0, "the row holds a 20 point picture: {row:?}");
+        let label = rt.elements().into_iter().find(|e| e.text.as_deref() == Some("Asha") && e.rect[1] >= row[1] && e.rect[1] < row[1] + row[3]).expect("the name");
+        assert!(label.rect[0] > face[0] + face[2], "the name follows the picture");
+        let tree = rt.accessibility_json();
+        let n = ax(&tree, "dropdown-people-asha").expect("the row");
+        assert_eq!(n["role"].as_str(), Some("menu-item-check-box"), "{n}");
+        assert!(ax(&tree, "dropdown-people-asha-face").is_none_or(|f| f["role"] != "image"), "the picture is out of the tree: the row's label names it");
+        // The element row is the same.
+        let sw = rt.elements().into_iter().find(|e| e.text.as_deref() == Some("Identity colour")).expect("the swatch row");
+        assert!((sw.rect[0] - label.rect[0]).abs() < 0.6, "labels start at the same place whatever leads the row");
+        let key = rt.elements().into_iter().find(|e| e.text.as_deref() == Some("⌥ ⌘ I")).expect("the shortcut");
+        assert_eq!(key.text_style.unwrap().size, t.keycap.size, "dark {dark}: the keycap size");
+        assert_eq!(key.text_color, Some(t.ink_faint()));
+        press(&mut rt, "dropdown-people-lee");
+        assert!(rt.presented("dropdown-people-lee").is_none(), "choosing closes the menu");
+    }
+}
+
+// ---- Select and the popup: place, selected state, a named surface ----
+
+#[test]
+fn a_popup_list_says_each_options_place_its_selected_one_and_its_own_name() {
+    let mut rt = scene("open-select", false);
+    let tree = rt.accessibility_json();
+    let list = ax(&tree, "select-demo-list").expect("the listbox");
+    assert_eq!(list["name"].as_str(), Some("Starting level"));
+    assert_eq!(ax(&tree, "rows").expect("the rows")["setSize"].as_u64(), Some(3), "three options");
+    let opts: Vec<serde_json::Value> = (1..=3).filter_map(|i| ax(&tree, &format!("select-demo-item{i}"))).collect();
+    assert_eq!(opts.len(), 3);
+    for (i, o) in opts.iter().enumerate() {
+        assert_eq!(o["position"].as_u64(), Some(i as u64 + 1), "option {i}: {o}");
+        let selected = o["states"].as_array().is_some_and(|s| s.iter().any(|x| x == "selected"));
+        assert_eq!(selected, o["name"].as_str() == Some("Balanced"), "only the current option is selected: {o}");
+    }
+    let content = ax(&tree, "select-demo-content").expect("the open surface");
+    assert_eq!(content["name"].as_str(), Some("Starting level"), "the modal surface is named after its list: {content}");
+    // A menu numbers its rows without counting separators or labels.
+    let rt = scene("open-dropdown-menu", false);
+    let mut rt = rt;
+    let tree = rt.accessibility_json();
+    let positions: Vec<u64> = (1..=6).filter_map(|i| ax(&tree, &format!("dropdown-demo-item{i}"))).filter_map(|n| n["position"].as_u64()).collect();
+    assert!(positions.windows(2).all(|w| w[1] == w[0] + 1) && positions.first() == Some(&1), "rows numbered 1.. with no gaps: {positions:?}");
+}
+
+// ---- Task: Stopped and secondary actions ----
+
+#[test]
+fn a_stopped_run_is_neutral_and_a_card_can_carry_secondary_actions_in_order() {
+    let rt = item("task");
+    let card = info(&rt, "task-stopped");
+    assert_eq!(card.label.as_deref(), Some("Reorganise the docs folder: Stopped"));
+    let t = rune_ui_themes::theme(false);
+    assert!(!inks(&within(&rt, "task-stopped-status")).contains(&t.c.danger.fg), "a stop is not a failure");
+    let (a, s0, s1) = (drawn(&rt, "task-stopped-action"), drawn(&rt, "task-stopped-secondary0"), drawn(&rt, "task-stopped-secondary1"));
+    assert!(a[0] < s0[0] && s0[0] < s1[0] && (a[1] - s0[1]).abs() < 1.0, "Resume, Undo, Open the branch in one row: {a:?} {s0:?} {s1:?}");
+    assert!(info(&rt, "task-stopped-secondary0").focusable && info(&rt, "task-stopped-secondary1").role == "button");
+    assert!(rt.presented("task-done-actions").is_some() && rt.presented("task-running-actions").is_none(), "no actions, no row");
+    assert_eq!(ui::agent::Status::Stopped.word(), "Stopped");
+    assert_eq!(ui::agent::Status::ALL.len(), 8);
+}

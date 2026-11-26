@@ -18,4 +18,4 @@ cargo = ["rune", "rune-ui-style", "rune-kit"]
 [[files]]
 path = "popup.rs"
 target = "src/ui/popup.rs"
-sha256 = "c8577b964df3f2f8719be3d1d615fa8841c4fcce751de72004e826a51584bf59"
+sha256 = "ce14874c02a4340903297183f815e56b9f13d9ff5dd2ec64ec8ef8ff93cd8630"

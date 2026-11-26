@@ -5,7 +5,7 @@ use super::super::gallery::{Ctx, StoryItem, spec_wide, specs};
 use super::super::task::{Run, Task};
 
 pub fn item<S: 'static>() -> StoryItem<S> {
-    StoryItem::new("task", "Task", "agent").story("Run cards", all::<S>).story("Only the facts given", sparse::<S>)
+    StoryItem::new("task", "Task", "agent").story("Run cards", all::<S>).story("Only the facts given", sparse::<S>).story("Stopped, and secondary actions beside the primary", stopped::<S>)
 }
 
 fn all<S: 'static>(c: &mut Ctx<S>) -> El {
@@ -30,4 +30,12 @@ fn sparse<S: 'static>(c: &mut Ctx<S>) -> El {
         spec_wide(t, "A branch and a note line", 520.0, Task::<S>::new("task-noted", &noted).build(t)),
         spec_wide(t, "Nothing but the title and status", 520.0, Task::<S>::new("task-bare", &bare).build(t)),
     ])
+}
+
+/// A run the person stopped (neutral, a square) with a primary action and two secondary ones.
+fn stopped<S: 'static>(c: &mut Ctx<S>) -> El {
+    let t = c.t;
+    let run = Run::new("Reorganise the docs folder", Status::Stopped).changes(2, 14, 3).secs(80.0).note("Stopped before it finished; nothing was lost.");
+    let card = Task::<S>::new("task-stopped", &run).action("Resume", |_: &mut S| {}).secondary("Undo", |_: &mut S| {}).secondary("Open the branch", |_: &mut S| {}).build(t);
+    specs(t, vec![spec_wide(t, "Status::Stopped; Resume in ink, Undo and Open the branch raised", 520.0, card)])
 }
