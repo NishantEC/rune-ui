@@ -1,4 +1,4 @@
-//! rune-ui registry: chat 0.8.0 (a block). Copied into your app by `rune-ui add chat`; yours to change.
+//! rune-ui registry: chat 0.9.0 (a block). Copied into your app by `rune-ui add chat`; yours to change.
 //!
 //! A whole agent screen made of the agent set, with placeholder content, so it can be seen put together and taken apart: a
 //! Conversation holding a person's message, the agent's reasoning, tool calls, a run of steps, its answer with an action bar, a
@@ -12,7 +12,7 @@
 //! ui::base::overlay_root(screen, layer)
 //! ```
 
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use rune::{El, TextEdit, col};
 
@@ -23,7 +23,7 @@ use super::base::Theme;
 use super::chain_of_thought::{ChainOfThought, Step};
 use super::confirmation::{Confirmation, Decision};
 use super::conversation::Conversation;
-use super::message::{Message, words};
+use super::message::{Message, Reveal, words};
 use super::model_selector::{Model, ModelSelector};
 use super::prompt_input::{Phase, PromptInput};
 use super::reasoning::Reasoning;
@@ -47,15 +47,22 @@ pub struct ChatState {
     /// Messages the person sent in this session (placeholder: shown after the canned turns).
     pub sent: Vec<String>,
     pub attachments: Vec<String>,
+    /// Which messages show their actions (on hover or focus), by key.
+    pub reveal: HashMap<String, Reveal>,
 }
 
 impl Default for ChatState {
     fn default() -> Self {
-        ChatState { draft: TextEdit::new(""), phase: Phase::Ready, open: HashSet::new(), decision: Decision::Pending, model: "b-medium".to_owned(), picking: false, query: TextEdit::new(""), highlight: 0, at_bottom: true, copied: false, rating: None, sent: Vec::new(), attachments: vec!["build-log.txt".to_owned()] }
+        ChatState { draft: TextEdit::new(""), phase: Phase::Ready, open: HashSet::new(), decision: Decision::Pending, model: "b-medium".to_owned(), picking: false, query: TextEdit::new(""), highlight: 0, at_bottom: true, copied: false, rating: None, sent: Vec::new(), attachments: vec!["build-log.txt".to_owned()], reveal: HashMap::new() }
     }
 }
 
 impl ChatState {
+    /// A message's [`Reveal`] as kept here.
+    pub fn reveal(&self, k: &str) -> Reveal {
+        self.reveal.get(k).copied().unwrap_or_default()
+    }
+
     pub fn is_open(&self, k: &str) -> bool {
         self.open.contains(k)
     }
@@ -117,8 +124,16 @@ where
     F: for<'a> Fn(&'a mut S) -> &'a mut ChatState + Copy + 'static,
 {
     let (read, timing, steps, models) = (read_call(), timing_call(), steps(), models());
+    // A person's message: its actions (copy) show only while it is hovered or holds focus, and take no room otherwise.
+    let said = |key: &str, w: &str| {
+        let k = key.to_owned();
+        Message::user(key.to_owned(), "Asha").child(words(t, w.to_owned()))
+            .actions(Actions::<S>::new(format!("{key}-actions")).copy(w, false, |_: &mut S| {}).build(t))
+            .reveal_actions(c.reveal(key), move |s: &mut S| access(s).reveal.entry(k.clone()).or_default())
+            .build(t)
+    };
     let mut turns = vec![
-        Message::user("chat-m1", "Asha").child(words(t, "Why does a one-line change take 40 seconds to build?")).build(t),
+        said("chat-m1", "Why does a one-line change take 40 seconds to build?"),
         Message::assistant("chat-m2", "Assistant")
             .child(Reasoning::<S>::new("chat-thinking", false, 12.0, c.is_open("chat-thinking")).text("The question is about incremental builds. Look at the workspace layout first, then time a build to see which phase dominates.").on_toggle(move |s: &mut S| access(s).flip("chat-thinking")).build(t))
             .child(Tool::<S>::new("chat-read", &read, c.is_open("chat-read")).on_toggle(move |s: &mut S| access(s).flip("chat-read")).build(t))
@@ -127,7 +142,7 @@ where
             .child(Response::new("chat-answer", ANSWER).build(t))
             .actions(Actions::<S>::new("chat-actions").copy(ANSWER, c.copied, move |s: &mut S| access(s).copied = true).retry(|_: &mut S| {}).feedback(c.rating, move |s: &mut S, r| access(s).rating = r).build(t))
             .build(t),
-        Message::user("chat-m3", "Asha").child(words(t, "Apply the linker change.")).build(t),
+        said("chat-m3", "Apply the linker change."),
         Message::assistant("chat-m4", "Assistant")
             .child(Confirmation::<S>::new("chat-permission", "Edit .cargo/config.toml", c.decision).detail("[target.aarch64-apple-darwin]\nrustflags = [\"-C\", \"link-arg=-fuse-ld=lld\"]").on_decide(move |s: &mut S, d| access(s).decision = d).build(t))
             .build(t),

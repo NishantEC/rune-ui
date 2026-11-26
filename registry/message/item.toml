@@ -2,13 +2,13 @@
 schema = 1
 name = "message"
 title = "Message"
-version = "0.8.0"
+version = "0.9.0"
 type = "component"
 group = "agent"
-description = "One turn: a person's quiet bubble at the right, or the agent's words on the page in a reading column; an avatar, attachments and actions."
+description = "One turn: a person's quiet bubble at the right, or the agent's words on the page in a reading column; an avatar, attachments and actions, which can show only on hover or focus."
 
 [requires]
-style = ">=0.6.0, <0.9.0"
+style = ">=0.6.0, <0.10.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -20,11 +20,11 @@ stories = ["attachment", "avatar", "actions"]
 [[files]]
 path = "message.rs"
 target = "src/ui/message.rs"
-sha256 = "e7c549f2fba7e70e15776e88dc8d7496de17670654d6fc5c6730da9edba93c0a"
+sha256 = "31f613dba2742f6beb8eedc9612ab999c0ac0472b996720f823421e7ff16a33a"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/message.rs"
 role = "story"
-sha256 = "546edf09cc08f394bd577e6c82c736b4de3c8818549d8dd958b6ce66dd6349fe"
+sha256 = "f567dca779a5f1cbf6835282050fd2edf5b0e8179b08ba63e20193211f2d547e"

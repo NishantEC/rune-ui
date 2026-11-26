@@ -2,13 +2,13 @@
 schema = 1
 name = "conversation"
 title = "Conversation"
-version = "0.8.0"
+version = "0.9.0"
 type = "component"
 group = "agent"
 description = "The scroll area a chat lives in: pinned to the newest content until the reader scrolls up, then a Jump to latest pill; a reading column; an empty state."
 
 [requires]
-style = ">=0.6.0, <0.9.0"
+style = ">=0.6.0, <0.10.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = ["message"]
 [[files]]
 path = "conversation.rs"
 target = "src/ui/conversation.rs"
-sha256 = "64cb554049676be1c5262d4c1de5770f730f20ec99a62897bc1f532c39c44b7d"
+sha256 = "180ec57734a8bdb0fd23f4cf848f4baa1d682f177d7319423f499ba786d43a07"
 
 # Copied only once the gallery block is installed.
 [[files]]
