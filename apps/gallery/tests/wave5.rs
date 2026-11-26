@@ -4,12 +4,14 @@
 
 
 use gallery::{App, apply_scene, set_headless, view};
-use rune::{ElementInfo, Env, Key, KeyEvent, Mods, Runtime};
+use gallery::ui;
+use rune::{Cx, El, ElementInfo, Env, Key, KeyEvent, Mods, Runtime, col, row};
+use rune_ui_style::{Theme, contrast};
 
 const W: f32 = 1320.0;
 const H: f32 = 1800.0;
 
-fn settle(rt: &mut Runtime<App>) {
+fn settle<S: 'static>(rt: &mut Runtime<S>) {
     for _ in 0..90 {
         rt.frame(1.0 / 60.0);
     }
@@ -37,42 +39,42 @@ fn scene(name: &str, dark: bool) -> Runtime<App> {
     rt
 }
 
-fn drawn(rt: &Runtime<App>, key: &str) -> [f32; 4] {
+fn drawn<S: 'static>(rt: &Runtime<S>, key: &str) -> [f32; 4] {
     rt.presented(key).unwrap_or_else(|| panic!("{key} is not drawn")).0
 }
 
-fn press(rt: &mut Runtime<App>, key: &str) {
+fn press<S: 'static>(rt: &mut Runtime<S>, key: &str) {
     let (x, y) = rt.find(key).unwrap_or_else(|| panic!("no {key} to press"));
     rt.pointer_down(x, y);
     rt.pointer_up(x, y);
     settle(rt);
 }
 
-fn key(rt: &mut Runtime<App>, k: Key) {
+fn key<S: 'static>(rt: &mut Runtime<S>, k: Key) {
     rt.key(KeyEvent { key: k, mods: Mods::default() });
     settle(rt);
 }
 
-fn space(rt: &mut Runtime<App>) {
+fn space<S: 'static>(rt: &mut Runtime<S>) {
     key(rt, Key::Text(" ".to_owned()));
 }
 
-fn focused(rt: &Runtime<App>) -> Option<String> {
+fn focused<S: 'static>(rt: &Runtime<S>) -> Option<String> {
     rt.elements().into_iter().find(|e| e.focused).and_then(|e| e.key)
 }
 
-fn focus(rt: &mut Runtime<App>, k: &str) {
+fn focus<S: 'static>(rt: &mut Runtime<S>, k: &str) {
     let k = k.to_owned();
     rt.update(move |_, tx| tx.focus(k, true));
     settle(rt);
 }
 
-fn info(rt: &Runtime<App>, key: &str) -> ElementInfo {
+fn info<S: 'static>(rt: &Runtime<S>, key: &str) -> ElementInfo {
     rt.elements().into_iter().find(|e| e.key.as_deref() == Some(key)).unwrap_or_else(|| panic!("no {key}"))
 }
 
 /// Every text drawn inside the element keyed `key`.
-fn texts_in(rt: &Runtime<App>, key: &str) -> Vec<String> {
+fn texts_in<S: 'static>(rt: &Runtime<S>, key: &str) -> Vec<String> {
     let els = rt.elements();
     let Some(root) = els.iter().position(|e| e.key.as_deref() == Some(key)) else { return Vec::new() };
     let inside = |mut i: usize| loop {
@@ -131,4 +133,120 @@ fn kbd_and_menu_shortcuts_are_drawn_in_the_themes_keycap_style() {
     let e = rt.elements().into_iter().find(|e| e.text.as_deref() == Some("⇧⌘P")).expect("a shortcut in the open menu");
     let style = e.text_style.expect("a text style");
     assert_eq!((style.size, style.weight), (t.keycap.size, t.ty.regular));
+}
+
+// ---- A probe: a few components in a theme chosen by the test ----
+
+#[derive(Default)]
+struct Probe {
+    dark: bool,
+    still: bool,
+}
+
+fn theme_of(s: &Probe) -> Theme {
+    Theme::from_json(rune_ui_themes::DEFAULT, s.dark).unwrap().with_reduced_motion(s.still)
+}
+
+fn probe(view: fn(&Probe, &mut Cx<Probe>) -> El, dark: bool, still: bool) -> Runtime<Probe> {
+    let mut rt = Runtime::new(Probe { dark, still }, view, (W, 900.0), Env { system_dark: dark, scale: 1.0 });
+    settle(&mut rt);
+    rt
+}
+
+// ---- Portrait ----
+
+fn portrait_view(s: &Probe, _: &mut Cx<Probe>) -> El {
+    use ui::portrait::{Activity, Portrait};
+    let t = theme_of(s);
+    let mut r = row().key("page").gap(24.0).padding(24.0).items_start().fill(t.c.surface.bg);
+    for (i, a) in [Activity::None, Activity::Working, Activity::NeedsYou, Activity::Failed, Activity::Done, Activity::Info].into_iter().enumerate() {
+        r = r.child(Portrait::new(format!("p{i}"), "Asha Rao", 28.0).state(a).ringed(true).under(t.c.surface.bg).build(&t));
+    }
+    r = r.child(Portrait::new("flat", "Lee", 40.0).state(Activity::NeedsYou).build(&t));
+    r = r.child(Portrait::new("small", "Lee", 3.0).build(&t)).child(Portrait::new("huge", "Lee", 900.0).build(&t));
+    r = r.child(Portrait::new("deco", "Lee", 40.0).decorative(true).build(&t));
+    r = r.child(Portrait::new("words", "Lee", 40.0).state(Activity::Working).state_words("Building").ringed(true).build(&t));
+    ui::base::overlay_root(col().w_full().child(r), Vec::new())
+}
+
+#[test]
+fn a_portrait_takes_the_same_room_in_every_state_and_clamps_its_size() {
+    let rt = probe(portrait_view, false, false);
+    let room = ui::portrait::ringed(28.0);
+    assert_eq!(room, 28.0 + 2.0 * (2.0 + 2.5), "28 points: a 2 point gap and a 2.5 point stroke on each side");
+    for i in 0..6 {
+        let r = drawn(&rt, &format!("p{i}"));
+        assert_eq!((r[2], r[3]), (room, room), "state {i} keeps the ring's room: {r:?}");
+    }
+    let flat = drawn(&rt, "flat");
+    assert_eq!((flat[2], flat[3]), (40.0, 40.0), "unringed, a portrait is exactly its size, dot or not");
+    assert_eq!(drawn(&rt, "small")[2], 20.0, "from 20 points");
+    assert_eq!(drawn(&rt, "huge")[2], 112.0, "to 112 points");
+    for size in [20.0, 24.0, 28.0, 40.0, 76.0, 112.0] {
+        let (_, stroke) = ui::portrait::ring_metrics(size);
+        assert!((2.5..=3.5).contains(&stroke), "the ring reads at {size}: stroke {stroke}");
+    }
+    assert!((ui::portrait::radius(100.0) - 24.0).abs() < 0.01, "a quarter of the size, near enough");
+}
+
+#[test]
+fn the_working_ring_turns_and_holds_still_under_reduce_motion() {
+    let moving = probe(portrait_view, false, false);
+    assert!(info(&moving, "p1-arc").loop_phase.is_some(), "the arc turns");
+    assert!(info(&moving, "p0").loop_phase.is_none() && rt_has(&moving, "p2-dot"), "no arc without work; a dot for needs you");
+    let still = probe(portrait_view, false, true);
+    let arc = info(&still, "p1-arc");
+    assert!(arc.loop_phase.is_none(), "under Reduce Motion the arc is a still third of a circle");
+    assert_eq!(drawn(&still, "p1")[2], drawn(&moving, "p1")[2], "and takes the same room");
+}
+
+fn rt_has(rt: &Runtime<Probe>, key: &str) -> bool {
+    rt.presented(key).is_some()
+}
+
+#[test]
+fn a_portrait_is_an_image_named_with_its_state_in_words() {
+    let mut rt = probe(portrait_view, false, false);
+    let tree = rt.accessibility_json();
+    let w = ax(&tree, "p1").expect("the working portrait");
+    assert_eq!(w["name"].as_str().or(w["label"].as_str()), Some("Asha Rao"), "{w}");
+    assert!(w.to_string().contains("Working"), "its state in words: {w}");
+    assert!(ax(&tree, "p2").unwrap().to_string().contains("Needs you"));
+    assert!(ax(&tree, "words").unwrap().to_string().contains("Building"), "the app's own words win");
+    assert!(!ax(&tree, "p0").unwrap().to_string().contains("Working"), "no state, no words");
+    assert!(ax(&tree, "deco").is_none_or(|n| n["role"] != "image" && n["role"] != "img"), "decorative: hidden from assistive technology");
+}
+
+#[test]
+fn a_portraits_ring_and_dot_reach_their_contrast_on_the_surface_they_sit_on() {
+    use ui::portrait::{DOT_CONTRAST, RING_CONTRAST, seen_on};
+    for dark in [false, true] {
+        let t = Theme::from_json(rune_ui_themes::DEFAULT, dark).unwrap();
+        for under in [t.c.page.bg, t.c.surface.bg, t.c.floating.bg] {
+            let id = t.identity();
+            assert!(contrast(seen_on(id.solid, id.fg, under, RING_CONTRAST), under) >= RING_CONTRAST - 0.05, "ring, dark {dark}");
+            for tone in [t.c.warning, t.c.danger, t.c.success, t.c.info] {
+                assert!(contrast(seen_on(tone.solid, tone.fg, under, DOT_CONTRAST), under) >= DOT_CONTRAST - 0.05, "dot, dark {dark}");
+            }
+        }
+        // The same, drawn: the dot's fill in the picture is the checked colour.
+        let rt = probe(portrait_view, dark, false);
+        let dot = info(&rt, "p3-dot").fill;
+        assert!(contrast(dot, t.c.surface.bg) >= DOT_CONTRAST - 0.05, "the failed dot reads on the surface, dark {dark}: {dot:?}");
+    }
+}
+
+#[test]
+fn a_theme_without_an_identity_colour_draws_the_ring_in_info() {
+    let json = {
+        let mut v: serde_json::Value = serde_json::from_str(rune_ui_themes::DEFAULT).unwrap();
+        v["color"].as_object_mut().unwrap().remove("identity");
+        for m in ["light", "dark"] {
+            v["modes"][m]["role"].as_object_mut().unwrap().remove("identity");
+        }
+        v.to_string()
+    };
+    let t = Theme::from_json(&json, false).unwrap();
+    assert!(!t.has_identity());
+    let _ = ui::portrait::Portrait::new("x", "Asha", 28.0).state(ui::portrait::Activity::Working).ringed(true).build(&t);
 }

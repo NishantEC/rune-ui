@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "portrait"
+title = "Portrait"
+version = "0.10.0"
+type = "component"
+group = "display"
+description = "An identity as a rounded tile (picture, initials or a drawn face) from 20 to 112 points, with an optional progress ring and a status dot."
+
+[requires]
+style = ">=0.10.0, <0.11.0"
+rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
+
+[dependencies]
+registry = ["base", "icons"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "portrait.rs"
+target = "src/ui/portrait.rs"
+sha256 = "94cd4ceca053cd587892464b8cf2d2c308bef27e44aae0fbb98aae9c2e208827"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/portrait.rs"
+role = "story"
+sha256 = "c1c0c3193627a0d88f574d6e23df39cd3568ca6e2e58c6904f53349a06216c88"

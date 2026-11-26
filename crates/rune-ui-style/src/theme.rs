@@ -238,6 +238,16 @@ impl Theme {
         Color::BLACK.alpha(self.scrim_strength)
     }
 
+    /// Black at `alpha`: a hairline round an image, a soft shadow. Never a tinted grey, which would read as dirt.
+    pub fn shade(&self, alpha: f32) -> Color {
+        Color::BLACK.alpha(alpha)
+    }
+
+    /// White at `alpha`: the same hairline and glint on a dark page.
+    pub fn glint(&self, alpha: f32) -> Color {
+        Color::WHITE.alpha(alpha)
+    }
+
     /// A lighter scrim, for a palette that sits over the page without shutting it away.
     pub fn scrim_soft(&self) -> Color {
         Color::BLACK.alpha(self.scrim_strength * 0.7)
