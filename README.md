@@ -201,7 +201,7 @@ AI Elements where one exists. Everything is data in and events out: plain struct
 | Conversation | The scroll area: pinned to the newest message, lets go when the reader scrolls up, then shows Jump to latest |
 | Message | A person's quiet bubble at the right, or the agent's words on the page in a 720 point column; avatar, attachments, actions |
 | Response | The agent's words as Markdown (rune-kit's `markdown` feature), with a caret while streaming |
-| PromptInput | The composer: growing text, attachment chips, a toolbar, Send that becomes Stop; Return, Shift+Return, Escape |
+| PromptInput | The composer: growing text, attachment chips, a toolbar, Send that becomes Stop; Return, Shift+Return, Escape. With nothing to send, Send is a raised button at rest with a faint arrow (off, but still a button); with words it is ink. `.spellcheck(true)` marks misspelt words |
 | ModelSelector | Models grouped by provider in a searchable panel from the overlay layer, with a tier or price per row |
 | Attachment | A file or image chip with remove |
 | Tool | One tool call as one quiet line that folds open to its input and output |

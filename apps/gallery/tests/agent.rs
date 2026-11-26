@@ -113,6 +113,7 @@ fn the_composer_sends_on_return_breaks_lines_on_shift_return_and_stops_on_escape
     key(&mut rt, Key::Enter);
     assert!(!rt.state.g.choices.contains_key("prompt-sent"), "an empty composer sends nothing");
     assert!(!info(&rt, "prompt-demo-submit").focusable, "and its Send is off");
+    assert_eq!(info(&rt, "prompt-demo-submit").opacity, 1.0, "but it keeps its shape: the raised material at rest, not ink dimmed to a flat disc");
     typed(&mut rt, "Fix");
     key_with(&mut rt, Key::Enter, Mods { shift: true, ..Mods::default() });
     typed(&mut rt, "it");
