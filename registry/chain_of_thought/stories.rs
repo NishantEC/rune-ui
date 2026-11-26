@@ -15,5 +15,6 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> El {
     specs(t, vec![
         spec_wide(t, "Done; press to fold", 520.0, ChainOfThought::<S>::new("cot-done", &done, 134.0, g.flag("cot-done")).on_toggle(move |s: &mut S| acc(s).toggle("cot-done")).build(t)),
         spec_wide(t, "Working, open: every step state", 520.0, ChainOfThought::<S>::new("cot-working", &working, 47.0, true).running(true).build(t)),
+        spec_wide(t, "Open, not indented: the steps share the page's left edge", 520.0, ChainOfThought::<S>::new("cot-flush", &done, 134.0, true).indent(false).build(t)),
     ])
 }

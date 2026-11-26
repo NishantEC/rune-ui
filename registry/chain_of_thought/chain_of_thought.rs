@@ -1,8 +1,8 @@
-//! rune-ui registry: chain_of_thought 0.8.0 Copied into your app by `rune-ui add chain_of_thought`; yours to change.
+//! rune-ui registry: chain_of_thought 0.9.0 Copied into your app by `rune-ui add chain_of_thought`; yours to change.
 //!
 //! The steps an agent took, behind one line: "Working…" with a shimmer and the time so far while it works, "Worked for 2m 14s" once it
 //! is done. Open, it lists each step with its mark, its words and an optional detail under them. Only the step in progress is in the
-//! first ink; the rest are quiet.
+//! first ink; the rest are quiet. `indent(false)` sets the steps on the line's own left edge (the page's) instead of under its words.
 //!
 //! ```ignore
 //! ChainOfThought::new("steps", &steps, 134.0, s.open("steps")).running(false).on_toggle(|s: &mut App| s.flip("steps")).build(t)
@@ -42,17 +42,24 @@ pub struct ChainOfThought<'a, S: 'static> {
     secs: f64,
     open: bool,
     running: bool,
+    indent: bool,
     toggle: Option<Press<S>>,
 }
 
 impl<'a, S: 'static> ChainOfThought<'a, S> {
     pub fn new(key: impl Into<String>, steps: &'a [Step], secs: f64, open: bool) -> ChainOfThought<'a, S> {
-        ChainOfThought { key: key.into(), steps, secs, open, running: false, toggle: None }
+        ChainOfThought { key: key.into(), steps, secs, open, running: false, indent: true, toggle: None }
     }
 
     /// Still working.
     pub fn running(mut self, on: bool) -> Self {
         self.running = on;
+        self
+    }
+
+    /// Steps indented under the line's words (true, the default) or on the line's own left edge (false).
+    pub fn indent(mut self, on: bool) -> Self {
+        self.indent = on;
         self
     }
 
@@ -63,7 +70,7 @@ impl<'a, S: 'static> ChainOfThought<'a, S> {
 
     pub fn build(self, t: &Theme) -> El {
         let label = if self.running { "Working…".to_owned() } else { format!("Worked for {}", elapsed(self.secs.round())) };
-        let mut line = FoldLine::<S>::new(self.key.clone(), label.clone(), self.open).lead(glyph(&icons::CLOCK, t.control.icon, t.ink_faint()));
+        let mut line = FoldLine::<S>::new(self.key.clone(), label.clone(), self.open).lead(glyph(&icons::CLOCK, t.control.icon, t.ink_faint())).indent(self.indent);
         if self.running {
             line = line.words(Shimmer::new(format!("{}-shimmer", self.key), label).build(t)).meta(elapsed(self.secs.round()));
         }
