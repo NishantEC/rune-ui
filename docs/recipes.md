@@ -45,8 +45,8 @@ press washes, press scale and focus ring (`Material::live`) so they animate at R
 | Material | Base | Hover | Pressed | Focus | Disabled | Selected | Invalid / Open |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | raised | gradient, lit edge, contact shadow | none | no shadow, scale 0.96 | ring outside | no shadow, opacity | becomes a well | |
-| ink | dark (light mode) or light (dark mode) gradient, inner rim, lit edge, contact | none | sink | ring | dim | | |
-| danger | the ink recipe in `danger.solid` | none | sink | ring | dim | | |
+| ink | dark (light mode) or light (dark mode) gradient, inner rim, lit edge, contact | none | sink | ring | body lets the surface through; rim, edge and shadow stay | | |
+| danger | the ink recipe in `danger.solid` | none | sink | ring | as ink | | |
 | well | `input.bg` tint, inner shadow | none | | ring hugging it | dim | | danger ring / focus ring |
 | floating | `floating.bg`, smooth stack, baked hairline ring | | | | | | |
 | slab | `surface.bg` | | | | | | |

@@ -69,6 +69,12 @@ pub struct Materials {
     pub atmosphere: Recipe,
 }
 
+/// How much of a solid (ink or danger) control's body shows while it is off: the theme's disabled opacity lifted part of the way to
+/// whole, because the rim, lit edge and shadow stay and the words dim on their own.
+pub fn solid_off_alpha(disabled: f32) -> f32 {
+    disabled + (1.0 - disabled) * 0.2
+}
+
 impl Materials {
     pub fn derive(c: &MaterialColors, e: &Elevation, m: &Motion, k: &Controls) -> Materials {
         // Texture: at 0 every gradient is flat (its top is its bottom) and edges and rims vanish; at 1 the theme's own values.
@@ -98,9 +104,19 @@ impl Materials {
         let raised_base = Recipe::new().gradient(c.raised_top, c.raised_bottom).inner_top_edge(c.raised_edge).shadows(&e.xs);
         let raised = control(raised_base.clone()).on(State::Selected, Delta::replace(well_base.clone()));
 
-        let ink = control(Recipe::new().gradient(c.ink_top, c.ink_bottom).inner_rim(c.ink_rim).inner_top_edge(c.ink_edge).shadows(&e.xs));
+        // Ink and danger, off: the same raised object, dimmed. Its body lets the surface under it through (so it dims towards whatever
+        // it sits on, a page or a slab) while its rim, lit edge and contact shadow stay, so it still reads as a solid button that is
+        // off, not as a flat grey disc. The words dim with it (`recipes::button`'s disabled tint), not the whole control's opacity.
+        let solid_off = |top: Color, bottom: Color, rim: Color, edge: Color| {
+            let body = solid_off_alpha(k.disabled);
+            Delta::replace(Recipe::new().gradient(top.alpha(top.a * body), bottom.alpha(bottom.a * body)).inner_rim(rim).inner_top_edge(edge).shadows(&e.xs))
+        };
+        let ink = control(Recipe::new().gradient(c.ink_top, c.ink_bottom).inner_rim(c.ink_rim).inner_top_edge(c.ink_edge).shadows(&e.xs))
+            .on(State::Disabled, solid_off(c.ink_top, c.ink_bottom, c.ink_rim, c.ink_edge));
 
-        let danger = control(Recipe::new().gradient(mix(c.danger, Color::WHITE, 0.14 * x), c.danger).inner_rim(mix(c.danger, Color::BLACK, 0.35).alpha(0.55 * x)).inner_top_edge(Color::WHITE.alpha(0.22 * x)).shadows(&e.xs));
+        let (danger_top, danger_rim, danger_edge) = (mix(c.danger, Color::WHITE, 0.14 * x), mix(c.danger, Color::BLACK, 0.35).alpha(0.55 * x), Color::WHITE.alpha(0.22 * x));
+        let danger = control(Recipe::new().gradient(danger_top, c.danger).inner_rim(danger_rim).inner_top_edge(danger_edge).shadows(&e.xs))
+            .on(State::Disabled, solid_off(danger_top, c.danger, danger_rim, danger_edge));
 
         let floating = Material::new(Recipe::new().fill(c.floating).shadows(&e.md).shadow(Shadow { spread: 1.0, color: c.float_ring, ..Shadow::default() }));
 

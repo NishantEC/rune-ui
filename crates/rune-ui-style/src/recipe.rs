@@ -464,6 +464,12 @@ impl Tint {
         self
     }
 
+    /// The colour while the control is off, for a material that dims its body rather than the whole control (ink, danger).
+    pub fn disabled(mut self, c: Color) -> Tint {
+        self.disabled = Some(c);
+        self
+    }
+
     pub fn resolve(&self, s: States) -> Color {
         (s.disabled.then_some(self.disabled).flatten()).or(s.invalid.then_some(self.invalid).flatten()).or(s.selected.then_some(self.selected).flatten()).unwrap_or(self.rest)
     }

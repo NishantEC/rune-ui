@@ -101,8 +101,24 @@ fn every_control_material_has_a_focus_ring_a_disabled_look_and_no_border() {
             if ["floating", "slab"].contains(&name) {
                 continue;
             }
-            let disabled = plan(&m.state(State::Disabled));
-            assert!(disabled.contains(&Op::Opacity(t.control.disabled)), "{name}: disabled dims");
+            let off = m.state(State::Disabled);
+            if ["ink", "danger"].contains(&name) {
+                // The same raised object, dimmed: its body lets the surface through, its rim, lit edge and contact shadow stay, and the
+                // control keeps its own opacity (its words dim through the button's disabled tint).
+                let rest = &m.base;
+                assert!(!off.has(LayerKind::Opacity), "{name}: off is not a whole-control fade");
+                for kind in [LayerKind::InnerRim, LayerKind::InnerTopEdge, LayerKind::Shadow] {
+                    assert!(off.has(kind), "{name}: off keeps its {kind:?}");
+                }
+                let alpha = |r: &rune_ui_style::Recipe| r.layers.iter().find_map(|l| match l {
+                    rune_ui_style::Layer::Gradient { bottom, .. } => Some(bottom.a),
+                    _ => None,
+                });
+                let (a_rest, a_off) = (alpha(rest).unwrap(), alpha(&off).unwrap());
+                assert!(a_off < a_rest && a_off > t.control.disabled * a_rest, "{name}: off dims its body ({a_off} of {a_rest})");
+            } else {
+                assert!(plan(&off).contains(&Op::Opacity(t.control.disabled)), "{name}: disabled dims");
+            }
             if name != "thumb" {
                 assert!(m.live().focus_ring.is_some(), "{name}: focus ring");
             }

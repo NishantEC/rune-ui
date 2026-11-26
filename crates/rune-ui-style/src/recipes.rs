@@ -74,8 +74,16 @@ pub fn button(t: &Theme, v: ButtonVariant) -> Parts {
         ButtonVariant::Destructive => (t.mat.danger.clone(), c.danger.on_solid),
         ButtonVariant::Link => (Material::new(Recipe::new()).on(State::FocusVisible, Delta::new().ring(t.control.ring, t.control.ring_offset, c.ring)).on(State::Disabled, Delta::new().opacity(t.control.disabled)).on(State::Pressed, Delta::new().opacity(0.7)), c.accent.fg),
     };
-    Parts { root, label: Tint::new(ink), icon: Tint::new(ink) }
+    // Ink and danger dim their body when off but keep the control's own opacity, so their words dim here.
+    let tint = match v {
+        ButtonVariant::Default | ButtonVariant::Destructive => Tint::new(ink).disabled(ink.alpha(ink.a * DISABLED_WORDS)),
+        _ => Tint::new(ink),
+    };
+    Parts { root, label: tint, icon: tint }
 }
+
+/// How much of an ink or danger button's words show while it is off.
+pub const DISABLED_WORDS: f32 = 0.7;
 
 /// A toggle (a button that stays on): quiet until hovered, the selected wash when on.
 pub fn toggle(t: &Theme, outline: bool) -> Parts {
