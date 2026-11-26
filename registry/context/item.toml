@@ -2,13 +2,13 @@
 schema = 1
 name = "context"
 title = "Context"
-version = "0.6.0"
+version = "0.9.0"
 type = "component"
 group = "agent"
-description = "A token and cost meter: a bar and a share, with a popover breakdown from the overlay layer."
+description = "A token and cost meter: a ring (or a bar) and a share, with a popover breakdown (used, window, in, out, cached, cost, a note) from the overlay layer."
 
 [requires]
-style = ">=0.6.0, <0.9.0"
+style = ">=0.6.0, <0.10.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -20,11 +20,11 @@ stories = []
 [[files]]
 path = "context.rs"
 target = "src/ui/context.rs"
-sha256 = "39aa85cc922dc4cadd80f105d0a72f33571a00356f91af66f71cabc85a47f050"
+sha256 = "ee40d33e63da91e9f3613fe1bc43517016aecb0846bd20f48173115540b5c105"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/context.rs"
 role = "story"
-sha256 = "bcee1f08edbab3cbb99de7a6ebcbcfffc768590da2b3defddea7c31a6f9afc29"
+sha256 = "90770805e308c5abe413a37f31fed94d3ece5faacadbeb066fc0afb308a8d1cd"
