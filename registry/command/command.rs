@@ -1,4 +1,4 @@
-//! rune-ui registry: command 0.5.0. Copied into your app by `rune-ui add command`; yours to change. Needs: kbd.
+//! rune-ui registry: command 0.10.0 Copied into your app by `rune-ui add command`; yours to change. Needs: kbd.
 //!
 //! A command palette: a search over grouped commands. Typing filters (every word of the query must appear in the label); Up and Down
 //! move the highlight, Return runs it, a press runs any row. The **floating** material; the search is a bare line over a hairline (the
@@ -183,7 +183,7 @@ impl<'a, S: 'static> Command<'a, S> {
         }
         let key = self.key.clone();
         let panel = self.build(t).focus_return(return_to).modal(true, close);
-        layer.push(el().key(format!("{key}-scrim")).absolute(0.0, 0.0).w_full().h_full().fill(t.c.page.fg.alpha(if t.dark { 0.45 } else { 0.12 })).a11y_hidden());
+        layer.push(el().key(format!("{key}-scrim")).absolute(0.0, 0.0).w_full().h_full().fill(t.scrim_soft()).a11y_hidden());
         layer.push(col().key(format!("{key}-layer")).absolute(0.0, 0.0).w_full().h_full().pt(t.space.at(24.0)).items_center().child(panel));
     }
 }

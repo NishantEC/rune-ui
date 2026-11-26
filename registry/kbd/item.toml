@@ -2,13 +2,13 @@
 schema = 1
 name = "kbd"
 title = "Kbd"
-version = "0.5.0"
+version = "0.10.0"
 type = "component"
 group = "display"
 description = "Keys as small raised caps."
 
 [requires]
-style = ">=0.5.0, <0.10.0"
+style = ">=0.10.0, <0.10.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "kbd.rs"
 target = "src/ui/kbd.rs"
-sha256 = "02cac83386471a3db42a485306024dff9dea3f7777b92ccceb36f6706fc9813c"
+sha256 = "c94146b813cd37bed8eea113f241a4a7072657e9bc22bbb1347f31d96fbc7a80"
 
 # Copied only once the gallery block is installed.
 [[files]]

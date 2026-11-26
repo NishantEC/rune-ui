@@ -2,13 +2,13 @@
 schema = 1
 name = "dialog"
 title = "Dialog"
-version = "0.5.0"
+version = "0.10.0"
 type = "component"
 group = "overlays"
 description = "A modal panel over a scrim: focus trapped, Escape and a press outside close it."
 
 [requires]
-style = ">=0.5.0, <0.10.0"
+style = ">=0.10.0, <0.10.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = ["button", "input"]
 [[files]]
 path = "dialog.rs"
 target = "src/ui/dialog.rs"
-sha256 = "0003820e550ad2a462886c4ab983396e2b0b69a5ecc4ef63ab60c40cc5b2512f"
+sha256 = "270afad3a126bd498e9d22198be44dae1193dbeaa3df8bffcc2c8866029621b8"
 
 # Copied only once the gallery block is installed.
 [[files]]

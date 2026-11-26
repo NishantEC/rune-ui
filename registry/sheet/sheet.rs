@@ -1,4 +1,4 @@
-//! rune-ui registry: sheet 0.5.1. Copied into your app by `rune-ui add sheet`; yours to change.
+//! rune-ui registry: sheet 0.10.0 Copied into your app by `rune-ui add sheet`; yours to change.
 //!
 //! A panel against one edge of the window over a scrim (settings, details, a form that needs room). The **floating** material, rounded
 //! only on its free edges, a title and a close button, then its body. Behaviour is Rune's `El::modal` (focus trapped, Escape and a press
@@ -125,7 +125,7 @@ pub fn mount<S: 'static>(t: &Theme, layer: &mut Vec<El>, key: &str, panel: El, s
     if let Some(f) = close {
         panel = panel.modal(true, move |s: &mut S| f(s));
     }
-    layer.push(el().key(format!("{key}-scrim")).absolute(0.0, 0.0).w_full().h_full().fill(t.c.page.fg.alpha(if t.dark { 0.5 } else { 0.18 })).a11y_hidden());
+    layer.push(el().key(format!("{key}-scrim")).absolute(0.0, 0.0).w_full().h_full().fill(t.scrim()).a11y_hidden());
     let holder = el().key(format!("{key}-layer")).absolute(0.0, 0.0).w_full().h_full();
     layer.push(match side {
         Side::Right => holder.justify_end().child(panel),

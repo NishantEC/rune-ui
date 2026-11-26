@@ -1,4 +1,4 @@
-//! rune-ui registry: popup 0.8.0 The floating list that Select, DropdownMenu and ContextMenu open (and Combobox's rows): drawn by
+//! rune-ui registry: popup 0.10.0 The floating list that Select, DropdownMenu and ContextMenu open (and Combobox's rows): drawn by
 //! rune-ui on Rune's core behaviour, not rune-kit's list. `rune-ui add` brings it with them.
 //!
 //! * **Placement**: anchored under its trigger with a 4 point gap, sharing the trigger's left edge and at least its width; it flips
@@ -16,7 +16,7 @@
 use std::rc::Rc;
 
 use rune::{Align, El, Icon, Key, KeyEvent, Side, Spring, SpringPair, Transition, Tx, Vec2, col, el, row, text};
-use rune_ui_style::{Radius, tabular, weight};
+use rune_ui_style::{Radius, weight};
 
 use super::base::{Press, Shape, Theme, glyph, paint, press};
 use super::icons;
@@ -118,7 +118,7 @@ pub fn paint_row<S: 'static>(t: &Theme, r: &Row<S>, key: String, highlight: Opti
     }
     e = e.child(words);
     if let Some(k) = &r.shortcut {
-        e = e.child(text(k.clone()).font(tabular(t.ty.sm)).color(t.ink_faint()).a11y_hidden()).shortcut_hint(k.clone());
+        e = e.child(text(k.clone()).font(weight(t.keycap, t.ty.regular)).color(t.ink_faint()).a11y_hidden()).shortcut_hint(k.clone());
     }
     match r.checked {
         Some(true) => e = e.child(glyph(&icons::CHECK, t.control.icon, ink)),

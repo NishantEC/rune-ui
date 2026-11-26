@@ -2,13 +2,13 @@
 schema = 1
 name = "popup"
 title = "Popup"
-version = "0.8.0"
+version = "0.10.0"
 type = "base"
 group = "base"
 description = "The floating list Select, DropdownMenu, ContextMenu and Combobox open: anchored at the trigger's left edge and width, rows with a highlight that follows pointer and keys, typeahead, Escape and Tab to close."
 
 [requires]
-style = ">=0.8.0, <0.10.0"
+style = ">=0.10.0, <0.10.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -18,4 +18,4 @@ cargo = ["rune", "rune-ui-style", "rune-kit"]
 [[files]]
 path = "popup.rs"
 target = "src/ui/popup.rs"
-sha256 = "d9fce3c86e35b9c3e5b56b14a64411da2bea4356b67aeb44c27dbc15ffbaa6db"
+sha256 = "c8577b964df3f2f8719be3d1d615fa8841c4fcce751de72004e826a51584bf59"
