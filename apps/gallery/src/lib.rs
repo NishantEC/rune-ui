@@ -121,6 +121,17 @@ pub fn apply_scene(s: &mut App, name: &str) {
         }
         return;
     }
+    if name == "open-toast-host" || name == "open-toast-centre" {
+        // The toast host with two messages showing, one with an action; the centre one at the bottom centre.
+        s.g.only = Some("toast".to_owned());
+        if name == "open-toast-centre" {
+            s.g.flags.insert("toast-centre".to_owned(), true);
+        }
+        let host = s.g.slot_mut::<ui::toast::ToastHost>("toast-host");
+        host.push(ui::toast::ToastSpec::new("Archived 3 threads").tone(rune_ui_style::Tone::Success).action("Undo", "undo-archive"));
+        host.push(ui::toast::ToastSpec::new("Thread settled").description("Fix the login redirect").action("Undo", "undo-settle"));
+        return;
+    }
     if let Some(scene) = WAVE3_SCENES.iter().find(|n| **n == name) {
         wave3_scene(s, scene);
         return;
@@ -186,7 +197,7 @@ macro_rules! scenes {
 /// A named scene and how it sets up the state.
 pub type Scene = (&'static str, fn(&mut App));
 
-pub const SCENES: &[Scene] = scenes!["actions", "form", "overlays", "structure", "display", "materials", "materials-round", "typography", "typography-geist", "typography-ibm-plex-sans", "typography-figtree", "typography-manrope", "typography-dm-sans", "typography-plus-jakarta-sans", "typography-jetbrains-mono", "form-geist", "actions-geist", "all", "actions-compact", "form-compact", "structure-compact", "overlays-compact", "display-compact", "form-round", "structure-round", "tuned", "open-select", "open-combobox", "open-context-menu", "open-alert-dialog", "open-toast", "open-dropdown-menu", "open-popover", "open-dialog", "open-sheet", "open-command", "open-date-picker", "open-menubar", "open-navigation-menu", "open-hover-card", "open-drawer", "open-chart-bar", "open-chart-donut", "agent", "agent-compact", "agent-round", "agent-geist", "agent-serif", "chat-open", "chat-streaming", "open-model-selector", "open-context", "open-context-free", "open-inline-citation", "open-prompt-model", "open-dropdown-people", "open-context-assumed", "open-toolbar-more", "open-prompt-mention", "open-prompt-command", "open-stack-trace", "open-tree", "segmented-moved", "open-tree-compact", "segmented-moved-round", "open-stack-trace-geist", "open-toolbar-more-compact"];
+pub const SCENES: &[Scene] = scenes!["actions", "form", "overlays", "structure", "display", "materials", "materials-round", "typography", "typography-geist", "typography-ibm-plex-sans", "typography-figtree", "typography-manrope", "typography-dm-sans", "typography-plus-jakarta-sans", "typography-jetbrains-mono", "form-geist", "actions-geist", "all", "actions-compact", "form-compact", "structure-compact", "overlays-compact", "display-compact", "form-round", "structure-round", "tuned", "open-select", "open-combobox", "open-context-menu", "open-alert-dialog", "open-toast", "open-dropdown-menu", "open-popover", "open-dialog", "open-sheet", "open-command", "open-date-picker", "open-menubar", "open-navigation-menu", "open-hover-card", "open-drawer", "open-chart-bar", "open-chart-donut", "agent", "agent-compact", "agent-round", "agent-geist", "agent-serif", "chat-open", "chat-streaming", "open-model-selector", "open-context", "open-context-free", "open-inline-citation", "open-prompt-model", "open-dropdown-people", "open-context-assumed", "open-toolbar-more", "open-prompt-mention", "open-prompt-command", "open-stack-trace", "open-tree", "segmented-moved", "open-tree-compact", "segmented-moved-round", "open-stack-trace-geist", "open-toolbar-more-compact", "open-toast-host", "open-toast-centre"];
 
 static HEADLESS: AtomicBool = AtomicBool::new(false);
 
@@ -216,11 +227,16 @@ fn init() -> App {
     s
 }
 
+/// The app's poll hook: the toast host starts, pauses and ends its timers from the window's clock.
+fn poll(s: &mut App, clock: f64, tx: &mut rune::Tx) -> bool {
+    s.g.slot_mut::<ui::toast::ToastHost>("toast-host").poll(clock, tx)
+}
+
 pub fn run() {
     set_headless(std::env::args().any(|a| a == "--snap" || a == "--tree"));
     // The font items: registered with Rune and made nameable by the theme (the editor's Font control lists them).
     let fonts = rune_ui_style::fonts::install(ui::FONTS);
-    let spec = AppSpec { scenes: SCENES, fonts, min_size: Some((720.0, 480.0)), ..AppSpec::new("rune-ui gallery", (1320.0, 900.0), init, view) };
+    let spec = AppSpec { poll: Some(poll), scenes: SCENES, fonts, min_size: Some((720.0, 480.0)), ..AppSpec::new("rune-ui gallery", (1320.0, 900.0), init, view) };
     let app = RuneApp::new(spec);
     if HEADLESS.load(Ordering::Relaxed) {
         app.fit_content_height().run()

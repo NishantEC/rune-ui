@@ -327,3 +327,148 @@ fn split_clamped_applies_least_most_fraction_and_the_centres_room() {
     assert_eq!(clamped(500.0, 100.0, 600.0, 1.0, 800.0, 256.0, 440.0), 103.0, "the centre keeps 440 beside a 256 sidebar");
     assert_eq!(clamped(50.0, 100.0, 600.0, 1.0, 300.0, 256.0, 440.0), 100.0, "a window too small for it: the least wins");
 }
+
+// ---- Toast ----
+
+fn toast_poll(s: &mut App, clock: f64, tx: &mut rune::Tx) -> bool {
+    s.g.slot_mut::<ui::toast::ToastHost>("toast-host").poll(clock, tx)
+}
+
+fn toasts() -> Runtime<App> {
+    let mut rt = item("toast");
+    rt.poll = Some(toast_poll);
+    rt
+}
+
+fn host(rt: &Runtime<App>) -> ui::toast::ToastHost {
+    rt.state.g.slot("toast-host")
+}
+
+/// Runs the clock `secs` forward in frames.
+fn pass(rt: &mut Runtime<App>, secs: f64) {
+    for _ in 0..(secs * 60.0) as usize {
+        rt.frame(1.0 / 60.0);
+    }
+}
+
+#[test]
+fn toast_host_times_pauses_and_carries_on_from_where_it_was() {
+    use ui::toast::{ToastHost, ToastSpec};
+    let mut h = ToastHost::new();
+    let a = h.push(ToastSpec::new("One").timeout(4.0));
+    let b = h.push(ToastSpec::new("Two").sticky());
+    let c = h.push(ToastSpec::new("Three").action("Undo", "undo"));
+    assert!(!h.tick(10.0), "the timers start at the first tick");
+    assert_eq!(h.next_due(), Some(14.0));
+    h.set_hover(true, 12.0);
+    assert!(h.paused() && h.next_due().is_none(), "paused: nothing is due");
+    assert!(!h.tick(100.0), "and nothing runs out while paused");
+    h.set_hover(false, 100.0);
+    assert_eq!(h.next_due(), Some(102.0), "two seconds were left");
+    assert!(h.tick(102.5));
+    let left: Vec<u64> = h.items().map(|(id, _)| id).collect();
+    assert_eq!(left, vec![b, c], "the first went; a sticky one stays; an action gives 8 seconds: {a}");
+    assert!(!h.tick(105.5) && h.tick(106.5), "the one with an action had 8 seconds, 2 gone before the pause: 6 left from 100");
+    assert_eq!(h.items().map(|(id, _)| id).collect::<Vec<_>>(), vec![b]);
+    // Focus pauses too, and both must let go.
+    h.set_focus(true, 200.0);
+    h.set_hover(true, 200.0);
+    h.set_hover(false, 201.0);
+    assert!(h.paused(), "focus still holds it");
+    assert_eq!(h.focus_target("t"), Some("t-2-close".to_owned()));
+}
+
+#[test]
+fn a_toast_shows_at_the_bottom_trailing_edge_is_announced_politely_and_goes_by_itself() {
+    let mut rt = toasts();
+    press(&mut rt, "toast-settle");
+    assert!(has(&rt, "toasts-1"), "the toast shows");
+    let r = drawn(&rt, "toasts-1");
+    let t = rune_ui_themes::theme(false);
+    assert!((r[0] + r[2] - (W - t.space.at(4.0))).abs() < 1.5, "its right edge is a margin from the window's: {r:?}");
+    assert!((r[1] + r[3] - (H - t.space.at(4.0))).abs() < 1.5, "its bottom too: {r:?}");
+    let node = ax(&rt.accessibility_json(), "toasts-1").unwrap();
+    assert!(node.to_string().contains("polite"), "a polite live region: {node}");
+    assert_eq!(node["role"].as_str(), Some("status"));
+    pass(&mut rt, 10.0);
+    assert!(!has(&rt, "toasts-1"), "gone after its 8 seconds");
+    assert!(host(&rt).is_empty());
+}
+
+#[test]
+fn a_toast_stops_while_the_pointer_or_focus_is_on_it_and_goes_when_both_leave() {
+    let mut rt = toasts();
+    press(&mut rt, "toast-settle");
+    let r = drawn(&rt, "toasts-1");
+    rt.pointer_move(r[0] + 20.0, r[1] + 10.0);
+    pass(&mut rt, 20.0);
+    assert!(has(&rt, "toasts-1"), "still there after 20 seconds under the pointer");
+    assert!(host(&rt).paused());
+    rt.pointer_move(40.0, 40.0);
+    pass(&mut rt, 3.0);
+    assert!(has(&rt, "toasts-1"), "the clock carried on from where it was");
+    pass(&mut rt, 7.0);
+    assert!(!has(&rt, "toasts-1"), "and ran out");
+    // Focus inside does the same.
+    press(&mut rt, "toast-settle");
+    focus(&mut rt, "toasts-2-action");
+    pass(&mut rt, 20.0);
+    assert!(has(&rt, "toasts-2"), "focus holds it");
+}
+
+#[test]
+fn a_toasts_action_dismisses_it_and_says_its_tag_and_escape_dismisses_a_focused_one() {
+    let mut rt = toasts();
+    press(&mut rt, "toast-settle");
+    assert_eq!(info(&rt, "toasts-1-action").label.as_deref(), Some("Undo"));
+    press(&mut rt, "toasts-1-action");
+    assert_eq!(rt.state.g.choice("toast-said", ""), "undo-settle", "the app heard the tag");
+    assert!(!has(&rt, "toasts-1"), "and the toast went");
+    press(&mut rt, "toast-settle");
+    let target = host(&rt).focus_target("toasts").unwrap();
+    focus(&mut rt, &target);
+    assert_eq!(focused(&rt).as_deref(), Some(target.as_str()), "the shortcut's target takes focus");
+    key(&mut rt, Key::Escape);
+    assert!(!has(&rt, "toasts-2"), "Escape dismisses it");
+}
+
+#[test]
+fn toasts_stack_newest_last_centre_on_request_and_show_the_newest_four() {
+    let mut rt = toasts();
+    for _ in 0..5 {
+        press(&mut rt, "toast-settle");
+    }
+    assert!(!has(&rt, "toasts-1") && has(&rt, "toasts-2") && has(&rt, "toasts-5"), "the newest four show");
+    assert!(drawn(&rt, "toasts-5")[1] > drawn(&rt, "toasts-2")[1], "newest last (lowest)");
+    press(&mut rt, "toast-place");
+    let r = drawn(&rt, "toasts-5");
+    assert!((r[0] + r[2] / 2.0 - W / 2.0).abs() < 1.5, "centred along the bottom: {r:?}");
+}
+
+struct ToastProbe {
+    still: bool,
+    host: ui::toast::ToastHost,
+}
+
+fn toast_probe_view(s: &ToastProbe, _: &mut Cx<ToastProbe>) -> El {
+    let t = Theme::from_json(rune_ui_themes::DEFAULT, false).unwrap().with_reduced_motion(s.still);
+    let mut layer = Vec::new();
+    ui::toast::Toasts::<ToastProbe>::new("toasts", &s.host, |s: &mut ToastProbe| &mut s.host).mount(&t, &mut layer);
+    ui::base::overlay_root(col().w_full().h_full(), layer)
+}
+
+#[test]
+fn a_toast_arrives_without_motion_under_reduce_motion() {
+    for still in [true, false] {
+        let mut host = ui::toast::ToastHost::new();
+        host.push(ui::toast::ToastSpec::new("Saved"));
+        let mut rt = Runtime::new(ToastProbe { still, host }, toast_probe_view, (W, 900.0), Env { system_dark: false, scale: 1.0 });
+        rt.frame(0.0);
+        let first = rt.presented("toasts-1").map(|p| p.0);
+        settle(&mut rt);
+        let last = drawn(&rt, "toasts-1");
+        if still {
+            assert_eq!(first, Some(last), "no motion under Reduce Motion");
+        }
+    }
+}
