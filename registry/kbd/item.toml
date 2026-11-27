@@ -2,10 +2,10 @@
 schema = 1
 name = "kbd"
 title = "Kbd"
-version = "0.10.0"
+version = "0.11.0"
 type = "component"
 group = "display"
-description = "Keys as small raised caps."
+description = "Keys as small raised caps in the theme's keycap face; the modifier keys are drawn as icons so no font has to carry them."
 
 [requires]
 style = ">=0.10.0, <0.11.0"
@@ -20,11 +20,11 @@ stories = []
 [[files]]
 path = "kbd.rs"
 target = "src/ui/kbd.rs"
-sha256 = "c94146b813cd37bed8eea113f241a4a7072657e9bc22bbb1347f31d96fbc7a80"
+sha256 = "13e0c638c947b3cd15ca67d640a635eb9e5f6a179e7a5139af67e00b903cc64b"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/kbd.rs"
 role = "story"
-sha256 = "9062deea3e0022405ee9f38f02119666f86a085c68d666a98d8547e7ae1ef728"
+sha256 = "66285b39425dfa7a62b9b35c446ead25b25dc6ec125e12e9a044abf2accb7b5d"

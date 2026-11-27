@@ -123,7 +123,7 @@ pub struct GalleryState {
 impl Default for GalleryState {
     fn default() -> Self {
         let mut s = GalleryState { show: "actions".to_owned(), only: None, dark: None, compact: None, editor: Editor::default(), scroll: true, on_export: None, exported: None, open: None, point: None, toasts: Vec::new(), presses: 0, flags: HashMap::new(), values: HashMap::new(), choices: HashMap::new(), edits: HashMap::new(), slots: HashMap::new(), empty: TextEdit::new("") };
-        for (k, v) in [("name", "Placeholder project"), ("budget", "12.50"), ("query", "theme"), ("secret", "sample-pass"), ("command-miss", "zzz"), ("command-fuzzy", "lgn"), ("command-loading", "fix"), ("command-wait", "zz"), ("notes", "A few words about the placeholder project, long enough to wrap onto a second line."), ("otp", "12"), ("otp-words", "AB")] {
+        for (k, v) in [("name", "Placeholder project"), ("budget", "12.50"), ("query", "theme"), ("secret", "sample-pass"), ("command-miss", "zzz"), ("command-fuzzy", "lgn"), ("command-loading", "fix"), ("command-wait", "zz"), ("mono", "cargo test --workspace\nrune-ui diff --check --app ../app"), ("notes", "A few words about the placeholder project, long enough to wrap onto a second line."), ("otp", "12"), ("otp-words", "AB")] {
             s.edits.insert(k.to_owned(), TextEdit::new(v));
         }
         for k in ["switch-on", "check-on", "toggle-bold", "accordion-0", "collapsible-open", "sidebar-projects"] {

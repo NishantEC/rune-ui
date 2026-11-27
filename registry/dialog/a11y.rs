@@ -1,1 +1,1 @@
-pub const CHECKS: &[(&str, &str)] = &[("dialog-inplace-dialog", "dialog"), ("dialog-inplace-close", "button"), ("dialog-inplace-save", "button")];
+pub const CHECKS: &[(&str, &str)] = &[("dialog-inplace-dialog", "dialog"), ("dialog-inplace-close", "button"), ("dialog-inplace-save", "button"), ("dialog-scroll-dialog", "dialog"), ("dialog-scroll-save", "button")];

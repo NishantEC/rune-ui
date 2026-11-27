@@ -664,3 +664,69 @@ fn a_nested_row_is_set_in_by_sixteen_points_a_level() {
     assert_eq!(a[0], b[0], "the row itself spans the column");
     assert!((t4.rect[0] - t2.rect[0] - 16.0).abs() < 0.6, "its words are 16 points in: {} vs {}", t4.rect[0], t2.rect[0]);
 }
+
+// ---- The small asks: icons, Textarea mono, Dialog scroll, Kbd glyphs ----
+
+#[test]
+fn the_icon_set_has_a_plug_the_panels_and_the_modifier_keys() {
+    use ui::icons::*;
+    for i in [&PLUG, &CHEVRONS_RIGHT, &PANEL_LEFT, &PANEL_RIGHT, &KEY_COMMAND, &KEY_OPTION, &KEY_SHIFT, &KEY_RETURN, &KEY_CONTROL] {
+        assert!(i.name.starts_with("rune-ui-") && i.body.contains("currentColor") && i.view == 16.0, "{}", i.name);
+    }
+    assert_eq!(PLUG.name, "rune-ui-plug");
+}
+
+#[test]
+fn a_mono_textarea_sets_its_text_in_a_monospaced_face_a_little_smaller_than_the_page_face() {
+    let rt = item("textarea");
+    let (mono, plain) = (info(&rt, "textarea-mono-input").text_style.unwrap(), info(&rt, "textarea-mono-off-input").text_style.unwrap());
+    assert_ne!(format!("{:?}", mono.family), format!("{:?}", plain.family), "a different face");
+    assert!(mono.size < plain.size && mono.size >= plain.size * 0.9, "a little smaller: {} against {}", mono.size, plain.size);
+    assert_eq!(drawn(&rt, "textarea-mono")[2], 300.0);
+}
+
+#[test]
+fn kbd_draws_modifier_glyphs_as_icons_one_cap_each_and_speaks_them() {
+    let rt = item("kbd");
+    let run = ax(&rt.accessibility_json(), "kbd-glyph-run").unwrap();
+    assert!(run.to_string().contains("Shift Command P"), "spoken: {run}");
+    assert_eq!(titles(&rt, "kbd-glyph-run"), vec!["P".to_owned()], "only the letter is text: the two modifiers are icons");
+    let caps = |key: &str| rt.elements().into_iter().filter(|e| e.parent.is_some() && e.rect[3] == 20.0 && e.rect[0] >= drawn(&rt, key)[0] && e.rect[0] + e.rect[2] <= drawn(&rt, key)[0] + drawn(&rt, key)[2] + 0.5 && e.rect[1] >= drawn(&rt, key)[1] - 0.5 && e.rect[1] < drawn(&rt, key)[1] + 20.0).count();
+    assert_eq!(caps("kbd-glyph-run"), 4, "⇧⌘P is three caps (and the row round them), though it is written without spaces");
+    let t = rune_ui_themes::theme(false);
+    let p = rt.elements().into_iter().find(|e| e.text.as_deref() == Some("P") && e.rect[1] > drawn(&rt, "kbd-glyph-run")[1] - 1.0 && e.rect[1] < drawn(&rt, "kbd-glyph-run")[1] + 20.0).unwrap();
+    assert_eq!(p.text_style.unwrap().size, t.ty.xs.size, "the word is in the keycap face and size");
+}
+
+struct DialogProbe;
+
+fn scrolling_dialog_view(_: &DialogProbe, _: &mut Cx<DialogProbe>) -> El {
+    let t = Theme::from_json(rune_ui_themes::DEFAULT, false).unwrap();
+    let mut layer = Vec::new();
+    let mut d = ui::dialog::Dialog::<DialogProbe>::new("d", "Project settings").description("Everything.").scroll_body(true).open(true).footer(vec![ui::button::Button::<DialogProbe>::new("d-save", "Save").build(&t)]).on_close(|_: &mut DialogProbe| {});
+    for i in 0..30 {
+        d = d.child(rune::text(format!("Row {i}")).key(format!("row{i}")));
+    }
+    d.build(&t, &mut layer);
+    ui::base::overlay_root(col().w_full().h_full(), layer)
+}
+
+#[test]
+fn a_dialog_with_a_scrolling_body_keeps_its_header_and_footer_in_the_window_and_scrolls_between() {
+    let mut rt = Runtime::new(DialogProbe, scrolling_dialog_view, (700.0, 420.0), Env { system_dark: false, scale: 1.0 });
+    settle(&mut rt);
+    let (panel, body, foot, head) = (drawn(&rt, "d-dialog"), drawn(&rt, "d-body"), drawn(&rt, "d-footer"), drawn(&rt, "d-header"));
+    assert!(panel[1] >= 0.0 && panel[1] + panel[3] <= 420.0 + 0.5, "the panel fits the window: {panel:?}");
+    assert!(head[1] < body[1] && body[1] + body[3] <= foot[1] + 0.5, "header, then body, then footer");
+    assert!(foot[1] + foot[3] <= panel[1] + panel[3], "the footer is inside the panel");
+    let last = drawn(&rt, "row29");
+    assert!(last[1] > body[1] + body[3], "most rows are past the body's edge: they scroll");
+    let (x, y) = (body[0] + body[2] / 2.0, body[1] + body[3] / 2.0);
+    let first = drawn(&rt, "row0")[1];
+    rt.pointer_move(x, y);
+    rt.wheel(x, y, -120.0);
+    settle(&mut rt);
+    assert!(drawn(&rt, "row0")[1] < first, "the wheel scrolled the body: {} -> {}", first, drawn(&rt, "row0")[1]);
+    assert_eq!(drawn(&rt, "d-footer")[1], foot[1], "and the footer did not move");
+    assert_eq!(drawn(&rt, "d-header")[1], head[1], "nor the header");
+}

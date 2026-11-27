@@ -2,10 +2,10 @@
 schema = 1
 name = "textarea"
 title = "Textarea"
-version = "0.10.0"
+version = "0.11.0"
 type = "component"
 group = "form"
-description = "Several lines on the well material, growing with its text."
+description = "Several lines on the well material, growing with its text; an optional limit and counter, and a monospaced face."
 
 [requires]
 style = ">=0.5.0, <0.11.0"
@@ -20,11 +20,11 @@ stories = []
 [[files]]
 path = "textarea.rs"
 target = "src/ui/textarea.rs"
-sha256 = "39fe8982dc0283e8633f06b21a4f1448b6cbc866ef13e762ae9a8f774107d9a2"
+sha256 = "76ee92d1504f207a8f561030f35b8a30ca190d136b29ec248c0380e5e3faf9a1"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/textarea.rs"
 role = "story"
-sha256 = "a997ee993a1e13e76ac724865f0d11cf18d9b3679f90f90f81a29155f2a9aba8"
+sha256 = "4cc2bcdc248b6fb9a391da110d2e16d49d8dca93f17914dbaf046594981dcead"

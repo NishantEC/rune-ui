@@ -1,4 +1,4 @@
-item-dialog group 0 0 940 312
+item-dialog group 0 0 940 678
 dialog-inplace-dialog dialog 0 64 440 224
 dialog-inplace-header group 24 88 348 68
 dialog-inplace-title heading 24 88 348 22
@@ -13,6 +13,17 @@ hit(dialog-inplace-save) none 351 226 65 40
 dialog-inplace-save button 351 228 65 36
 hit(dialog-open) none 464 62 99 40
 dialog-open button 464 64 99 36
+dialog-scroll-dialog dialog 0 354 440 300
+dialog-scroll-header group 24 378 348 48
+dialog-scroll-title heading 24 378 348 22
+hit(dialog-scroll-close) none 380 374 40 40
+dialog-scroll-close button 384 378 32 32
+dialog-scroll-body group 24 442 392 124
+dialog-scroll-footer group 24 582 392 48
+hit(dialog-scroll-cancel) none 265 592 78 40
+dialog-scroll-cancel button 265 594 78 36
+hit(dialog-scroll-save) none 351 592 65 40
+dialog-scroll-save button 351 594 65 36
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32
 editor-mode-1 button 1059 -184 53 32

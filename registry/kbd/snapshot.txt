@@ -1,7 +1,12 @@
-item-kbd group 0 0 940 108
+item-kbd group 0 0 940 194
 kbd-one note 0 64 31 20
-kbd-chord note 70 64 45 20
-kbd-three note 139 64 93 20
+kbd-chord note 70 64 47 20
+kbd-three note 141 64 93 20
+kbd-glyph-cmd note 0 150 47 20
+kbd-glyph-run note 149 150 74 20
+kbd-glyph-return note 247 150 51 20
+kbd-glyph-all note 371 150 128 20
+kbd-glyph-words note 523 150 67 20
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32
 editor-mode-1 button 1059 -184 53 32

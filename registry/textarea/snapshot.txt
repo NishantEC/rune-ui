@@ -1,4 +1,4 @@
-item-textarea group 0 0 940 550
+item-textarea group 0 0 940 692
 textarea-rest group 0 64 260 76
 scroll group 14 72 232 60
 textarea-rest-input textbox 14 72 232 60
@@ -34,6 +34,12 @@ scroll group 14 460 232 40
 textarea-limit-hard-input textbox 14 460 232 20
 textarea-limit-hard-count-row group 14 500 232 18
 textarea-limit-hard-count text 209 500 37 18
+textarea-mono group 0 592 300 76
+scroll group 14 600 272 60
+textarea-mono-input textbox 14 600 272 40
+textarea-mono-off group 324 592 300 76
+scroll group 338 600 272 60
+textarea-mono-off-input textbox 338 600 272 40
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32
 editor-mode-1 button 1059 -184 53 32
