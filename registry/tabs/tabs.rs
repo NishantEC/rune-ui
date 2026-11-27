@@ -96,6 +96,9 @@ pub fn fitting(widths: &[f32], avail: f32, gap: f32, more: f32, selected: usize)
     shown
 }
 
+/// How the strip reaches its [`TabsState`] in the app's state.
+type StateAccess<S> = Rc<dyn for<'a> Fn(&'a mut S) -> &'a mut TabsState>;
+
 struct Tab {
     label: String,
     icon: Option<&'static Icon>,
@@ -114,7 +117,7 @@ pub struct Tabs<S: 'static> {
     content: Option<El>,
     change: Option<Choose<S>>,
     close: Option<Choose<S>>,
-    overflow: Option<(TabsState, Rc<dyn for<'a> Fn(&'a mut S) -> &'a mut TabsState>)>,
+    overflow: Option<(TabsState, StateAccess<S>)>,
 }
 
 /// The key of tab `i`.
@@ -317,17 +320,23 @@ impl<S: 'static> Tabs<S> {
                     Key::Home => shown[0],
                     Key::End => shown[m - 1],
                     Key::Enter if activation == Activation::Manual => {
-                        choose.as_ref().map(|f| f(s, i));
+                        if let Some(f) = &choose {
+                            f(s, i);
+                        }
                         return true;
                     }
                     Key::Text(ref w) if w == " " && activation == Activation::Manual => {
-                        choose.as_ref().map(|f| f(s, i));
+                        if let Some(f) = &choose {
+                            f(s, i);
+                        }
                         return true;
                     }
                     _ => return false,
                 };
-                if activation == Activation::Automatic {
-                    choose.as_ref().map(|f| f(s, to));
+                if activation == Activation::Automatic
+                    && let Some(f) = &choose
+                {
+                    f(s, to);
                 }
                 tx.focus(tab_key(&k2, to), true);
                 true
@@ -376,7 +385,7 @@ fn close_button<S: 'static>(t: &Theme, key: &str, i: usize, label: &str, shown: 
 type Hidden = (usize, String, Option<&'static Icon>);
 
 /// The "More tabs" button at the strip's end and, while open, its menu: a row per hidden tab that chooses it.
-fn more_menu<S: 'static>(t: &Theme, key: &str, hidden: &[Hidden], open: bool, access: Rc<dyn for<'a> Fn(&'a mut S) -> &'a mut TabsState>, change: Option<Choose<S>>, layer: &mut Vec<El>) -> El {
+fn more_menu<S: 'static>(t: &Theme, key: &str, hidden: &[Hidden], open: bool, access: StateAccess<S>, change: Option<Choose<S>>, layer: &mut Vec<El>) -> El {
     let more = format!("{key}-more");
     let h = t.control.md;
     let acc = access.clone();

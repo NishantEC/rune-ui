@@ -8,7 +8,7 @@ group = "form"
 description = "A month of days: today, a selected day or a range, disabled days, a month view; arrows, Home/End and Page Up/Down move."
 
 [requires]
-style = ">=0.5.1, <0.11.0"
+style = ">=0.5.1, <0.12.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]

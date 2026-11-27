@@ -8,7 +8,7 @@ group = "agent"
 description = "What a piece of work leaves behind: a header with its totals, the files with their own figures, a foot with the branch and actions."
 
 [requires]
-style = ">=0.8.0, <0.11.0"
+style = ">=0.8.0, <0.12.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]

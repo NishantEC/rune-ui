@@ -60,7 +60,7 @@ fn search<S: 'static>(c: &mut Ctx<S>) -> rune::El {
     let waiting = keep("command-wait", "command-wait").loading(true).build(t);
     specs(t, vec![
         spec(t, "Empty query: recents first", recent),
-        spec(t, "Fuzzy: \"lgn\" finds the login thread; the letters that matched are semibold", fuzzy),
+        spec(t, "Fuzzy: \"lgn\" finds the login thread", fuzzy),
         spec(t, "Loading: the rows stay while slower ones arrive", loading),
         spec(t, "Loading with nothing yet", waiting),
     ])

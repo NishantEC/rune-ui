@@ -219,10 +219,8 @@ impl<S: 'static> Split<S> {
                     d.data = if collapsed { 0.0 } else { width };
                     if d.clicks >= 2 {
                         r2(s, e, default);
-                        if let Some(c) = &collapse {
-                            if collapsed {
-                                c(s, e, false);
-                            }
+                        if collapsed && let Some(c) = &collapse {
+                            c(s, e, false);
                         }
                         return;
                     }

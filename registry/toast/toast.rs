@@ -409,7 +409,7 @@ impl<S: 'static> Toasts<S> {
             let el = toast.on_close(move |s: &mut S| {
                 acc(s).dismiss(id);
             }).build(t);
-            built.push(if t.reduced_motion { el } else { el.transition(motion.clone()) });
+            built.push(if t.reduced_motion { el } else { el.transition(motion) });
         }
         let (hover, focus) = (self.access.clone(), self.access.clone());
         let hook = move |stack: El| {

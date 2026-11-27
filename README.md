@@ -191,6 +191,13 @@ Wave 2 added `recipes::series` (chart colours from the theme's roles), Label and
 Drawer share it) and `GalleryState::slot` (a component's own state type in the gallery). Their behaviour is tested in the live path
 (`apps/gallery/tests/wave2.rs`: real presses, pointer moves, drags and keys).
 
+## Components (0.11.0)
+
+| Group | Items |
+| --- | --- |
+| Structure | Split (the regions of a window with drag handles: a sidebar, the centre, a pane) |
+| Also new in existing items | Tabs (pane variant, close, overflow menu), Toast (host and stack), Command (palette), SidebarItem (thread rows), Kbd (modifier glyphs), Textarea (mono), Dialog (scrolling body), icons |
+
 ## Components (0.10.0)
 
 | Group | Items |
@@ -278,6 +285,42 @@ Move `rune-ui-style` and `rune-ui-themes` to `v0.10.0` first, then `rune-ui upda
 | The modal scrim is black at `Theme::scrim()` (0.18 light, 0.55 dark in the default theme; was the page ink at 0.18 and 0.5) | none needed; set `number.scrim` in your theme file to tune it |
 | A sidebar row with a count now says "Count N" to assistive technology; popup rows say their place | none needed; `.count_label(words)` words the count |
 | The workspace takes Rune with `default-features = false` (see "Licences") | none for apps: `rune-ui init` still writes Rune with its default features |
+
+## 0.11.0: the window around a conversation
+
+An agent app is three columns (a sidebar of threads, the conversation, a tabbed pane), a palette on Cmd+K, toasts that say "Undo", and
+dense two-line rows. These came from one app's list of what it could not build from 0.10.0; they are general parts, additive unless
+listed under "Upgrade notes (0.10 to 0.11)". Tested in the live path in `apps/gallery/tests/wave6.rs`, pictured light and dark in the
+gallery. Rune stays at `53f6d36a`.
+
+| Item | New |
+| --- | --- |
+| Split (new) | `Split::new(key, name)` with `.left(Region)`, `.center(El)`, `.right(Region)`. A `Region` has `.width(points)` (the app keeps and saves it), `.min`, `.max`, `.max_fraction` (a right pane never past half the window), `.default` (double-click on its handle goes back to it), `.collapsed(bool)`, `.collapsible(true)` (a drag past the least by 48 points collapses it, a drag from the edge opens it), `.name`. The centre keeps `.center_min(320)`. `.on_resize(|s, Edge, width| ..)`, `.on_collapse(|s, Edge, hidden| ..)`. A handle is a `separator` named "Resize <name>" whose value is the width: Left and Right move it by `.step` (16; Shift four times), Home and End go to the least and most, Return collapses or opens. `split::clamped` is the bounds rule. Handles take one point of layout and a nine point grab area; they paint above both neighbours. A sidebar and a pane work at once. |
+| Tabs | `.activation(Activation::Automatic \| Manual)`: Left, Right (wrapping), Home, End move; automatic chooses as it moves, manual moves focus and Return or Space chooses. Roving: the chosen tab is the strip's one Tab stop and is `selected`; the `tabpanel` is labelled by it and the tab `controls` it. `.on_close(f)`: a close button per tab ("Close <tab>", 18 points, drawn for the chosen tab and on hover or focus, out of the Tab order) and Cmd+W on a focused tab; `.permanent()` keeps the last tab you added. `.overflow(&TabsState, access)` + `.build_in(t, &mut layer)`: the strip and its tabs measure themselves; tabs that do not fit go into a "More tabs" menu (`tabs::fitting` is the rule), the chosen tab always stays. `TabsVariant::Pane`: compact (one control height, small words, semibold chosen tab, a 2 point line, no hairline). No motion: nothing to hold still under Reduce Motion. |
+| Toast | `ToastSpec::new(title).description(..).tone(..).action(words, tag).timeout(secs).sticky()` (5 seconds, 8 with an action). `ToastHost` (`new`, `push`, `show(spec, tx)`, `dismiss`, `dismiss_latest`, `clear`, `items`, `paused`, `tick`, `next_due`, `poll(clock, tx)`, `set_hover`, `set_focus`, `focus_target(stack_key)`): you keep one in your state and call `poll` from the app's poll hook (`AppSpec::poll`). Timers stop while the pointer is over the stack or focus is inside it and carry on from where they were. `Toasts::new(key, &host, access).position(Position::BottomCenter \| BottomTrailing).limit(4).on_action(\|s, tag\| ..).mount(t, &mut layer)`: each toast is a polite `status` live region; the action dismisses it and tells you its tag; Escape on a focused toast dismisses it; toasts come in from the bottom edge (not under Reduce Motion). The key that reaches the stack is yours: send focus to `focus_target`. `Toaster::position` for stacks you build yourself. |
+| Command | `CommandItem::subtitle`, `lead(El)`, `hint(words)`, `keywords(words)`; `Command::matching(Match::Fuzzy \| Words)`, `recents(&keys)` and `recent_label`, `loading(bool)`, `on_alt(f)` (Command+Return), `hint(keys, words)` (a footer), `limit(n)`, `top(points)`. `command::search(items, query, mode)` returns `Hit`s (item, matched title and subtitle positions, score), `command::fuzzy(query, text)` scores one text. Sections keep the order they first appear in your items and rows are ranked inside them; the letters that matched are semibold; rows are `option`s in `group`s with a heading, each saying its place; a row with a second line is `metrics.row` plus 16 high. While `loading`, the field spins and the rows stay; with none it says "Searching…". |
+| SidebarItem | `.subtitle_el(El)`, `.unread(true)` (semibold in the first ink; "Unread" is read after the name), `.trail_swap(width, rest, hover)` (hover groups: the age shows, a menu button takes its place under the pointer or keyboard focus; pinned with `.state(Hover)` it shows the button), `.indent(levels)` (16 points a level). Row heights follow the theme's density (30 and 46 compact, 36 and 52 comfortable). |
+| Kbd | ⌘ ⌥ ⇧ ⌃ ↩ are icons (`icons::KEY_*`), one cap each, spaced or run together; words stay words in the keycap face; the name is spoken ("Shift Command P"). `kbd::modifier`, `kbd::spoken`. |
+| Textarea, Dialog, icons | `Textarea::mono(true)`. `Dialog::scroll_body(true)` (+ `.max_height(points)`): the panel shrinks to the window, the header and footer stay, the body scrolls, a hairline marks the footer. Icons: `PLUG`, `CHEVRONS_RIGHT`, `PANEL_LEFT`, `PANEL_RIGHT`, `KEY_COMMAND`, `KEY_OPTION`, `KEY_SHIFT`, `KEY_RETURN`, `KEY_CONTROL`. |
+
+What Rune cannot do here at this rev:
+
+- **Drag a tab to reorder it:** tabs keep the app's order; `Reorder` is for columns of rows of one pitch.
+- **Toasts that wake themselves:** a toast needs the app's poll hook (`ToastHost::poll`), because Rune delivers the window's clock only to
+  `AppSpec::poll` and to handlers.
+
+### Upgrade notes (0.10 to 0.11)
+
+Move `rune-ui-style` and `rune-ui-themes` to `v0.11.0` first, then `rune-ui update`. The style crate itself is unchanged; every item
+now requires `>=<its minimum>, <0.12.0`.
+
+| Break | Fix |
+| --- | --- |
+| `command::CommandItem` has public fields `subtitle`, `lead`, `hint`, `keywords` | build with `CommandItem::new(..)`; a struct literal gets `subtitle: None, lead: None, hint: None, keywords: None` |
+| `CommandItem` is not `Send` or `Sync` | build items in the view (or a `thread_local!`) rather than a `static OnceLock` |
+| Command matches fuzzily and ranks | `.matching(Match::Words)` for the old rule |
+| Tabs: one Tab stop; `selected` not `checked`; needs `popup` | none; adjust tests that looked for `checked`; `rune-ui update` adds `popup` |
+| Kbd's name speaks glyphs ("Command K") | none; adjust tests that read the name |
 
 ## Licences
 

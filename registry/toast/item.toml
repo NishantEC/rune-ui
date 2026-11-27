@@ -8,7 +8,7 @@ group = "display"
 description = "A short message on the floating material with one action and a close button; a stack at the bottom (trailing or centre) and a host that times, pauses and dismisses them."
 
 [requires]
-style = ">=0.5.0, <0.11.0"
+style = ">=0.5.0, <0.12.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "toast.rs"
 target = "src/ui/toast.rs"
-sha256 = "2d00aaa05147da4d4408e60d8e33f6acf8fe422e02cf4bf9db0f23fa0481f651"
+sha256 = "2584744aeb84b2ac9d3a6a25f770d30db62a1c9fddacd77ab2c9612a9f10f1a6"
 
 # Copied only once the gallery block is installed.
 [[files]]

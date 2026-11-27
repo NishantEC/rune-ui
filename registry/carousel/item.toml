@@ -8,7 +8,7 @@ group = "structure"
 description = "Slides one at a time in a rounded viewport with arrows and dots; Left, Right, Home and End; fixed size so nothing moves around it."
 
 [requires]
-style = ">=0.5.1, <0.11.0"
+style = ">=0.5.1, <0.12.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]

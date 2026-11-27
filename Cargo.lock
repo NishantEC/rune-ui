@@ -1032,7 +1032,7 @@ dependencies = [
 
 [[package]]
 name = "gallery"
-version = "0.10.0"
+version = "0.11.0"
 dependencies = [
  "png 0.17.16",
  "rune",
@@ -2865,7 +2865,7 @@ dependencies = [
 
 [[package]]
 name = "rune-ui-cli"
-version = "0.10.0"
+version = "0.11.0"
 dependencies = [
  "sha2",
  "toml",
@@ -2873,7 +2873,7 @@ dependencies = [
 
 [[package]]
 name = "rune-ui-style"
-version = "0.10.0"
+version = "0.11.0"
 dependencies = [
  "rune",
  "rune-kit",
@@ -2882,7 +2882,7 @@ dependencies = [
 
 [[package]]
 name = "rune-ui-themes"
-version = "0.10.0"
+version = "0.11.0"
 dependencies = [
  "rune",
  "rune-ui-style",

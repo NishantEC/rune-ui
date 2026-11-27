@@ -1,8 +1,55 @@
 # Changelog
 
-The README's release sections (`0.9.0: what the first app needed`, `0.10.0: closing the gaps`) carry the full tables of options and
-keys; this file is the short version for people upgrading. rune-ui is pinned to one Rune rev per release (`RUNE_REV`); 0.10.0 keeps
-`53f6d36a`.
+The README's release sections (`0.9.0: what the first app needed`, `0.10.0: closing the gaps`, `0.11.0: the window around a
+conversation`) carry the full tables of options and keys; this file is the short version for people upgrading. rune-ui is pinned to
+one Rune rev per release (`RUNE_REV`); 0.10.0 and 0.11.0 keep `53f6d36a`.
+
+## 0.11.0
+
+The parts of a three-column agent window (a sidebar, a conversation, a tabbed pane), a command palette, toasts with Undo and denser
+sidebar rows. General and app-neutral; tested in the live path and pictured light and dark.
+
+### New
+
+- **Split** (new item): the regions of a window with drag handles. Widths are points the app keeps (so it can save them), with a
+  least and a most, an optional share of the window, a floor for the centre, double-click to reset, arrow keys on a focused handle
+  and collapse. `Split::new(key, name).left(Region::new(el).width(w).min(208.0).max(360.0).default(256.0)).center(el).right(..)
+  .on_resize(|s, edge, w| ..).on_collapse(|s, edge, hidden| ..).build(t)`
+- **Tabs**: Left, Right, Home and End with automatic or manual activation (`.activation(Activation::Manual)`); the chosen tab is the
+  one Tab stop and says it is selected; the panel is labelled by it. `.on_close(|s, i| ..)` gives each tab a close button and
+  Cmd+W (`.permanent()` exempts the last tab added). `.overflow(&state, access)` with `build_in(t, &mut layer)` folds tabs that do not
+  fit into a "More tabs" menu and keeps the chosen one in the strip (`TabsState`). `TabsVariant::Pane` is a compact header for a
+  side pane.
+- **Toast**: `ToastHost` (plain data the app owns: `show`, `push`, `dismiss`, `poll`) times toasts, stops the timers while the
+  pointer is over the stack or focus is inside, and `Toasts::new(key, &host, access).position(Position::BottomCenter)
+  .on_action(|s, tag| ..).mount(t, &mut layer)` draws them (one action named by a tag, Escape dismisses, `focus_target` for the
+  app's shortcut). `Toaster::position`.
+- **Command**: fuzzy matching with the matched letters semibold (`search`, `fuzzy`, `Match`), rows with a leading element, a
+  second line, a hint and a shortcut (`CommandItem::lead`, `subtitle`, `hint`, `keywords`), `recents(&keys)`, `loading(true)`,
+  Command+Return as an alternate choice (`on_alt`), a footer of key hints (`hint(keys, words)`), `limit`, `top`.
+- **SidebarItem** (the two-line list row): `subtitle_el(El)` (a second line of your own parts), `unread(true)`, `trail_swap(width,
+  rest, hover)` (an age that gives way to a menu button under the pointer or focus), `indent(levels)`.
+- **Small**: icons `PLUG`, `CHEVRONS_RIGHT`, `PANEL_LEFT`, `PANEL_RIGHT` and the modifier keys; `Textarea::mono(true)`;
+  `Dialog::scroll_body(true)` and `max_height(points)` (header and footer stay, the body scrolls); `Kbd` draws ⌘ ⌥ ⇧ ⌃ ↩ as icons
+  (also run together, "⇧⌘P") and speaks them ("Shift Command P").
+
+### Changed
+
+- Command matches fuzzily and ranks results inside sections that keep their first-seen order. `.matching(Match::Words)` keeps
+  the old rule (every word appears in the label).
+- Tabs: only the chosen tab is a Tab stop (arrows move between tabs); a tab reports `selected`, not `checked`; Tabs needs `popup`.
+- A toast with one line of words sits level with its buttons.
+- Kbd's accessible name speaks the glyphs ("Command K", not "⌘ K").
+
+### Breaking
+
+| Break | Migration |
+| --- | --- |
+| `CommandItem` has new public fields (`subtitle`, `lead`, `hint`, `keywords`) | build items with `CommandItem::new(..)`; in a struct literal add `subtitle: None, lead: None, hint: None, keywords: None` |
+| `CommandItem` is no longer `Send` or `Sync` (a lead is an element) | build the items in the view (or a `thread_local!`) instead of a `static OnceLock` |
+| Command's default matching is fuzzy and ranked | `.matching(Match::Words)` for the old rule |
+| A tab strip has one Tab stop; tabs are `selected`, not `checked` | none for users; update tests that looked for `checked` |
+| Items need `rune-ui-style` 0.11 (all ranges are `<0.12.0`) | move `rune-ui-style` and `rune-ui-themes` to `v0.11.0`, then `rune-ui update` |
 
 ## 0.10.0
 

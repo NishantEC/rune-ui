@@ -8,7 +8,7 @@ group = "fonts"
 description = "The neo-grotesque the type ramp is tuned in; static 400, 500 and 600 (the same files Rune embeds). Every other font item needs it: Rune drops its own Inter once an app registers fonts."
 
 [requires]
-style = ">=0.5.0, <0.11.0"
+style = ">=0.5.0, <0.12.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]

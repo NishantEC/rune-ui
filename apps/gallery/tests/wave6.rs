@@ -3,7 +3,7 @@
 
 use gallery::ui;
 use gallery::{App, apply_scene, set_headless, view};
-use rune::{Cx, El, ElementInfo, Env, Key, KeyEvent, Mods, Runtime, col, row};
+use rune::{Cx, El, ElementInfo, Env, Key, KeyEvent, Mods, Runtime, col};
 use rune_ui_style::{Theme, contrast};
 
 const W: f32 = 1320.0;
@@ -39,10 +39,6 @@ fn scene(name: &str, dark: bool) -> Runtime<App> {
 
 fn drawn<S: 'static>(rt: &Runtime<S>, key: &str) -> [f32; 4] {
     rt.presented(key).unwrap_or_else(|| panic!("{key} is not drawn")).0
-}
-
-fn is_drawn<S: 'static>(rt: &Runtime<S>, key: &str) -> bool {
-    rt.presented(key).is_some()
 }
 
 fn press<S: 'static>(rt: &mut Runtime<S>, key: &str) {
@@ -90,24 +86,6 @@ fn ax(v: &serde_json::Value, key: &str) -> Option<serde_json::Value> {
         return Some(v.clone());
     }
     v["children"].as_array()?.iter().find_map(|c| ax(c, key))
-}
-
-// ---- A probe: a few components in a theme chosen by the test ----
-
-#[derive(Default)]
-struct Probe {
-    dark: bool,
-    still: bool,
-}
-
-fn theme_of(s: &Probe) -> Theme {
-    Theme::from_json(rune_ui_themes::DEFAULT, s.dark).unwrap().with_reduced_motion(s.still)
-}
-
-fn probe(view: fn(&Probe, &mut Cx<Probe>) -> El, dark: bool, still: bool) -> Runtime<Probe> {
-    let mut rt = Runtime::new(Probe { dark, still }, view, (W, 900.0), Env { system_dark: dark, scale: 1.0 });
-    settle(&mut rt);
-    rt
 }
 
 // ---- Tabs ----

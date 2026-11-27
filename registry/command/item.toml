@@ -8,7 +8,7 @@ group = "overlays"
 description = "A command palette: grouped results with a leading element, subtitle, hint and shortcut, fuzzy matching with the matched letters marked, recents, a loading state and an alternate choice."
 
 [requires]
-style = ">=0.10.0, <0.11.0"
+style = ">=0.10.0, <0.12.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -20,11 +20,11 @@ stories = ["button"]
 [[files]]
 path = "command.rs"
 target = "src/ui/command.rs"
-sha256 = "8d649e57b8eab18dda602c27883bef349c8c0c658c87fa4155ff897ba78a967a"
+sha256 = "1cd7a72debe58eef3e15be4aff132ff2530ae6887812a7777b4882cb611d2b0d"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/command.rs"
 role = "story"
-sha256 = "776bd9240c0c26a6dd4c25ec5d8407a4a89f3ae37d601c679b523aff7bcd56af"
+sha256 = "64343e096b6c4a38cee8a31f80a1853fad5137dc3bdcf2ce1b8fbb749a3dd9d2"

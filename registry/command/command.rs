@@ -142,9 +142,9 @@ pub fn fuzzy(query: &str, text: &str) -> Option<(i32, Vec<usize>)> {
     // dp[i][j]: the best score matching q[..=i] with q[i] at text[j]; from[i][j]: where q[i - 1] was.
     let mut dp = vec![vec![NONE; n]; m];
     let mut from = vec![vec![usize::MAX; n]; m];
-    for j in 0..n {
+    for (j, d) in dp[0].iter_mut().enumerate() {
         if t[j] == q[0] {
-            dp[0][j] = 1 + bonus(j) - (j as i32).min(6);
+            *d = 1 + bonus(j) - (j as i32).min(6);
         }
     }
     for i in 1..m {
@@ -179,9 +179,9 @@ pub fn fuzzy(query: &str, text: &str) -> Option<(i32, Vec<usize>)> {
         }
     }
     let (mut score, mut at) = (NONE, usize::MAX);
-    for j in 0..n {
-        if dp[m - 1][j] > score {
-            score = dp[m - 1][j];
+    for (j, &d) in dp[m - 1].iter().enumerate() {
+        if d > score {
+            score = d;
             at = j;
         }
     }

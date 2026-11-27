@@ -8,7 +8,7 @@ group = "structure"
 description = "Views of one place: a line under the chosen tab, a contained well or a compact pane header; keys, closable tabs and a More menu for tabs that do not fit."
 
 [requires]
-style = ">=0.5.0, <0.11.0"
+style = ">=0.5.0, <0.12.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
@@ -20,7 +20,7 @@ stories = []
 [[files]]
 path = "tabs.rs"
 target = "src/ui/tabs.rs"
-sha256 = "7fbcfcf130cc80a7f351cdc9c00c29b3cb8166e8afda8eed09cceb3a00b4b523"
+sha256 = "41a249b7ff04fe7dfc4b3a9e180b3e1b9e096839858cc144f99b62c5dd8b6d54"
 
 # Copied only once the gallery block is installed.
 [[files]]
