@@ -2,10 +2,10 @@
 schema = 1
 name = "command"
 title = "Command"
-version = "0.10.0"
+version = "0.11.0"
 type = "component"
 group = "overlays"
-description = "A command palette: a search over grouped commands, moved through with the keys, in a dialog or inline."
+description = "A command palette: grouped results with a leading element, subtitle, hint and shortcut, fuzzy matching with the matched letters marked, recents, a loading state and an alternate choice."
 
 [requires]
 style = ">=0.10.0, <0.11.0"
@@ -20,11 +20,11 @@ stories = ["button"]
 [[files]]
 path = "command.rs"
 target = "src/ui/command.rs"
-sha256 = "16c17ca570403c583f6b1f7215daacb5fdb612e45de8e69cd5f51058fde985b7"
+sha256 = "8d649e57b8eab18dda602c27883bef349c8c0c658c87fa4155ff897ba78a967a"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/command.rs"
 role = "story"
-sha256 = "481f2ce709497c6693d230c5e482bc0439d98533c3ecc2ad98d6aa4d03fb7c45"
+sha256 = "776bd9240c0c26a6dd4c25ec5d8407a4a89f3ae37d601c679b523aff7bcd56af"

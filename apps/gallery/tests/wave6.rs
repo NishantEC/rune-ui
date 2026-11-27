@@ -472,3 +472,127 @@ fn a_toast_arrives_without_motion_under_reduce_motion() {
         }
     }
 }
+
+// ---- Command ----
+
+fn titles(rt: &Runtime<App>, key: &str) -> Vec<String> {
+    let els = rt.elements();
+    let Some(root) = els.iter().position(|e| e.key.as_deref() == Some(key)) else { return Vec::new() };
+    let inside = |mut i: usize| loop {
+        if i == root {
+            return true;
+        }
+        match els[i].parent {
+            Some(p) => i = p,
+            None => return false,
+        }
+    };
+    els.iter().enumerate().filter(|(i, e)| e.text.is_some() && inside(*i)).map(|(_, e)| e.text.clone().unwrap()).collect()
+}
+
+#[test]
+fn fuzzy_matching_finds_letters_in_order_ranks_word_starts_and_runs_and_says_where() {
+    use ui::command::fuzzy;
+    let (score, at) = fuzzy("lgn", "Fix the login redirect").expect("lgn is in login");
+    assert_eq!(at.len(), 3);
+    assert!(at.windows(2).all(|w| w[0] < w[1]), "in order: {at:?}");
+    assert!(fuzzy("nlg", "login").is_none(), "out of order does not match");
+    assert!(fuzzy("xyz", "login").is_none());
+    assert_eq!(fuzzy("", "anything"), Some((0, vec![])));
+    let (word_starts, _) = fuzzy("fr", "Fix redirect").unwrap();
+    let (scattered, _) = fuzzy("fr", "Defrost").unwrap();
+    assert!(word_starts > scattered, "word starts rank above letters inside a word: {word_starts} vs {scattered}");
+    let (run, _) = fuzzy("log", "login").unwrap();
+    let (apart, _) = fuzzy("log", "lxoxg").unwrap();
+    assert!(run > apart, "a touching run ranks above a spread one");
+    assert!(score > 0);
+    assert_eq!(fuzzy("É", "école").map(|(_, p)| p), Some(vec![0]), "case and accents of one letter fold the same way as the letter");
+}
+
+#[test]
+fn search_keeps_sections_in_the_order_they_appear_ranks_inside_them_and_words_mode_is_the_old_rule() {
+    use ui::command::{CommandItem, Match, search};
+    let items = vec![
+        CommandItem::new("a", "Open settings", "Actions"),
+        CommandItem::new("b", "Settings", "Pages"),
+        CommandItem::new("c", "Reset the setup", "Actions").keywords("settings"),
+        CommandItem::new("d", "Show calendar", "Pages"),
+    ];
+    let hits = search(&items, "set", Match::Fuzzy);
+    let keys: Vec<&str> = hits.iter().map(|h| h.item.key.as_str()).collect();
+    assert_eq!(keys, ["a", "c", "b"], "Actions first (it came first), a title match above a hidden keyword, then Pages: {keys:?}");
+    assert!(hits[2].title == vec![0, 1, 2], "the letters that matched are reported");
+    let words = search(&items, "open set", Match::Words);
+    assert_eq!(words.iter().map(|h| h.item.key.as_str()).collect::<Vec<_>>(), ["a"], "every word must appear in the label");
+    assert_eq!(search(&items, "", Match::Fuzzy).len(), 4, "an empty query keeps everything, in order");
+    assert!(search(&items, "zzz", Match::Fuzzy).is_empty());
+}
+
+#[test]
+fn a_row_has_a_lead_a_title_over_a_second_line_a_hint_and_says_its_place() {
+    let rt = item("command");
+    let row = drawn(&rt, "command-fuzzy-t1");
+    let t = rune_ui_themes::theme(false);
+    assert_eq!(row[3], t.metrics.row + t.space.at(4.0), "two lines are the row height plus 16");
+    let texts = titles(&rt, "command-fuzzy-t1");
+    assert!(texts.contains(&"acme-web · Working".to_owned()) && texts.contains(&"2m".to_owned()), "second line and hint: {texts:?}");
+    let node = ax(&rt.accessibility_json(), "command-fuzzy-t1").unwrap().to_string();
+    assert!(node.contains("Fix the login redirect") && node.contains("acme-web · Working") && node.contains("\"position\":1"), "named, described and placed: {node}");
+    assert_eq!(info(&rt, "command-fuzzy-t1").role, "option");
+    // One-line rows keep the old height.
+    assert_eq!(drawn(&rt, "command-inline-new")[3], t.metrics.row);
+}
+
+#[test]
+fn recents_come_first_once_and_sections_are_groups_with_headings() {
+    let rt = item("command");
+    assert!(drawn(&rt, "command-recent-t2")[1] < drawn(&rt, "command-recent-settings")[1], "in the order given");
+    assert!(drawn(&rt, "command-recent-settings")[1] < drawn(&rt, "command-recent-new")[1], "before the rest");
+    let tree = rt.accessibility_json().to_string();
+    assert!(tree.contains("\"name\":\"Recent\""), "a Recent heading: {}", &tree[..tree.len().min(200)]);
+    let n = rt.elements().iter().filter(|e| e.key.as_deref() == Some("command-recent-t2")).count();
+    assert_eq!(n, 1, "an item is not drawn twice");
+}
+
+#[test]
+fn loading_keeps_rows_spins_in_the_field_and_says_searching_when_nothing_is_there() {
+    let rt = item("command");
+    assert!(has(&rt, "command-inline"), "palette shown");
+    assert!(has(&rt, "command-loading-t1"), "the rows that are there stay");
+    let spin = rt.elements().into_iter().filter(|e| e.role == "progress-bar" || e.label.as_deref() == Some("Searching")).count();
+    assert!(spin >= 1, "a spinner in the field");
+    assert!(titles(&rt, "command-wait").contains(&"Searching…".to_owned()), "and the empty state says so");
+    assert!(!titles(&rt, "command-wait").contains(&"No results".to_owned()));
+}
+
+#[test]
+fn the_palette_moves_with_up_and_down_chooses_with_return_and_cmd_return_and_closes_with_escape() {
+    let mut rt = item("command");
+    press(&mut rt, "command-open");
+    assert!(has(&rt, "command-demo"), "open");
+    assert_eq!(focused(&rt).as_deref(), Some("command-demo-input"), "the field has focus");
+    assert!(has(&rt, "command-demo-hints"), "the footer says what the keys do");
+    key(&mut rt, Key::Down);
+    assert_eq!(rt.state.g.index("command-at", 0), 1, "Down");
+    key(&mut rt, Key::Up);
+    key(&mut rt, Key::Up);
+    assert_eq!(rt.state.g.index("command-at", 0), 7, "Up wraps to the last of eight rows");
+    key(&mut rt, Key::Enter);
+    assert_eq!(rt.state.g.choice("command-chose", ""), "t3", "Return chooses the highlighted row");
+    key_with(&mut rt, Key::Enter, cmd());
+    assert_eq!(rt.state.g.choice("command-chose", ""), "t3 (alternate)", "Command+Return is the alternate");
+    key(&mut rt, Key::Escape);
+    assert!(!has(&rt, "command-demo"), "Escape closes");
+}
+
+#[test]
+fn the_palettes_secondary_inks_reach_their_contrast_on_the_floating_surface() {
+    for dark in [false, true] {
+        let t = Theme::from_json(rune_ui_themes::DEFAULT, dark).unwrap();
+        assert!(contrast(t.ink_faint(), t.c.floating.bg) >= 3.0 - 0.05, "hints and headings, dark {dark}");
+        for tone in [rune_ui_style::Tone::Info, rune_ui_style::Tone::Warning, rune_ui_style::Tone::Success] {
+            let c = contrast(tone.colors(&t).1, t.c.floating.bg);
+            assert!(c >= 3.0 - 0.05, "a status mark, dark {dark}, {tone:?}: {c}");
+        }
+    }
+}

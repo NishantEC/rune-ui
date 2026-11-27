@@ -1,1 +1,1 @@
-pub const CHECKS: &[(&str, &str)] = &[("command-inline", "dialog"), ("command-inline-list", "listbox"), ("command-inline-new", "option"), ("command-inline-input", "textbox")];
+pub const CHECKS: &[(&str, &str)] = &[("command-inline", "dialog"), ("command-inline-list", "listbox"), ("command-inline-new", "option"), ("command-inline-input", "textbox"), ("command-recent-t2", "option"), ("command-fuzzy-t1", "option"), ("command-loading-list", "listbox")];

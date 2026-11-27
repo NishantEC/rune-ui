@@ -18,4 +18,4 @@ cargo = ["rune", "rune-ui-style", "rune-kit"]
 [[files]]
 path = "gallery.rs"
 target = "src/ui/gallery.rs"
-sha256 = "a7dc3838b4e364fd37890029aa4c7c1a6ed50768ac672151ca80d10dc425924c"
+sha256 = "07b0e38d5045f5ae8158968b73558d5e179b8c33b5d030864e593bb222ed1f7e"
