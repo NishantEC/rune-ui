@@ -596,3 +596,71 @@ fn the_palettes_secondary_inks_reach_their_contrast_on_the_floating_surface() {
         }
     }
 }
+
+// ---- The two-line list row (Sidebar) ----
+
+fn text_of(rt: &Runtime<App>, row_key: &str, words: &str) -> ElementInfo {
+    let r = drawn(rt, row_key);
+    rt.elements().into_iter().find(|e| e.text.as_deref() == Some(words) && e.rect[1] >= r[1] - 0.5 && e.rect[1] < r[1] + r[3]).unwrap_or_else(|| panic!("no {words:?} in {row_key}"))
+}
+
+#[test]
+fn a_thread_row_has_an_element_for_its_second_line_a_bold_unread_title_and_the_densitys_height() {
+    let rt = item("sidebar");
+    let t = rune_ui_themes::theme(false);
+    assert_eq!(drawn(&rt, "sidebar-th1")[3], t.metrics.row + t.space.at(4.0), "two lines at the theme's density");
+    let title = text_of(&rt, "sidebar-th1", "Fix the login redirect");
+    let read = text_of(&rt, "sidebar-th3", "Review ENG-123");
+    assert_eq!(title.text_style.unwrap().weight, t.ty.semibold, "unread: semibold");
+    assert_eq!(read.text_style.unwrap().weight, t.ty.regular, "read: regular");
+    assert_eq!(title.text_color, Some(t.ink()), "unread in the first ink");
+    assert_eq!(read.text_color, Some(t.ink_muted()));
+    let word = text_of(&rt, "sidebar-th1", "Needs you");
+    let rest = text_of(&rt, "sidebar-th1", "· acme-web");
+    assert!(word.rect[1] >= title.rect[1] + title.rect[3] - 1.0, "the second line is under the title");
+    assert_ne!(word.text_color, rest.text_color, "the state word has its own ink");
+    assert!(rest.rect[0] > word.rect[0] + word.rect[2], "and the quiet words follow it");
+    let node = ax(&rt.accessibility_json(), "sidebar-th1").unwrap().to_string();
+    assert!(node.contains("Needs you") && node.contains("Unread"), "assistive technology reads the state and Unread: {node}");
+    // A compact theme gives a shorter row: 30 and 16.
+    let rt = scene("item-sidebar-compact", false);
+    assert_eq!(drawn(&rt, "sidebar-th1")[3], 46.0, "compact density: 30 + 16");
+}
+
+#[test]
+fn the_trailing_slot_swaps_the_age_for_a_menu_button_under_the_pointer_and_under_focus() {
+    let mut rt = item("sidebar");
+    let (age, menu) = (text_of(&rt, "sidebar-th2", "14m"), info(&rt, "sidebar-th2-menu"));
+    assert_eq!((age.opacity, menu.opacity), (1.0, 0.0), "at rest: the age shows");
+    let r = drawn(&rt, "sidebar-th2");
+    rt.pointer_move(r[0] + 60.0, r[1] + r[3] / 2.0);
+    settle(&mut rt);
+    let (age, menu) = (text_of(&rt, "sidebar-th2", "14m"), info(&rt, "sidebar-th2-menu"));
+    assert_eq!((age.opacity, menu.opacity), (0.0, 1.0), "under the pointer: the menu button");
+    let (mx, my) = rt.find("sidebar-th2-menu").unwrap();
+    assert!(mx > r[0] + r[2] - 40.0 && (my - (r[1] + r[3] / 2.0)).abs() < 1.0, "at the row's end, centred on it");
+    rt.pointer_move(5.0, 5.0);
+    settle(&mut rt);
+    assert_eq!(info(&rt, "sidebar-th2-menu").opacity, 0.0, "and back");
+    // Focus inside shows it too.
+    focus(&mut rt, "sidebar-th2-menu");
+    assert_eq!(info(&rt, "sidebar-th2-menu").opacity, 1.0, "focus on the button shows it");
+    // The menu button is its own press: it does not choose the row.
+    let before = rt.state.g.presses;
+    press(&mut rt, "sidebar-th2-menu");
+    assert_eq!(rt.state.g.presses, before + 1);
+    // Pinned to hover: the slot shows the button and no age.
+    assert_eq!(info(&rt, "sidebar-th3-menu").opacity, 1.0);
+    let r3 = drawn(&rt, "sidebar-th3");
+    assert!(!rt.elements().into_iter().any(|e| e.text.as_deref() == Some("3d") && e.rect[1] >= r3[1] && e.rect[1] < r3[1] + r3[3]), "no age while pinned");
+}
+
+#[test]
+fn a_nested_row_is_set_in_by_sixteen_points_a_level() {
+    let rt = item("sidebar");
+    let (a, b) = (drawn(&rt, "sidebar-th2"), drawn(&rt, "sidebar-th4"));
+    let t2 = text_of(&rt, "sidebar-th2", "Plan the release notes");
+    let t4 = text_of(&rt, "sidebar-th4", "Fix flaky tests");
+    assert_eq!(a[0], b[0], "the row itself spans the column");
+    assert!((t4.rect[0] - t2.rect[0] - 16.0).abs() < 0.6, "its words are 16 points in: {} vs {}", t4.rect[0], t2.rect[0]);
+}

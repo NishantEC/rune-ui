@@ -1,4 +1,4 @@
-item-sidebar group 0 0 940 936
+item-sidebar group 0 0 940 1342
 sidebar navigation 0 64 240 400
 sidebar-home link 8 132 224 36
 sidebar-inbox link 8 169 224 36
@@ -22,6 +22,16 @@ sidebar-p2-face group 16 658 37 37
 sidebar-p2-face-dot group 43 684 9 9
 sidebar-p3 option 8 703 224 52
 sidebar-p3-face group 16 710 37 37
+sidebar-threads-bar navigation 0 978 240 340
+sidebar-threads-bar-list-0 listbox 8 1011 224 211
+sidebar-th1 option 8 1011 224 52
+sidebar-th1-menu button 200 1025 24 24
+sidebar-th2 option 8 1064 224 52
+sidebar-th2-menu button 200 1078 24 24
+sidebar-th3 option 8 1117 224 52
+sidebar-th3-menu button 200 1131 24 24
+sidebar-th4 option 8 1170 224 52
+sidebar-th4-menu button 200 1184 24 24
 editor-mode radiogroup 1000 -184 260 32
 editor-mode-0 button 1000 -184 55 32
 editor-mode-1 button 1059 -184 53 32

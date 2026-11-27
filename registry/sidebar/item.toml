@@ -2,10 +2,10 @@
 schema = 1
 name = "sidebar"
 title = "Sidebar"
-version = "0.10.0"
+version = "0.11.0"
 type = "component"
 group = "structure"
-description = "An app's side column: header, labelled groups of rows with icons (or status marks) and counts, lists for assistive technology, footer."
+description = "An app's side column: header, labelled groups of rows with icons (or status marks) and counts, two-line rows with a second line of your own parts, unread titles, a trailing slot that swaps under the pointer and nested rows; lists for assistive technology, footer."
 
 [requires]
 style = ">=0.5.0, <0.11.0"
@@ -20,11 +20,11 @@ stories = ["portrait"]
 [[files]]
 path = "sidebar.rs"
 target = "src/ui/sidebar.rs"
-sha256 = "0bffb4994c3c3677eddb069ab86e9261ff1875d31ded644526e2d993b85bf9ed"
+sha256 = "ad622b74498c832e6502a95b21d8f35d3a07e058af907b854c43ab7859a93405"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/sidebar.rs"
 role = "story"
-sha256 = "b138088b03b3db32c35c1a0ce9112cdf0a62ce38e7f8d2257fe1443f0589016b"
+sha256 = "353e984470956d0a1c979d3680e2ab455d6f1bbc206947f89a9326cb3db81316"

@@ -1,14 +1,14 @@
-use rune::text;
-use rune_ui_style::{State as Look, weight};
+use rune::{El, row, text};
+use rune_ui_style::{State as Look, Tone, weight};
 
-use super::super::base::{glyph, spinner_in};
+use super::super::base::{Shape, States, glyph, paint_state, spinner_in};
 use super::super::gallery::{Ctx, StoryItem, spec, specs};
 use super::super::icons;
 use super::super::portrait::{Activity, Portrait};
 use super::super::sidebar::{Selected, Sidebar, SidebarItem};
 
 pub fn item<S: 'static>() -> StoryItem<S> {
-    StoryItem::new("sidebar", "Sidebar", "structure").story("An app's side column", all::<S>)
+    StoryItem::new("sidebar", "Sidebar", "structure").story("An app's side column", all::<S>).story("Threads: parts in the second line, unread, a swapping end, nested", parts::<S>)
 }
 
 fn all<S: 'static>(c: &mut Ctx<S>) -> rune::El {
@@ -59,4 +59,34 @@ fn all<S: 'static>(c: &mut Ctx<S>) -> rune::El {
         spec(t, "A list of tasks: status marks lead each row; one list for assistive technology", rune::col().h(400.0).child(tasks)),
         spec(t, "Two lines: a portrait, a second line, a count, a trailing pill; the current row raised; New task is a button", rune::col().h(400.0).child(two)),
     ])
+}
+
+/// Words in a tone's own ink, then quiet words after them: the second line of a thread.
+fn state_line(t: &rune_ui_style::Theme, tone: Tone, state: &str, rest: &str) -> El {
+    row().gap(t.space.at(1.0)).min_w(0.0).child(text(state.to_owned()).font(weight(t.ty.sm, t.ty.medium)).color(tone.colors(t).1).truncate()).child(text(format!("· {rest}")).font(t.ty.sm).color(t.ink_faint()).truncate().min_w(0.0))
+}
+
+fn parts<S: 'static>(c: &mut Ctx<S>) -> rune::El {
+    let (t, g, acc) = (c.t, c.g, c.access);
+    let open = g.choice("sidebar-threads", "th2");
+    let age = |words: &str| text(words.to_owned()).font(rune_ui_style::tabular(t.ty.xs)).color(t.ink_faint());
+    let menu = |k: &str| {
+        let face = row().key(format!("{k}-menu")).role("button").label("Thread options").help("Thread options").focusable(true).size(24.0, 24.0).center().radius(t.radius.sm).round_as(t);
+        paint_state(face, &t.mat.ghost, States::default()).child(glyph(&icons::MORE, t.control.icon, t.ink_muted())).on_press(move |s: &mut S| acc(s).presses += 1)
+    };
+    let dot = |tone: Tone| rune::el().size(8.0, 8.0).radius(4.0).fill(tone.colors(t).1);
+    let thread = |k: &'static str, title: &str, tone: Tone, state: &str, rest: &str, when: &str| {
+        let key = k.to_owned();
+        SidebarItem::<S>::new(format!("sidebar-{k}"), title.to_owned()).lead(dot(tone)).subtitle_el(state_line(t, tone, state, rest)).description(state.to_owned())
+            .trail_swap(28.0, age(when), menu(&format!("sidebar-{k}"))).selected(open == k).selected_style(Selected::Raised).on_press(move |s: &mut S| acc(s).choose("sidebar-threads", &key))
+    };
+    let bar = Sidebar::<S>::new("sidebar-threads-bar")
+        .list(Some("Threads"), "Threads", vec![
+            thread("th1", "Fix the login redirect", Tone::Warning, "Needs you", "acme-web", "2m").unread(true),
+            thread("th2", "Plan the release notes", Tone::Info, "Working", "example.com", "14m"),
+            thread("th3", "Review ENG-123", Tone::Success, "Settled", "acme-web", "3d").state(Look::Hover),
+            thread("th4", "Fix flaky tests", Tone::Info, "Working", "acme-web", "1h").indent(1),
+        ])
+        .build(t);
+    specs(t, vec![spec(t, "Unread is bold; the state word has its own ink; the age gives way to a menu button under the pointer or focus (the third row is pinned to it); the last row is nested", rune::col().h(340.0).child(bar))])
 }
