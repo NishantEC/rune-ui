@@ -1,1 +1,1 @@
-pub const CHECKS: &[(&str, &str)] = &[("tabs-line", "tablist"), ("tabs-line-0", "tab"), ("tabs-line-panel", "tabpanel"), ("tabs-contained-1", "tab")];
+pub const CHECKS: &[(&str, &str)] = &[("tabs-line", "tablist"), ("tabs-line-0", "tab"), ("tabs-line-panel", "tabpanel"), ("tabs-contained-1", "tab"), ("tabs-pane", "tablist"), ("tabs-pane-1", "tab"), ("tabs-pane-1-close", "button"), ("tabs-manual-0", "tab"), ("tabs-overflow", "tablist")];

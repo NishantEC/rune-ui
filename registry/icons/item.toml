@@ -18,4 +18,4 @@ cargo = ["rune"]
 [[files]]
 path = "icons.rs"
 target = "src/ui/icons.rs"
-sha256 = "82fffd9c9ca5b7cbbc30440a72a68f4399e2a961642c82fe738bbab27fef4d7f"
+sha256 = "41ede2958876d002a8f4c7ba6e870f13bd5a1ee7743393aeb9d3a8f5b48fafed"

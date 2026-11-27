@@ -2,17 +2,17 @@
 schema = 1
 name = "tabs"
 title = "Tabs"
-version = "0.5.0"
+version = "0.11.0"
 type = "component"
 group = "structure"
-description = "Views of one place: a line under the chosen tab, or a contained well."
+description = "Views of one place: a line under the chosen tab, a contained well or a compact pane header; keys, closable tabs and a More menu for tabs that do not fit."
 
 [requires]
 style = ">=0.5.0, <0.11.0"
 rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
 
 [dependencies]
-registry = ["base", "icons"]
+registry = ["base", "icons", "popup"]
 cargo = ["rune", "rune-ui-style"]
 # What the stories use besides this item: they are copied only when these are installed too.
 stories = []
@@ -20,11 +20,11 @@ stories = []
 [[files]]
 path = "tabs.rs"
 target = "src/ui/tabs.rs"
-sha256 = "3929a5b7d53b450874741d7a29ce3d0cab8466ed76234f2b9f7ac1da2f841996"
+sha256 = "7fbcfcf130cc80a7f351cdc9c00c29b3cb8166e8afda8eed09cceb3a00b4b523"
 
 # Copied only once the gallery block is installed.
 [[files]]
 path = "stories.rs"
 target = "src/ui/stories/tabs.rs"
 role = "story"
-sha256 = "370aada9ce0fafdf70d181600b8ae6075b641c51df448c66f4f1ba5ab9892ce2"
+sha256 = "7821dfc80efde4fbe8ff3fb36101398c3fd9c7f30a85b9ca7299fbcf69d9780a"
