@@ -226,3 +226,104 @@ fn the_pane_look_is_one_control_height_with_a_two_point_line_under_the_chosen_ta
     let line = drawn(&rt, "tabs-pane");
     assert!(line[3] <= t.control.sm + 6.0, "the strip is as tall as one row and its line");
 }
+
+// ---- Split ----
+
+fn val(rt: &Runtime<App>, k: &str, d: f32) -> f32 {
+    rt.state.g.value(k, d)
+}
+
+/// Presses on a handle's middle and drags it `dx` points by pointer, slowly, then lets go.
+fn drag_x(rt: &mut Runtime<App>, key: &str, dx: f32) {
+    let r = drawn(rt, key);
+    let (x, y) = (r[0] + r[2] / 2.0, r[1] + r[3] / 2.0);
+    rt.pointer_down(x, y);
+    for i in 1..=10 {
+        rt.pointer_move(x + dx * i as f32 / 10.0, y);
+        rt.frame(1.0 / 60.0);
+    }
+    rt.pointer_up(x + dx, y);
+    settle(rt);
+}
+
+#[test]
+fn split_handles_drag_inside_their_least_and_most_and_the_regions_follow() {
+    let mut rt = item("split");
+    assert_eq!(drawn(&rt, "split-demo-left")[2], 120.0, "the sidebar starts at its width");
+    drag_x(&mut rt, "split-demo-handle-left", 30.0);
+    assert!((val(&rt, "split-side", 0.0) - 150.0).abs() < 0.5, "dragged 30 points: {}", val(&rt, "split-side", 0.0));
+    assert!((drawn(&rt, "split-demo-left")[2] - 150.0).abs() < 0.5, "and the region follows");
+    // The right region grows to the left.
+    drag_x(&mut rt, "split-demo-handle-right", -20.0);
+    assert!((val(&rt, "split-pane", 0.0) - 150.0).abs() < 0.5, "a right region grows when its handle moves left");
+    // The sidebar stops at its most (170), or sooner where the centre would lose its 120 points: 440 - 151 - 120 - 1 = 168.
+    drag_x(&mut rt, "split-demo-handle-left", 200.0);
+    assert!((val(&rt, "split-side", 0.0) - 168.0).abs() < 0.5, "kept off the centre's room: {}", val(&rt, "split-side", 0.0));
+    // It never takes the centre's room: 440 wide, the sidebar 170, so the pane stops where 120 is left for the centre.
+    drag_x(&mut rt, "split-demo-handle-right", -300.0);
+    let (left, centre, right) = (drawn(&rt, "split-demo-left"), drawn(&rt, "split-demo-center"), drawn(&rt, "split-demo-right"));
+    assert!(centre[2] >= 119.5, "the centre keeps its least: {centre:?}");
+    assert!((left[2] + centre[2] + right[2] + 2.0 - drawn(&rt, "split-demo")[2]).abs() < 1.0, "the three fill the split: {left:?} {centre:?} {right:?}");
+}
+
+#[test]
+fn a_split_handle_is_a_named_separator_with_its_width_and_moves_by_keys() {
+    let mut rt = item("split");
+    let tree = rt.accessibility_json();
+    let h = ax(&tree, "split-demo-handle-left").unwrap();
+    assert_eq!(h["role"].as_str(), Some("splitter"), "{h}");
+    assert!(h.to_string().contains("Resize sidebar") && h.to_string().contains("120"), "named, with its width as its value: {h}");
+    focus(&mut rt, "split-demo-handle-left");
+    key(&mut rt, Key::Right);
+    assert_eq!(val(&rt, "split-side", 0.0), 130.0, "Right: one step");
+    key_with(&mut rt, Key::Left, Mods { shift: true, ..Mods::default() });
+    assert_eq!(val(&rt, "split-side", 0.0), 90.0, "Shift: four steps");
+    key(&mut rt, Key::End);
+    assert_eq!(val(&rt, "split-side", 0.0), 170.0, "End: the most");
+    key(&mut rt, Key::Home);
+    assert_eq!(val(&rt, "split-side", 0.0), 80.0, "Home: the least");
+    focus(&mut rt, "split-demo-handle-right");
+    key(&mut rt, Key::Left);
+    assert_eq!(val(&rt, "split-pane", 0.0), 140.0, "a right region grows on Left");
+}
+
+#[test]
+fn a_double_click_resets_a_split_region_and_a_collapsible_one_collapses_and_opens_again() {
+    let mut rt = item("split");
+    drag_x(&mut rt, "split-demo-handle-left", 40.0);
+    assert_eq!(val(&rt, "split-side", 0.0), 160.0);
+    let r = drawn(&rt, "split-demo-handle-left");
+    let (x, y) = (r[0] + r[2] / 2.0, r[1] + r[3] / 2.0);
+    rt.pointer_down(x, y);
+    rt.pointer_up(x, y);
+    rt.pointer_down(x, y);
+    rt.pointer_up(x, y);
+    settle(&mut rt);
+    assert_eq!(val(&rt, "split-side", 0.0), 120.0, "double-click: back to the default");
+    // Collapse: drag past the least (80) by more than the snap.
+    drag_x(&mut rt, "split-demo-handle-left", -200.0);
+    assert!(rt.state.g.flag("split-side-hidden"), "collapsed");
+    assert!(!has(&rt, "split-demo-left"), "the region is gone");
+    assert!(has(&rt, "split-demo-handle-left"), "its handle stays at the edge");
+    assert!(ax(&rt.accessibility_json(), "split-demo-handle-left").unwrap().to_string().contains("Collapsed"));
+    // Open it again by dragging from the edge.
+    drag_x(&mut rt, "split-demo-handle-left", 100.0);
+    assert!(!rt.state.g.flag("split-side-hidden"), "opened");
+    assert!(has(&rt, "split-demo-left") && drawn(&rt, "split-demo-left")[2] >= 80.0);
+    // Return on the handle collapses and opens.
+    focus(&mut rt, "split-demo-handle-left");
+    key(&mut rt, Key::Enter);
+    assert!(rt.state.g.flag("split-side-hidden"), "Return collapses");
+    key(&mut rt, Key::Enter);
+    assert!(!rt.state.g.flag("split-side-hidden"), "Return opens");
+}
+
+#[test]
+fn split_clamped_applies_least_most_fraction_and_the_centres_room() {
+    use ui::split::clamped;
+    assert_eq!(clamped(50.0, 100.0, 300.0, 1.0, 0.0, 0.0, 0.0), 100.0);
+    assert_eq!(clamped(500.0, 100.0, 300.0, 1.0, 0.0, 0.0, 0.0), 300.0);
+    assert_eq!(clamped(500.0, 100.0, 600.0, 0.5, 800.0, 0.0, 0.0), 400.0, "half the window at most");
+    assert_eq!(clamped(500.0, 100.0, 600.0, 1.0, 800.0, 256.0, 440.0), 103.0, "the centre keeps 440 beside a 256 sidebar");
+    assert_eq!(clamped(50.0, 100.0, 600.0, 1.0, 300.0, 256.0, 440.0), 100.0, "a window too small for it: the least wins");
+}

@@ -1,0 +1,30 @@
+# rune-ui registry item (schema 1). `rune-ui registry hash` refreshes the sha256 values; the registry test fails if they drift.
+schema = 1
+name = "split"
+title = "Split"
+version = "0.11.0"
+type = "component"
+group = "structure"
+description = "The regions of a window with drag handles: a left sidebar, the centre and a right pane, each side with a width in points, least and most, a saved width, double-click to reset, keys and collapse."
+
+[requires]
+style = ">=0.10.0, <0.11.0"
+rune = "53f6d36a96439d357a6f2a2560383d7b9e9ec9c2"
+
+[dependencies]
+registry = ["base"]
+cargo = ["rune", "rune-ui-style"]
+# What the stories use besides this item: they are copied only when these are installed too.
+stories = []
+
+[[files]]
+path = "split.rs"
+target = "src/ui/split.rs"
+sha256 = "a2274d4cc71b4448db02e3a8678a0efb4c43194563cc48fb5b78c4be27fc0042"
+
+# Copied only once the gallery block is installed.
+[[files]]
+path = "stories.rs"
+target = "src/ui/stories/split.rs"
+role = "story"
+sha256 = "1675c5d06d934ab79fa1e68d4172e35558ee96a7c91d58ea9f09f5abb0cafae5"
